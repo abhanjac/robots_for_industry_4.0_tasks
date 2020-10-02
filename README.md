@@ -1,5 +1,5 @@
 # Objective: 
-Detection of a electrical panel door using a Intel Realsense camera and Opencv and Scikit learn libraries. 
+Using mobile robots in an industry 4.0 setting for working alongside human operators and assisting them to increase the efficiency of manufacturing tasks.
 
 **A *Trailer* of Final Result:**
 

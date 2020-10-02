@@ -1,0 +1,8 @@
+prefix=/home/ari/catkin_ws/devel
+
+Name: applications
+Description: Description of applications
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

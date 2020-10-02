@@ -1,0 +1,8 @@
+prefix=/home/ari/catkin_ws/devel
+
+Name: objectPickup
+Description: Description of objectPickup
+Version: 0.0.0
+Cflags: -I/home/ari/catkin_ws/src/new_packageDir/objectPickup/include
+Libs: -L${prefix}/lib 
+Requires: 

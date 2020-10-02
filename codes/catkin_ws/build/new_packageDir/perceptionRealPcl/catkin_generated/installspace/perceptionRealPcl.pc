@@ -1,0 +1,8 @@
+prefix=/home/ari/catkin_ws/install
+
+Name: perceptionRealPcl
+Description: Description of perceptionRealPcl
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 

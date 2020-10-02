@@ -21,7 +21,7 @@ This information will be later used (in a separate project) by the drone for con
 This project is only about the image processing part to identify and electrical panel box. 
 The camera to be used should be small and light, so that it can be put on a drone. So we selected the Intel Realsense Depth camera for this purpose.
 
-# Requirements: 
+# Requiremen
 * Algorithm should be able to run in real time on a laptop as well as on a sigle board computer (without any dependence on GPUs).
 * Algorithm should be able to detect the electrical panel box and show the position of the box handle.
 * The distance of the box handle from the camera should also be calculated continuously in real time.

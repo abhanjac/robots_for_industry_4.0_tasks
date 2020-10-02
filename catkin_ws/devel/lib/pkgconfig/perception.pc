@@ -1,8 +1,0 @@
-prefix=/home/ari/catkin_ws/devel
-
-Name: perception
-Description: Description of perception
-Version: 0.0.0
-Cflags: -I/home/ari/catkin_ws/src/packageDir/perception/include
-Libs: -L${prefix}/lib -lperception_crop -lperception_downsample -lperception_segmentation
-Requires: 

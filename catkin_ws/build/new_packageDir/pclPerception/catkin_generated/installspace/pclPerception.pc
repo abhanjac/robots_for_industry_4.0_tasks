@@ -1,8 +1,0 @@
-prefix=/home/ari/catkin_ws/install
-
-Name: pclPerception
-Description: Description of pclPerception
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lpclPerception_crop -lpclPerception_downsample -lpclPerception_segmentation
-Requires: 

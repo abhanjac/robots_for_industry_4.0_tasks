@@ -1,2 +1,0 @@
-new_packageDir/objectPickup:new_packageDir/pclPerception:new_packageDir/pclTutorial:new_packageDir/perceptionRealPcl
--DCATKIN_DEVEL_PREFIX=/home/ari/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/ari/catkin_ws/install -G Unix Makefiles

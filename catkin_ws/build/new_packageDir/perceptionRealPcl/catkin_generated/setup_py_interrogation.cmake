@@ -1,6 +1,0 @@
-set(perceptionRealPcl_SETUP_PY_VERSION "0.0.0")
-set(perceptionRealPcl_SETUP_PY_SCRIPTS "")
-set(perceptionRealPcl_SETUP_PY_PACKAGES "")
-set(perceptionRealPcl_SETUP_PY_PACKAGE_DIRS "")
-set(perceptionRealPcl_SETUP_PY_MODULES "")
-set(perceptionRealPcl_SETUP_PY_MODULE_DIRS "")

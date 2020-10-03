@@ -3,6 +3,7 @@ Using mobile robots in an industry 4.0 setting for working alongside human opera
 
 **A *Trailer* of Final Result:**
 
+| | |
 |:---:|:---:|
 | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/blue_bin_pickup_without_ar_tag.gif" width="160" height="120"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/crank_shaft_pickup.gif" width="160" height="120"> |
 | [**YouTube Link**](https://youtu.be/klYFTt6hRl0) | [**YouTube Link**](https://youtu.be/IzMjBAbnvCU) |

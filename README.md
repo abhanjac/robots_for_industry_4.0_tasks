@@ -47,7 +47,7 @@ The camera to be used should be small and light, so that it can be put on a dron
 * Overall setup should be battery operated and should be small and light enough to be mounted on a drone. 
 
 # Current Framework: 
-* Opencv, Robot Operating System (ROS), PointCloud Library (PCL), Tensorflow, Ubuntu 16.04. 
+* OpenCV, Robot Operating System (ROS), PointCloud Library (PCL), Tensorflow, Ubuntu 16.04. 
 * Python, C++.
 * [Fetch robot.](https://fetchrobotics.com/)
 

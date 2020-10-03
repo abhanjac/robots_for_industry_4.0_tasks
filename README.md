@@ -10,6 +10,23 @@ Using mobile robots in an industry 4.0 setting for working alongside human opera
 
 ---
 
+Mobile robots have gained huge prominence in manufacturing plants owing to its benefits such as safety of humans and demand for high efficiency. The advancements in technology have enabled manufacturers to develop robots suitable to their operational needs and carry out their implementation for their applications. 
+
+Following are some of the crucial benefits of mobile robots:
+
+**Enhanced flexibility:**
+As on-board sensors and cameras are utilized in robots for their operations, they offer agility and flexibility. It does not follow the predetermined paths; it creates its own dynamic and efficient pathways from a particular point to the destination by tackling obstacles. 
+
+**Increase in safety:**
+Mobile robots are equipped with different types of sensors and cameras. These enable the safety in its operation. It avoids different obstacles by interpreting the environment, understanding different scenarios, and finding its way. 
+
+**Better scalability:**
+As mobile robots can be programmed for tasks such as picking up items and dropping them at destinations for few items, they can be reprogrammed for more items. The implementation of modular deployment system is possible with the increase in operational needs. 
+
+**Ease in shifting between facilities:**
+Many manufacturers do not opt for automation as they need to move them to new facilities if need arises. If an automation system is purchased and the company needs to shift to new facility in the next three years, the whole system needs to be dismantled to move. However, mobile robots are easy to move and will not take much efforts to move from one place to another. 
+ 
+
 Project is focused towards incorporating this technology into a drone for assisting it to open the door in air autonomously. 
 Drones are being used extensively for surveillance and reconnaissance tasks.
 But in the recent past they are also being employed for interacting physically with the environment.
@@ -30,9 +47,9 @@ The camera to be used should be small and light, so that it can be put on a dron
 * Overall setup should be battery operated and should be small and light enough to be mounted on a drone. 
 
 # Current Framework: 
-* Opencv, SciKit Learn and SciKit Image libraries, Ubuntu 16.04. 
-* Intel Realsense R200 Depth Camera.
-* Odroid XU4 single board computer, Laptop computer.
+* Opencv, Robot Operating System (ROS), PointCloud Library (PCL), Tensorflow, Ubuntu 16.04. 
+* Python, C++.
+* [Fetch robot.](https://fetchrobotics.com/)
 
 #### Intel Realsense R200 Depth Camera and Odroid XU4:
 ![intel_realsense](images/intel_realsense_r200.png)

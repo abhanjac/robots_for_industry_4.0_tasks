@@ -52,7 +52,7 @@ Several other help links and topics are also mentioned in this [file](documents/
 #### Objects to be picked up:
 | | |
 |:---:|:---:|
-|![bluebin](images/bluebin.png)|![crankshaft](images/crankshaft.png)|
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/bluebin.png" width="160" height="120"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/crankshaft.png" width="160" height="120"> |
 |**blue bin**|**crankshaft**|
 
 [ **NOTE:** The **blue bin** may contain different types of small objects like screws, nuts, washers, etc. in it or may be empty as well. ]

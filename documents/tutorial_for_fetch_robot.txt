@@ -1,0 +1,1693 @@
+Gazebo tutorial for the fetch robot:
+
+http://docs.fetchrobotics.com/gazebo.html
+
+Installation
+Before installing the simulation environment, make sure your desktop is setup with a standard installation of ROS Indigo on Ubuntu 14.04. Once your APT repositories are configured, you can install the simulator:
+
+We however installed ROS Kinetic on Ubuntu 16.04 LTS. So the following commands are the modified version of the actual commands specified for the fetch gazebo package for ROS Indigo and Ubuntu 14.04 LTS.
+
+sudo apt-get update
+sudo apt-get install ros-kinetic-fetch-gazebo-demo
+
+Starting the Simulator
+The fetch_gazebo and fetch_gazebo_demo packages provide the Gazebo environment for Fetch. fetch_gazebo includes several launch files:
+
+To start the simplest environment:
+
+'simulation.launch' spawns a robot in an empty world.
+
+roslaunch fetch_gazebo simulation.launch
+
+'playground.launch' spawns a robot inside a lab-like test environment. This environment has some tables with items that may be picked up and manipulated. 
+
+roslaunch fetch_gazebo playground.launch
+
+It also has a pre-made map which can be used to test out robot navigation and some simple demonstrations of object grasping.
+
+When you are trying to close the scene, try to do Ctrl-C from the terminal and not use the x button on the top right of the gazebo screen. This sometimes hangs the program.
+
+Simulating a Freight
+
+Freight uses the same launch files as Fetch, simply pass the robot argument:
+
+roslaunch fetch_gazebo simulation.launch robot:=freight
+
+roslaunch fetch_gazebo playground.launch robot:=freight
+
+================================================================================
+
+To run the example simulation of the robot moving and picking up a block from one table and placing it on another table:
+
+First run the playground simulation:
+
+roslaunch fetch_gazebo playground.launch
+
+Wait until the simulator is fully running and then run the demo launch file:
+
+roslaunch fetch_gazebo_demo demo.launch
+
+This will start:
+
+fetch_nav.launch - this is the navigation stack with a pre-built map of the environment.
+move_group.launch - this is the MoveIt configuration which can plan for the movement of the arm.
+basic_grasping_perception - this is a simple demo found in the simple_grasping package which segments objects on tables and computes grasps for them.
+
+demo.py - this our specific demo which navigates the robot from the starting pose in Gazebo to the table, raises the torso, lowers the head to look at the table, 
+and then runs perception to generate a goal for MoveIt. The arm will then grasp the cube on the table, tuck the arm and lower the torso. Once the robot is back in this tucked configuration, 
+the navigation stack will be once again called to navigate into the room with the countertop where the robot will place the cube on the other table.
+
+NOTE:
+
+This file when run, throws an error because of two lines in the code of demo.py.
+In the file /opt/ros/kinetic/lib/fetch_gazebo_demo/demo.py
+
+comment out the 'wait' arguments like the following.
+
+# add to scene
+self.scene.addSolidPrimitive(obj.name,
+                             obj.primitives[0],
+                             obj.primitive_poses[0])
+#                                ,                                      # Ari's edits.
+#                                 wait = False)                         # Ari's edits.
+
+================================================================================
+
+Tutorial for moving the base with the keyboard. This works in the gazebo simulator as well.
+
+http://docs.fetchrobotics.com/teleop.html
+
+For this the package teleop_twist_keyboard.py is needed which can be installed from this link http://docs.fetchrobotics.com/teleop.html
+as follows:
+
+sudo apt install ros-kinetic-teleop-twist-keyboard
+
+For running this package, first you need to run the simulated environment for the robot and then this package.
+
+roslaunch fetch_gazebo playground.launch
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+
+The instructions for moving the robot with the keyboard are printed out in the console when you run the package and are also given in the installation link above.
+
+The python script for teleop_twist_keyboard.py is given in this link 'https://github.com/ros-teleop/teleop_twist_keyboard/blob/master/teleop_twist_keyboard.py'.
+
+================================================================================
+
+To program the robot yourself in python you can take help of the 'demo.py' script inside the fetch_gazebo_demo package.
+The fetch_gazebo_demo package can be located by the command:
+rospack find fetch_gazebo_demo
+
+Which gives the location /opt/ros/kinetic/share/fetch_gazebo_demo
+
+But the demo.py file is not in this location. It is located in the following location.
+/opt/ros/kinetic/lib/fetch_gazebo_demo
+
+In fact all the python scripts for these packages of fetch are located in the lib folder.
+
+================================================================================
+
+List of topics for roslaunch fetch_gazebo simulation.launch:
+------------------------------------------------------------
+
+/arm_controller/follow_joint_trajectory/cancel
+/arm_controller/follow_joint_trajectory/feedback
+/arm_controller/follow_joint_trajectory/goal
+/arm_controller/follow_joint_trajectory/result
+/arm_controller/follow_joint_trajectory/status
+/arm_with_torso_controller/follow_joint_trajectory/cancel
+/arm_with_torso_controller/follow_joint_trajectory/feedback
+/arm_with_torso_controller/follow_joint_trajectory/goal
+/arm_with_torso_controller/follow_joint_trajectory/result
+/arm_with_torso_controller/follow_joint_trajectory/status
+/base_controller/command
+/base_controller/command_limited
+/base_controller/params
+/base_scan
+/base_scan_raw
+/clock
+/cmd_vel
+/cmd_vel_mux/selected
+/gazebo/bellows_joint/position/parameter_descriptions
+/gazebo/bellows_joint/position/parameter_updates
+/gazebo/bellows_joint/velocity/parameter_descriptions
+/gazebo/bellows_joint/velocity/parameter_updates
+/gazebo/elbow_flex_joint/position/parameter_descriptions
+/gazebo/elbow_flex_joint/position/parameter_updates
+/gazebo/elbow_flex_joint/velocity/parameter_descriptions
+/gazebo/elbow_flex_joint/velocity/parameter_updates
+/gazebo/forearm_roll_joint/position/parameter_descriptions
+/gazebo/forearm_roll_joint/position/parameter_updates
+/gazebo/forearm_roll_joint/velocity/parameter_descriptions
+/gazebo/forearm_roll_joint/velocity/parameter_updates
+/gazebo/head_pan_joint/position/parameter_descriptions
+/gazebo/head_pan_joint/position/parameter_updates
+/gazebo/head_pan_joint/velocity/parameter_descriptions
+/gazebo/head_pan_joint/velocity/parameter_updates
+/gazebo/head_tilt_joint/position/parameter_descriptions
+/gazebo/head_tilt_joint/position/parameter_updates
+/gazebo/head_tilt_joint/velocity/parameter_descriptions
+/gazebo/head_tilt_joint/velocity/parameter_updates
+/gazebo/l_gripper_finger_joint/position/parameter_descriptions
+/gazebo/l_gripper_finger_joint/position/parameter_updates
+/gazebo/l_gripper_finger_joint/velocity/parameter_descriptions
+/gazebo/l_gripper_finger_joint/velocity/parameter_updates
+/gazebo/l_wheel_joint/position/parameter_descriptions
+/gazebo/l_wheel_joint/position/parameter_updates
+/gazebo/l_wheel_joint/velocity/parameter_descriptions
+/gazebo/l_wheel_joint/velocity/parameter_updates
+/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/r_gripper_finger_joint/position/parameter_descriptions
+/gazebo/r_gripper_finger_joint/position/parameter_updates
+/gazebo/r_gripper_finger_joint/velocity/parameter_descriptions
+/gazebo/r_gripper_finger_joint/velocity/parameter_updates
+/gazebo/r_wheel_joint/position/parameter_descriptions
+/gazebo/r_wheel_joint/position/parameter_updates
+/gazebo/r_wheel_joint/velocity/parameter_descriptions
+/gazebo/r_wheel_joint/velocity/parameter_updates
+/gazebo/set_link_state
+/gazebo/set_model_state
+/gazebo/shoulder_lift_joint/position/parameter_descriptions
+/gazebo/shoulder_lift_joint/position/parameter_updates
+/gazebo/shoulder_lift_joint/velocity/parameter_descriptions
+/gazebo/shoulder_lift_joint/velocity/parameter_updates
+/gazebo/shoulder_pan_joint/position/parameter_descriptions
+/gazebo/shoulder_pan_joint/position/parameter_updates
+/gazebo/shoulder_pan_joint/velocity/parameter_descriptions
+/gazebo/shoulder_pan_joint/velocity/parameter_updates
+/gazebo/torso_lift_joint/position/parameter_descriptions
+/gazebo/torso_lift_joint/position/parameter_updates
+/gazebo/torso_lift_joint/velocity/parameter_descriptions
+/gazebo/torso_lift_joint/velocity/parameter_updates
+/gazebo/upperarm_roll_joint/position/parameter_descriptions
+/gazebo/upperarm_roll_joint/position/parameter_updates
+/gazebo/upperarm_roll_joint/velocity/parameter_descriptions
+/gazebo/upperarm_roll_joint/velocity/parameter_updates
+/gazebo/wrist_flex_joint/position/parameter_descriptions
+/gazebo/wrist_flex_joint/position/parameter_updates
+/gazebo/wrist_flex_joint/velocity/parameter_descriptions
+/gazebo/wrist_flex_joint/velocity/parameter_updates
+/gazebo/wrist_roll_joint/position/parameter_descriptions
+/gazebo/wrist_roll_joint/position/parameter_updates
+/gazebo/wrist_roll_joint/velocity/parameter_descriptions
+/gazebo/wrist_roll_joint/velocity/parameter_updates
+/gazebo_gui/parameter_descriptions
+/gazebo_gui/parameter_updates
+/gripper_controller/gripper_action/cancel
+/gripper_controller/gripper_action/feedback
+/gripper_controller/gripper_action/goal
+/gripper_controller/gripper_action/result
+/gripper_controller/gripper_action/status
+/head_camera/crop_decimate/parameter_descriptions
+/head_camera/crop_decimate/parameter_updates
+/head_camera/depth_downsample/camera_info
+/head_camera/depth_downsample/image_raw
+/head_camera/depth_downsample/image_raw/compressed
+/head_camera/depth_downsample/image_raw/compressed/parameter_descriptions
+/head_camera/depth_downsample/image_raw/compressed/parameter_updates
+/head_camera/depth_downsample/image_raw/compressedDepth
+/head_camera/depth_downsample/image_raw/compressedDepth/parameter_descriptions
+/head_camera/depth_downsample/image_raw/compressedDepth/parameter_updates
+/head_camera/depth_downsample/image_raw/theora
+/head_camera/depth_downsample/image_raw/theora/parameter_descriptions
+/head_camera/depth_downsample/image_raw/theora/parameter_updates
+/head_camera/depth_downsample/points
+/head_camera/depth_registered/camera_info
+/head_camera/depth_registered/image_raw
+/head_camera/depth_registered/points
+/head_camera/head_camera_nodelet_manager/bond
+/head_camera/parameter_descriptions
+/head_camera/parameter_updates
+/head_camera/rgb/camera_info
+/head_camera/rgb/image_raw
+/head_camera/rgb/image_raw/compressed
+/head_camera/rgb/image_raw/compressed/parameter_descriptions
+/head_camera/rgb/image_raw/compressed/parameter_updates
+/head_camera/rgb/image_raw/compressedDepth
+/head_camera/rgb/image_raw/compressedDepth/parameter_descriptions
+/head_camera/rgb/image_raw/compressedDepth/parameter_updates
+/head_camera/rgb/image_raw/theora
+/head_camera/rgb/image_raw/theora/parameter_descriptions
+/head_camera/rgb/image_raw/theora/parameter_updates
+/head_controller/follow_joint_trajectory/cancel
+/head_controller/follow_joint_trajectory/feedback
+/head_controller/follow_joint_trajectory/goal
+/head_controller/follow_joint_trajectory/result
+/head_controller/follow_joint_trajectory/status
+/head_controller/point_head/cancel
+/head_controller/point_head/feedback
+/head_controller/point_head/goal
+/head_controller/point_head/result
+/head_controller/point_head/status
+/joint_states
+/odom
+/query_controller_states/cancel
+/query_controller_states/feedback
+/query_controller_states/goal
+/query_controller_states/result
+/query_controller_states/status
+/teleop/cmd_vel
+/tf
+/tf_static
+/torso_controller/follow_joint_trajectory/cancel
+/torso_controller/follow_joint_trajectory/feedback
+/torso_controller/follow_joint_trajectory/goal
+/torso_controller/follow_joint_trajectory/result
+/torso_controller/follow_joint_trajectory/status
+
+
+
+
+
+
+
+ari@ari-pc:~$ rostopic list
+/base_scan_no_self_filter
+/base_scan_tagged
+/cmd_vel
+/diagnostics_agg
+/diagnostics_toplevel_state
+/enable_software_runstop
+
+/fetch1067/arm_controller/cartesian_twist/command
+/fetch1067/arm_controller/follow_joint_trajectory/cancel
+/fetch1067/arm_controller/follow_joint_trajectory/feedback
+/fetch1067/arm_controller/follow_joint_trajectory/goal
+/fetch1067/arm_controller/follow_joint_trajectory/result
+/fetch1067/arm_controller/follow_joint_trajectory/status
+/fetch1067/arm_with_torso_controller/follow_joint_trajectory/cancel
+/fetch1067/arm_with_torso_controller/follow_joint_trajectory/feedback
+/fetch1067/arm_with_torso_controller/follow_joint_trajectory/goal
+/fetch1067/arm_with_torso_controller/follow_joint_trajectory/result
+/fetch1067/arm_with_torso_controller/follow_joint_trajectory/status
+/fetch1067/base_controller/command
+/fetch1067/base_scan
+/fetch1067/base_scan_raw
+/fetch1067/battery_state
+/fetch1067/charge_lockout/cancel
+/fetch1067/charge_lockout/feedback
+/fetch1067/charge_lockout/goal
+/fetch1067/charge_lockout/result
+/fetch1067/charge_lockout/status
+/fetch1067/cmd_vel
+/fetch1067/cmd_vel_mux/selected
+/fetch1067/diagnostics
+/fetch1067/dock/cancel
+/fetch1067/dock/feedback
+/fetch1067/dock/goal
+/fetch1067/dock/result
+/fetch1067/dock/status
+/fetch1067/graft/state
+/fetch1067/gripper_controller/gripper_action/cancel
+/fetch1067/gripper_controller/gripper_action/feedback
+/fetch1067/gripper_controller/gripper_action/goal
+/fetch1067/gripper_controller/gripper_action/result
+/fetch1067/gripper_controller/gripper_action/status
+/fetch1067/gripper_controller/led_action/cancel
+/fetch1067/gripper_controller/led_action/feedback
+/fetch1067/gripper_controller/led_action/goal
+/fetch1067/gripper_controller/led_action/result
+/fetch1067/gripper_controller/led_action/status
+/fetch1067/gripper_state
+/fetch1067/head_camera/depth/camera_info
+/fetch1067/head_camera/depth/image
+/fetch1067/head_camera/depth/image_raw
+/fetch1067/head_camera/depth/image_rect
+/fetch1067/head_camera/depth/image_rect_raw
+/fetch1067/head_camera/depth/points
+/fetch1067/head_camera/depth_rectify_depth/parameter_descriptions
+/fetch1067/head_camera/depth_rectify_depth/parameter_updates
+/fetch1067/head_camera/depth_registered/camera_info
+/fetch1067/head_camera/depth_registered/hw_registered/image_rect
+/fetch1067/head_camera/depth_registered/hw_registered/image_rect_raw
+/fetch1067/head_camera/depth_registered/image
+/fetch1067/head_camera/depth_registered/image_raw
+/fetch1067/head_camera/depth_registered/points
+/fetch1067/head_camera/depth_registered_rectify_depth/parameter_descriptions
+/fetch1067/head_camera/depth_registered_rectify_depth/parameter_updates
+/fetch1067/head_camera/driver/parameter_descriptions
+/fetch1067/head_camera/driver/parameter_updates
+/fetch1067/head_camera/ir/camera_info
+/fetch1067/head_camera/ir/image
+/fetch1067/head_camera/projector/camera_info
+/fetch1067/head_camera/rgb/camera_info
+/fetch1067/head_camera/rgb/image_raw
+/fetch1067/head_camera/rgb/image_rect_color
+/fetch1067/head_camera/rgb_rectify_color/parameter_descriptions
+/fetch1067/head_camera/rgb_rectify_color/parameter_updates
+/fetch1067/head_controller/follow_joint_trajectory/cancel
+/fetch1067/head_controller/follow_joint_trajectory/feedback
+/fetch1067/head_controller/follow_joint_trajectory/goal
+/fetch1067/head_controller/follow_joint_trajectory/result
+/fetch1067/head_controller/follow_joint_trajectory/status
+/fetch1067/head_controller/point_head/cancel
+/fetch1067/head_controller/point_head/feedback
+/fetch1067/head_controller/point_head/goal
+/fetch1067/head_controller/point_head/result
+/fetch1067/head_controller/point_head/status
+/fetch1067/imu
+/fetch1067/imu1/gyro_offset
+/fetch1067/imu1/gyro_offset_age
+/fetch1067/imu1/gyro_offset_samples
+/fetch1067/imu1/gyro_temperature
+/fetch1067/imu1/imu
+/fetch1067/imu1/imu_raw
+/fetch1067/imu2/gyro_offset
+/fetch1067/imu2/gyro_offset_age
+/fetch1067/imu2/gyro_offset_samples
+/fetch1067/imu2/gyro_temperature
+/fetch1067/imu2/imu
+/fetch1067/imu2/imu_raw
+/fetch1067/joint_states
+/fetch1067/joy
+/fetch1067/joy/set_feedback
+/fetch1067/joy_orig
+/fetch1067/odom
+/fetch1067/odom_combined
+/fetch1067/path
+/fetch1067/robot_state
+/fetch1067/sick_tim551_2050001/parameter_descriptions
+/fetch1067/sick_tim551_2050001/parameter_updates
+/fetch1067/torso_controller/follow_joint_trajectory/cancel
+/fetch1067/torso_controller/follow_joint_trajectory/feedback
+/fetch1067/torso_controller/follow_joint_trajectory/goal
+/fetch1067/torso_controller/follow_joint_trajectory/result
+/fetch1067/torso_controller/follow_joint_trajectory/status
+/fetch1067/undock/cancel
+/fetch1067/undock/feedback
+/fetch1067/undock/goal
+/fetch1067/undock/result
+/fetch1067/undock/status
+
+/gripper/gyro_offset
+/gripper/gyro_offset_age
+/gripper/gyro_offset_samples
+/gripper/gyro_temperature
+/gripper/imu
+/gripper/imu_raw
+/in
+/laser_self_filter/cancel
+/laser_self_filter/feedback
+/laser_self_filter/goal
+/laser_self_filter/result
+/laser_self_filter/status
+/out
+/query_controller_states/cancel
+/query_controller_states/feedback
+/query_controller_states/goal
+/query_controller_states/result
+/query_controller_states/status
+/rosout
+/rosout_agg
+/software_runstop_enabled
+/teleop/cmd_vel
+/tf
+/tf_static
+ari@ari-pc:~$ 
+
+================================================================================
+
+Name and model number of fetch camera:
+https://docs.fetchrobotics.com/robot_hardware.html#:~:text=Both%20Fetch%20and%20Freight%20have,resolution%20of%201%2F3%C2%B0.
+
+Fetch has a Primesense Carmine 1.09 short-range RGBD sensor.
+
+The details of the fetch camera is found in the following link:
+http://xtionprolive.com/primesense-carmine-1.09#:~:text=This%20is%20the%20Primesense%20Carmine,based%20on%20the%20Primesense%20technology.&text=The%203D%20depth%20Sensor%20sees%20and%20tracks%20user%20movements%20within%20a%20scene.
+
+Basic specifications:
+
+Field of View: 54 degrees horizontal, 45 degrees vertical
+Depth Image Size: VGA(640x480)
+Spatial X/Y Resolution @0.5m: 1mm
+Depth Z Resolution @0.5m: <1mm
+Maximum Image Throughput: (QVGA) 60fps, (VGA) 30fps
+Operation Range: 0.35-3m
+Color Image Size: 1280x960
+Audio: Built-in Microphones-two mics, Digital inputs-four hours
+Data Interface: USB 2.0, USB 3.0
+Power Consumption: 2.25W
+Power Supply: USB 2.0, USB 3.0
+Dimension: 18x2.5x3.5cm
+Weight: 0.5lb
+
+================================================================================
+
+Killing the default roscore automatically on start up of the robot:
+
+We want to run multiple fetches together.
+But for this the launch files for running different packages in the fetch has to be given some namespaces.
+Now whenever the fetch starts up some launch file is executed which we need to find out and also a roscore starts up automatically.
+
+To stop the roscore the following command can be used:
+sudo pkill roscore
+
+So if we write this command in the ~/.bashrc file of the fetch and freight then this will be executed as soon as the robot starts and the roscore is killed.
+But this cannot run without the password because of the sudo.
+Hence we have to make this 'pkill' command not require sudo permission. For this we have to modify the visudo file.
+Use the following command to edit the visudo file.
+
+sudo EDITOR=nano visudo
+
+If you use the command 'sudo visudo' then it will open the file in vim editor. To make it open in nano use the above command.
+( as suggested in this link: https://askubuntu.com/questions/539243/how-to-change-visudo-editor-from-nano-to-vim )
+
+Now to make 'pkill' command not use sudo we first have to find the executable path of the pkill command.
+This can be found with the following command:
+
+whereis pkill
+
+The output will be like the following:
+pkill: /usr/bin/pkill /usr/share/man/man1/pkill.1.gz
+
+So you first one is the executable path of the command.
+
+Now add the following line to the visio file after the line '#includedir /etc/sudoers':
+
+( This is also given in details in the link: https://www.ostechnix.com/run-particular-commands-without-sudo-password-linux/ )
+
+# You can also add some comments as well.
+fetch ALL=NOPASSWD:/usr/bin/pkill
+
+( fetch is the username of the computer )
+
+Now save the file and exit.
+This will make the 'pkill' command not need sudo permission to run.
+
+Now go to the ~/.bashrc file and add the following line to the end.
+
+# This is to shutdown the default roscore that runs automatically as the robot is switched on.
+sudo pkill roscore
+
+This will make the default roscore stop as soon as the fetch starts up, without needing password for sudo.
+You can verify this by running 'rostopic list' (which shows all the topics available in the ros network). It will show no topics out there as no roscore is running.
+From now onwards the default roscore will stop automatically once the fetch or freight starts up.
+
+To revert back to the original configuration all you need to do is the comment out the 'sudo pkill roscore' line in the .bashrc file.
+
+================================================================================
+
+Now if you want to run fetch and freight both together then you have to use namespaces.
+
+So you can kill the default roscore and then include the following line in the .bashrc file of the fetch 
+export ROS_NAMESPACE=fetch 
+this defines the namespace for the fetch robot.
+and 
+export ROS_NAMESPACE=freight
+this defines the namespace for the freight robot.
+
+Now usually when there was no namespaces and the default roscore is running, then the launch file that is run is 
+/etc/ros/melodic/robot.launch
+
+But the exact same content is there in another file as well /opt/ros/melodic/share/fetch_bringup/launch/fetch.launch
+So when you have killed the default roscore and is started your own roscore, you can launch this file to have equivalent response from the robot.
+Use the following command:
+
+roslaunch fetch_bringup fetch.launch 
+
+You can also modifiy this file to include other launch files to launch other packages like moveit, or AR tag reader etc., by including those launch files in this launch file.
+
+There is another way of putting in the namespace. 
+
+In the launch file modify the content like the following:
+
+<launch>
+    ...
+    ...
+</launch>
+
+to
+
+<launch>
+<group ns="fetch">
+    ...
+    ...
+</group>
+</launch>
+
+But this will not provide you the ROS_NAMESPACE if you use the following command in a python script:
+
+python
+>>> import rospy
+>>> rospy.get_namespace()
+'/'
+
+This does not give the namespace as fetch.
+
+================================================================================
+
+There is something called a freight.launch file which has the following details:
+
+<launch>
+  <!-- robot specific information on parameters https://github.com/ros-infrastructure/rep/pull/104 -->
+  <param name="robot/type" value="freight" />
+  <param name="robot/name" textfile="/etc/hostname" />
+  <arg name="launch_teleop" default="true" />
+
+  <!-- Calibration -->
+  <param name="calibration_date" value="uncalibrated"/>
+  <param name="base_controller/track_width" value="0.37476" />
+
+  <!-- Odometry -->
+  <param name="base_controller/publish_tf" value="false" />
+  <include file="$(find freight_bringup)/launch/include/graft.launch.xml" />
+
+  <!-- URDF -->
+  <param name="robot_description" textfile="$(find fetch_description)/robots/freight.urdf" />
+
+  <!-- Drivers for Base -->
+  <node name="robot_driver" pkg="fetch_drivers" type="robot_driver" output="screen">
+    <param name="firmware_tar_gz" value="$(find fetch_drivers)/firmware.tar.gz" />
+    <param name="has_base" value="true" />
+    <param name="has_torso" value="false" />
+    <param name="has_head" value="false" />
+    <param name="has_arm" value="false" />
+  </node>
+
+  <!-- Controllers -->
+  <rosparam file="$(find freight_bringup)/config/default_controllers.yaml" command="load" />
+
+  <!-- Joint State -> TF -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- Laser -->
+  <include file="$(find freight_bringup)/launch/include/laser.launch.xml" />
+
+  <!-- Teleop -->
+  <include if="$(arg launch_teleop)" file="$(find freight_bringup)/launch/include/teleop.launch.xml">
+    <arg name="ps4" value="true" />
+  </include>
+  <param name="joy/deadzone" value="0.05"/>
+
+  <!-- Autodocking -->
+  <include file="$(find fetch_open_auto_dock)/launch/auto_dock.launch" />
+
+  <!-- Diagnostics Aggregator -->
+  <include file="$(find freight_bringup)/launch/include/aggregator.launch.xml" />
+
+</launch>
+
+================================================================================
+
+Here we explain which launch command launches which topics:
+
+Default topics in ros are:
+
+/rosout
+/rosout_agg
+
+<launch>
+  <!-- robot specific information on parameters https://github.com/ros-infrastructure/rep/pull/104 -->
+  <param name="robot/type" value="freight" />
+  <param name="robot/name" textfile="/etc/hostname" />
+  <arg name="launch_teleop" default="true" />
+
+  <!-- Calibration -->
+  <param name="calibration_date" value="uncalibrated"/>
+  <param name="base_controller/track_width" value="0.37476" />
+
+  <!-- Odometry -->
+  <param name="base_controller/publish_tf" value="false" />
+  <include file="$(find freight_bringup)/launch/include/graft.launch.xml" />
+
+/graft/state
+/imu
+/odom
+/odom_combined
+/tf
+  
+  <!-- URDF -->
+  <param name="robot_description" textfile="$(find fetch_description)/robots/freight.urdf" />
+
+  <!-- Drivers for Base -->
+  <node name="robot_driver" pkg="fetch_drivers" type="robot_driver" output="screen">
+    <param name="firmware_tar_gz" value="$(find fetch_drivers)/firmware.tar.gz" />
+    <param name="has_base" value="true" />
+    <param name="has_torso" value="false" />
+    <param name="has_head" value="false" />
+    <param name="has_arm" value="false" />
+  </node>
+
+/battery_state
+/charge_lockout/cancel
+/charge_lockout/feedback
+/charge_lockout/goal
+/charge_lockout/result
+/charge_lockout/status
+/diagnostics
+/dock/result
+/fetchcore/connected
+/imu1/gyro_offset
+/imu1/gyro_offset_age
+/imu1/gyro_offset_samples
+/imu1/gyro_temperature
+/imu1/imu
+/imu1/imu_raw
+/imu2/gyro_offset
+/imu2/gyro_offset_age
+/imu2/gyro_offset_samples
+/imu2/gyro_temperature
+/imu2/imu
+/imu2/imu_raw
+/joint_states
+/robot_state
+/wifi/connected
+
+  <!-- Controllers -->
+  <rosparam file="$(find freight_bringup)/config/default_controllers.yaml" command="load" />
+
+/base_controller/command
+/base_scan
+/query_controller_states/cancel
+/query_controller_states/feedback
+/query_controller_states/goal
+/query_controller_states/result
+/query_controller_states/status
+
+  <!-- Joint State -> TF -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+/tf_static
+  
+  <!-- Laser -->
+  <include file="$(find freight_bringup)/launch/include/laser.launch.xml" />
+
+/base_scan_no_self_filter
+/base_scan_raw
+/base_scan_tagged
+/laser_self_filter/cancel
+/laser_self_filter/feedback
+/laser_self_filter/goal
+/laser_self_filter/result
+/laser_self_filter/status
+/sick_tim551_2050001/parameter_descriptions
+/sick_tim551_2050001/parameter_updates
+  
+  <!-- Teleop -->
+  <include if="$(arg launch_teleop)" file="$(find freight_bringup)/launch/include/teleop.launch.xml">
+    <arg name="ps4" value="true" />
+  </include>
+  <param name="joy/deadzone" value="0.05"/>
+
+/cmd_vel
+/cmd_vel_mux/selected
+/joy
+/joy/set_feedback
+/joy_orig
+/teleop/cmd_vel
+
+  <!-- Autodocking -->
+  <include file="$(find fetch_open_auto_dock)/launch/auto_dock.launch" />
+
+/dock/cancel
+/dock/feedback
+/dock/goal
+/dock/status
+/path
+/teleop/cmd_vel
+/undock/cancel
+/undock/feedback
+/undock/goal
+/undock/result
+/undock/status
+
+  <!-- Diagnostics Aggregator -->
+  <include file="$(find freight_bringup)/launch/include/aggregator.launch.xml" />
+
+/diagnostics_agg
+/diagnostics_toplevel_state
+
+  <!-- Build map -->  
+  <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
+    <remap from="scan" to="base_scan" />
+  </node>
+
+/map
+/map_metadata
+/visualization_marker_array
+
+</launch>
+
+================================================================================
+
+Names of arm joints of the fetch robot:
+joint_names = ["torso_lift_joint", "shoulder_pan_joint",
+               "shoulder_lift_joint", "upperarm_roll_joint",
+               "elbow_flex_joint", "forearm_roll_joint",
+               "wrist_flex_joint", "wrist_roll_joint"]
+
+While moving the robot arm if it hits something, then it may stop. After that 
+if you try to rerun it it may give the error [ WARN]: Controller handle arm_with_torso_controller reports status ABORTED
+
+In that case, restart the robo by completely shutting down (not simple reboot via ssh).
+Then run the roslaunch fetch_moveit_config move_group.launch 
+And after that run the wave.py script which is there in the documentation. This will take the robot back to a normal state.
+               
+# Lists of joint angles in the same order as in joint_names
+arm directly stretched forward pose = [ [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ]
+tucked_position = [ [0.0, 1.5, 1.5, 3.0, -1.65, 3.25, 1.6, 1.5] ]
+
+Steps to go to tucked position:
+auto_tuck_poses = [ [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                      [0.15, 0.0, 1.5, 0.0, -1.65, 3.25, 1.6, 1.5],
+                      [0.0, 1.5, 1.5, 3.0, -1.65, 3.25, 1.6, 1.5] ]
+
+Name of the base of the robot is "base_link"
+Name of the end effector link is "wrist_roll_link". The origin of this frame is at the wrist_roll_joint location.
+Name of the gripper link is "gripper_link"
+                      
+Good github repository for the Fetch robot:     
+https://github.com/subodh-malgonde/Robotics/blob/indigo-devel/fetch_api/src/fetch_api/moveit_goal_builder.py
+https://github.com/subodh-malgonde/Robotics/blob/indigo-devel/fetch_api/src/fetch_api/arm.py
+https://github.com/cse481sp17/cse481c/wiki/Lab-19:-Cartesian-space-manipulation
+https://github.com/fetchrobotics/fetch_pbd/blob/master/fetch_arm_control/src/fetch_arm_control/arm.py
+https://answers.ros.org/question/203274/frame-passed-to-lookuptransform-does-not-exist/
+https://github.com/subodh-malgonde/Robotics/wiki/Lab-28:-AR-tags
+https://github.com/mikeferguson/moveit_python/blob/master/src/moveit_python/move_group_interface.py
+https://github.com/cse481sp17/cse481c/wiki/Lab-3:-Controlling-the-gripper
+
+A very good tutorial for ros and fetch robot and point cloud processing:
+https://github.com/cse481wi18/cse481wi18/wiki
+The solutions to this tutorials are present in:
+https://github.com/cse481wi18/cse481wi18
+
+moveit_python github repository:
+https://github.com/mikeferguson/moveit_python
+
+To control the gripper (and most other interfaces of the robot), you will need to be familiar with actionlib and the actionlib tutorials.
+Actionlib tutorials:
+http://wiki.ros.org/actionlib/Tutorials
+http://wiki.ros.org/actionlib/DetailedDescription#Action_Interface_.26_Transport_Layer
+
+Names of head joints of the fetch robot:
+head_joint_names = ["head_pan_joint", "head_tilt_joint"]
+
+Names of wheel joints of the fetch robot:
+wheel_joint_names = ["l_wheel_joint", "r_wheel_joint"]
+
+Names of gripper joints of the fetch robot:
+gripper_joint_names = ["l_gripper_finger_joint", "r_gripper_finger_joint"]
+
+There is another joint called "bellows_joint" which is unclear what it is for.
+
+All the joint positions are present in the topic '/joint_states'.
+
+================================================================================
+
+Install package moveit_goal_builder:
+
+git clone https://github.com/jstnhuang/moveit_goal_builder
+cd moveit_goal_builder
+sudo python setup.py install
+
+================================================================================
+
+Install tensorflow:
+
+sudo pip2 install tensorflow==1.14
+
+Check the installation:
+
+>>> import tensorflow as ai
+>>> hello = ai.constant("hello TensorFlow!")
+>>> sess = ai.Session() 
+
+To verify your installation just type:
+
+>>> print sess.run(hello)
+
+If the installation is okay, you'll see the following output:
+
+Hello TensorFlow!
+
+================================================================================
+
+Install the package to identify ar tags by the fetch:
+[ http://wiki.ros.org/ar_track_alvar ]
+
+sudo apt-get install ros-melodic-ar-track-alvar
+
+Now to get it working with the fetch robot, you have to follow the instructions given here 
+https://github.com/subodh-malgonde/Robotics/wiki/Lab-28:-AR-tags
+
+Edit the already existing launch file in the fetch at /opt/ros/melodic/share/ar_track_alvar/launch/pr2_indiv.launch 
+from 
+
+<launch>
+    <arg name="marker_size" default="4.5" />
+    <arg name="max_new_marker_error" default="0.08" />
+    <arg name="max_track_error" default="0.2" />
+
+    <arg name="cam_image_topic" default="/fetch/head_camera/depth_registered/points" />
+    <arg name="cam_info_topic" default="/fetch/head_camera/rgb/camera_info" />
+    <arg name="output_frame" default="/base_link" />
+
+    <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkers" respawn="True" output="screen">
+        <param name="marker_size"           type="double" value="$(arg marker_size)" />
+        <param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error)" />
+        <param name="max_track_error"       type="double" value="$(arg max_track_error)" />
+        <param name="output_frame"          type="string" value="$(arg output_frame)" />
+
+        <remap from="camera_image"  to="$(arg cam_image_topic)" />
+        <remap from="camera_info"   to="$(arg cam_info_topic)" />
+    </node>
+</launch>
+
+to 
+
+<launch>
+    <arg name="marker_size" default="4.5" />
+    <arg name="max_new_marker_error" default="0.08" />
+    <arg name="max_track_error" default="0.2" />
+
+    <arg name="cam_image_topic" default="/head_camera/depth_registered/points" />
+    <arg name="cam_info_topic" default="/head_camera/rgb/camera_info" />
+    <arg name="output_frame" default="/base_link" />
+
+    <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkers" respawn="false" output="screen">
+        <param name="marker_size"           type="double" value="$(arg marker_size)" />
+        <param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error)" />
+        <param name="max_track_error"       type="double" value="$(arg max_track_error)" />
+        <param name="output_frame"          type="string" value="$(arg output_frame)" />
+
+        <remap from="camera_image"  to="$(arg cam_image_topic)" />
+        <remap from="camera_info"   to="$(arg cam_info_topic)" />
+    </node>
+</launch>
+
+If you are using the namespace in the .bashrc file as ROS_NAMESPACE=fetch or something like that,
+then the topics default attributes default="/head_camera/depth_registered/points" /> and default="/head_camera/rgb/camera_info" />
+should be default="/fetch/head_camera/depth_registered/points" /> and default="/fetch/head_camera/rgb/camera_info" /> respectively.
+
+Or you can keep that pr2_indiv.launch file intact, and add the following line to the /opt/ros/melodic/share/fetch_bringup/launch/fetch.launch file.
+
+================================================================================
+
+Some information about the inverse kinematics and the moveit package:
+
+MoveIt can be used with both Python and C++ interfaces. 
+There are two Python interfaces for MoveIt: 'moveit_commander' and 'moveit_python'. 
+moveit_commander is the "official" one and is used in the MoveIt tutorials. It works by using a wrapper around the C++ API.
+moveit_python was written by a Fetch Robotics employee and is used in the Fetch manipulation tutorial. It is written in pure Python (i.e., it does not use a C++ wrapper) 
+and supports a subset of the functionality provided by moveit_commander.
+
+moveit_python github repository:
+https://github.com/mikeferguson/moveit_python
+
+
+Given the joint angles of the arm, it's easy to compute where the gripper. This is called the forward kinematics of the arm. 
+The inverse kinematics (IK) problem is, given the desired end-effector pose, to find out what the joint angles should be for the end-effector to achieve that pose. 
+This is a harder problem. Sometimes, there are multiple arm configurations that result in the same end-effector pose, while other times, the pose is not reachable. 
+The way to solve the IK problem depends on what kind of arm you have. 
+For some arms (including that of the Fetch), there is a closed-form solution that makes it relatively easy to solve IK, but this is not true for all arms.
+
+When you use command the robot's gripper to a particular pose, the robot can simply compute the IK solution to figure out the joint angles, 
+and then move the robot's arm using the joint angles. 
+However, you need to be mindful of the fact that IK solutions sometimes result in weird arm motions that might collide with the environment 
+or flip the gripper upside down (bad if you're holding a tray or a glass of water). So, sometimes, you want to have complete control over the joint angles.
+
+================================================================================
+
+This is what is printed once we do 'roslaunch fetch_gazebo_demo demo.launch'.
+It has the names of the joints of the robot and has many other information.
+
+SUMMARY
+========
+
+PARAMETERS
+ * /amcl/base_frame_id: base_link
+ * /amcl/global_frame_id: map
+ * /amcl/gui_publish_rate: 10.0
+ * /amcl/kld_err: 0.01
+ * /amcl/kld_z: 0.99
+ * /amcl/laser_likelihood_max_dist: 2.0
+ * /amcl/laser_max_beams: 30
+ * /amcl/laser_max_range: -1.0
+ * /amcl/laser_min_range: -1.0
+ * /amcl/laser_model_type: likelihood_field
+ * /amcl/laser_sigma_hit: 0.2
+ * /amcl/laser_z_hit: 0.95
+ * /amcl/laser_z_rand: 0.05
+ * /amcl/max_particles: 2000
+ * /amcl/min_particles: 500
+ * /amcl/odom_alpha1: 0.15
+ * /amcl/odom_alpha2: 0.5
+ * /amcl/odom_alpha3: 0.5
+ * /amcl/odom_alpha4: 0.15
+ * /amcl/odom_frame_id: odom
+ * /amcl/odom_model_type: diff-corrected
+ * /amcl/recovery_alpha_fast: 0.0
+ * /amcl/recovery_alpha_slow: 0.0
+ * /amcl/resample_interval: 2
+ * /amcl/save_pose_rate: 0.5
+ * /amcl/transform_tolerance: 0.5
+ * /amcl/update_min_a: 0.25
+ * /amcl/update_min_d: 0.1
+ * /amcl/use_map_topic: False
+ * /basic_grasping_perception/gripper/approach/desired: 0.15
+ * /basic_grasping_perception/gripper/approach/min: 0.145
+ * /basic_grasping_perception/gripper/finger_depth: 0.02
+ * /basic_grasping_perception/gripper/gripper_tolerance: 0.05
+ * /basic_grasping_perception/gripper/retreat/desired: 0.15
+ * /basic_grasping_perception/gripper/retreat/min: 0.145
+ * /basic_grasping_perception/gripper/tool_to_planning_frame: 0.18
+ * /move_base/NavfnROS/allow_unknown: True
+ * /move_base/NavfnROS/default_tolerance: 0.0
+ * /move_base/NavfnROS/planner_window_x: 0.0
+ * /move_base/NavfnROS/planner_window_y: 0.0
+ * /move_base/NavfnROS/visualize_potential: False
+ * /move_base/TrajectoryPlannerROS/acc_lim_theta: 0.8
+ * /move_base/TrajectoryPlannerROS/acc_lim_x: 0.35
+ * /move_base/TrajectoryPlannerROS/acc_lim_y: 0.0
+ * /move_base/TrajectoryPlannerROS/angular_sim_granularity: 0.025
+ * /move_base/TrajectoryPlannerROS/dwa: False
+ * /move_base/TrajectoryPlannerROS/gdist_scale: 12.0
+ * /move_base/TrajectoryPlannerROS/heading_lookahead: 0.325
+ * /move_base/TrajectoryPlannerROS/heading_scoring: True
+ * /move_base/TrajectoryPlannerROS/heading_scoring_timestep: 0.8
+ * /move_base/TrajectoryPlannerROS/holonomic_robot: False
+ * /move_base/TrajectoryPlannerROS/latch_xy_goal_tolerance: True
+ * /move_base/TrajectoryPlannerROS/max_vel_theta: 1.5
+ * /move_base/TrajectoryPlannerROS/max_vel_x: 1.0
+ * /move_base/TrajectoryPlannerROS/max_vel_y: 0.0
+ * /move_base/TrajectoryPlannerROS/meter_scoring: True
+ * /move_base/TrajectoryPlannerROS/min_in_place_vel_theta: 0.3
+ * /move_base/TrajectoryPlannerROS/min_vel_theta: -1.5
+ * /move_base/TrajectoryPlannerROS/min_vel_x: 0.15
+ * /move_base/TrajectoryPlannerROS/min_vel_y: 0.0
+ * /move_base/TrajectoryPlannerROS/occdist_scale: 0.1
+ * /move_base/TrajectoryPlannerROS/oscillation_reset_dist: 0.05
+ * /move_base/TrajectoryPlannerROS/pdist_scale: 8.0
+ * /move_base/TrajectoryPlannerROS/publish_cost_grid_pc: False
+ * /move_base/TrajectoryPlannerROS/sim_granularity: 0.025
+ * /move_base/TrajectoryPlannerROS/sim_time: 1.0
+ * /move_base/TrajectoryPlannerROS/vtheta_samples: 10
+ * /move_base/TrajectoryPlannerROS/vx_samples: 3
+ * /move_base/TrajectoryPlannerROS/xy_goal_tolerance: 0.1
+ * /move_base/TrajectoryPlannerROS/yaw_goal_tolerance: 0.1
+ * /move_base/aggressive_reset/reset_distance: 0.5
+ * /move_base/base_global_planner: navfn/NavfnROS
+ * /move_base/base_local_planner: base_local_planne...
+ * /move_base/conservative_reset/reset_distance: 3.0
+ * /move_base/controller_frequency: 25.0
+ * /move_base/controller_patience: 15.0
+ * /move_base/global_costmap/global_frame: map
+ * /move_base/global_costmap/inflater/inflation_radius: 0.7
+ * /move_base/global_costmap/inflater/robot_radius: 0.3
+ * /move_base/global_costmap/obstacles/base_scan/clearing: True
+ * /move_base/global_costmap/obstacles/base_scan/data_type: LaserScan
+ * /move_base/global_costmap/obstacles/base_scan/marking: True
+ * /move_base/global_costmap/obstacles/base_scan/max_obstacle_height: 0.3
+ * /move_base/global_costmap/obstacles/base_scan/min_obstacle_height: 0.25
+ * /move_base/global_costmap/obstacles/base_scan/obstacle_range: 4.0
+ * /move_base/global_costmap/obstacles/base_scan/raytrace_range: 5.0
+ * /move_base/global_costmap/obstacles/base_scan/topic: base_scan
+ * /move_base/global_costmap/obstacles/max_obstacle_height: 2.0
+ * /move_base/global_costmap/obstacles/observation_sources: base_scan
+ * /move_base/global_costmap/obstacles/z_resolution: 0.125
+ * /move_base/global_costmap/obstacles/z_voxels: 16
+ * /move_base/global_costmap/plugins: [{'type': 'costma...
+ * /move_base/global_costmap/publish_frequency: 0.0
+ * /move_base/global_costmap/robot_base_frame: base_link
+ * /move_base/global_costmap/robot_radius: 0.3
+ * /move_base/global_costmap/static_map: True
+ * /move_base/global_costmap/transform_tolerance: 0.5
+ * /move_base/global_costmap/update_frequency: 5.0
+ * /move_base/local_costmap/global_frame: odom
+ * /move_base/local_costmap/height: 4.0
+ * /move_base/local_costmap/inflater/inflation_radius: 0.7
+ * /move_base/local_costmap/inflater/robot_radius: 0.3
+ * /move_base/local_costmap/obstacles/base_scan/clearing: True
+ * /move_base/local_costmap/obstacles/base_scan/data_type: LaserScan
+ * /move_base/local_costmap/obstacles/base_scan/marking: True
+ * /move_base/local_costmap/obstacles/base_scan/max_obstacle_height: 0.3
+ * /move_base/local_costmap/obstacles/base_scan/min_obstacle_height: 0.25
+ * /move_base/local_costmap/obstacles/base_scan/obstacle_range: 4.0
+ * /move_base/local_costmap/obstacles/base_scan/raytrace_range: 5.0
+ * /move_base/local_costmap/obstacles/base_scan/topic: base_scan
+ * /move_base/local_costmap/obstacles/max_obstacle_height: 2.0
+ * /move_base/local_costmap/obstacles/observation_sources: base_scan
+ * /move_base/local_costmap/obstacles/publish_observations: False
+ * /move_base/local_costmap/obstacles/z_resolution: 0.125
+ * /move_base/local_costmap/obstacles/z_voxels: 16
+ * /move_base/local_costmap/plugins: [{'type': 'costma...
+ * /move_base/local_costmap/publish_frequency: 2.0
+ * /move_base/local_costmap/resolution: 0.025
+ * /move_base/local_costmap/robot_base_frame: base_link
+ * /move_base/local_costmap/robot_radius: 0.3
+ * /move_base/local_costmap/rolling_window: True
+ * /move_base/local_costmap/transform_tolerance: 0.5
+ * /move_base/local_costmap/width: 4.0
+ * /move_base/oscillation_distance: 0.5
+ * /move_base/oscillation_timeout: 10.0
+ * /move_base/planner_frequency: 0.0
+ * /move_base/planner_patience: 5.0
+ * /move_base/recovery_behavior_enabled: True
+ * /move_base/recovery_behaviors: [{'type': 'clear_...
+ * /move_base/rotate_recovery/frequency: 20.0
+ * /move_base/rotate_recovery/sim_granularity: 0.017
+ * /move_group/allow_trajectory_execution: True
+ * /move_group/allowed_execution_duration_scaling: 1.2
+ * /move_group/allowed_goal_duration_margin: 0.5
+ * /move_group/arm/longest_valid_segment_fraction: 0.05
+ * /move_group/arm/planner_configs: ['SBLkConfigDefau...
+ * /move_group/arm/projection_evaluator: joints(shoulder_p...
+ * /move_group/arm_with_torso/longest_valid_segment_fraction: 0.05
+ * /move_group/arm_with_torso/planner_configs: ['SBLkConfigDefau...
+ * /move_group/arm_with_torso/projection_evaluator: joints(torso_lift...
+ * /move_group/capabilities: move_group/MoveGr...
+ * /move_group/controller_list: [{'default': True...
+ * /move_group/gripper/planner_configs: ['SBLkConfigDefau...
+ * /move_group/jiggle_fraction: 0.05
+ * /move_group/max_safe_path_cost: 1
+ * /move_group/moveit_controller_manager: moveit_simple_con...
+ * /move_group/moveit_manage_controllers: True
+ * /move_group/planner_configs/BKPIECEkConfigDefault/type: geometric::BKPIECE
+ * /move_group/planner_configs/ESTkConfigDefault/type: geometric::EST
+ * /move_group/planner_configs/KPIECEkConfigDefault/type: geometric::KPIECE
+ * /move_group/planner_configs/LBKPIECEkConfigDefault/type: geometric::LBKPIECE
+ * /move_group/planner_configs/PRMkConfigDefault/type: geometric::PRM
+ * /move_group/planner_configs/PRMstarkConfigDefault/type: geometric::PRMstar
+ * /move_group/planner_configs/RRTConnectkConfigDefault/type: geometric::RRTCon...
+ * /move_group/planner_configs/RRTkConfigDefault/type: geometric::RRT
+ * /move_group/planner_configs/RRTstarkConfigDefault/type: geometric::RRTstar
+ * /move_group/planner_configs/SBLkConfigDefault/type: geometric::SBL
+ * /move_group/planner_configs/TRRTkConfigDefault/type: geometric::TRRT
+ * /move_group/planning_plugin: ompl_interface/OM...
+ * /move_group/planning_scene_monitor/publish_geometry_updates: True
+ * /move_group/planning_scene_monitor/publish_planning_scene: True
+ * /move_group/planning_scene_monitor/publish_state_updates: True
+ * /move_group/planning_scene_monitor/publish_transforms_updates: True
+ * /move_group/request_adapters: default_planner_r...
+ * /move_group/start_state_max_bounds_error: 0.1
+ * /robot_description_kinematics/arm/kinematics_solver: fetch_arm_kinemat...
+ * /robot_description_kinematics/arm/kinematics_solver_attempts: 3
+ * /robot_description_kinematics/arm/kinematics_solver_search_resolution: 0.005
+ * /robot_description_kinematics/arm/kinematics_solver_timeout: 0.005
+ * /robot_description_kinematics/arm_with_torso/kinematics_solver: kdl_kinematics_pl...
+ * /robot_description_kinematics/arm_with_torso/kinematics_solver_attempts: 3
+ * /robot_description_kinematics/arm_with_torso/kinematics_solver_search_resolution: 0.005
+ * /robot_description_kinematics/arm_with_torso/kinematics_solver_timeout: 0.005
+ * /robot_description_planning/joint_limits/elbow_flex_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/elbow_flex_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/elbow_flex_joint/max_acceleration: 1.5
+ * /robot_description_planning/joint_limits/elbow_flex_joint/max_velocity: 1.5
+ * /robot_description_planning/joint_limits/forearm_roll_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/forearm_roll_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/forearm_roll_joint/max_acceleration: 1.5
+ * /robot_description_planning/joint_limits/forearm_roll_joint/max_velocity: 1.57
+ * /robot_description_planning/joint_limits/left_gripper_joint/has_acceleration_limits: False
+ * /robot_description_planning/joint_limits/left_gripper_joint/has_velocity_limits: False
+ * /robot_description_planning/joint_limits/left_gripper_joint/max_acceleration: 0
+ * /robot_description_planning/joint_limits/left_gripper_joint/max_velocity: 0
+ * /robot_description_planning/joint_limits/right_gripper_joint/has_acceleration_limits: False
+ * /robot_description_planning/joint_limits/right_gripper_joint/has_velocity_limits: False
+ * /robot_description_planning/joint_limits/right_gripper_joint/max_acceleration: 0
+ * /robot_description_planning/joint_limits/right_gripper_joint/max_velocity: 0
+ * /robot_description_planning/joint_limits/shoulder_lift_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/shoulder_lift_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/shoulder_lift_joint/max_acceleration: 1.0
+ * /robot_description_planning/joint_limits/shoulder_lift_joint/max_velocity: 1.0
+ * /robot_description_planning/joint_limits/shoulder_pan_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/shoulder_pan_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/shoulder_pan_joint/max_acceleration: 1.5
+ * /robot_description_planning/joint_limits/shoulder_pan_joint/max_velocity: 1.256
+ * /robot_description_planning/joint_limits/torso_lift_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/torso_lift_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/torso_lift_joint/max_acceleration: 0.5
+ * /robot_description_planning/joint_limits/torso_lift_joint/max_velocity: 0.1
+ * /robot_description_planning/joint_limits/upperarm_roll_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/upperarm_roll_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/upperarm_roll_joint/max_acceleration: 1.5
+ * /robot_description_planning/joint_limits/upperarm_roll_joint/max_velocity: 1.57
+ * /robot_description_planning/joint_limits/wrist_flex_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/wrist_flex_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/wrist_flex_joint/max_acceleration: 2.5
+ * /robot_description_planning/joint_limits/wrist_flex_joint/max_velocity: 2.26
+ * /robot_description_planning/joint_limits/wrist_roll_joint/has_acceleration_limits: True
+ * /robot_description_planning/joint_limits/wrist_roll_joint/has_velocity_limits: True
+ * /robot_description_planning/joint_limits/wrist_roll_joint/max_acceleration: 2.5
+ * /robot_description_planning/joint_limits/wrist_roll_joint/max_velocity: 2.26
+ * /robot_description_semantic: <?xml version="1....
+
+================================================================================
+
+The charge in the batter is given in the topic '/battery_state'
+'/gripper_state' gives the position of the gripper, but it does not give the position of the individual gripper joints separately. That is given in '/joint_states'.
+'/joint_states' gives the position of all the joints in the fetch, including the arm, gripper and wheels.
+'/robot_state' gives the physical state and electrical condition of the battery, motors and mcbs of all joints.
+'/move_group/display_planned_path' shows the positions of the joints that they have aquired while the end effector was moving through a desired trajectory.
+'/tf_static' shows the static frame transforms between the different frames of the robot. These are static transforms (represented in position and quaternions).
+The frames of the robots are the base_link, wrist_roll_link, gripper_link etc. These are all given as follows.
+
+transforms: 
+frame_id: "torso_lift_link"    child_frame_id: "bellows_link2"
+transform:       translation:         x: 0.0        y: 0.0        z: 0.0      rotation:         x: 0.0        y: 0.0        z: 0.0        w: 1.0
+
+frame_id: "base_link"    child_frame_id: "estop_link"
+transform:       translation:         x: -0.12465        y: 0.23892        z: 0.31127      rotation:         x: 0.707108079859        y: 0.0        z: 0.0        w: 0.707105482511
+
+frame_id: "wrist_roll_link"    child_frame_id: "gripper_link"
+transform:       translation:         x: 0.16645        y: 0.0        z: 0.0      rotation:         x: 0.0        y: 0.0        z: 0.0        w: 1.0
+
+frame_id: "head_camera_link"    child_frame_id: "head_camera_depth_frame"
+transform:       translation:         x: 0.0        y: 0.045        z: 0.0      rotation:         x: 0.0        y: 0.0        z: 0.0        w: 1.0
+
+frame_id: "head_camera_depth_frame"    child_frame_id: "head_camera_depth_optical_frame"
+transform:       translation:         x: 0.0        y: 0.0        z: 0.0      rotation:         x: -0.5        y: 0.499999999998        z: -0.5        w: 0.500000000002
+
+frame_id: "head_tilt_link"    child_frame_id: "head_camera_link"
+transform:       translation:         x: 0.055        y: 0.0        z: 0.0225      rotation:         x: 0.0        y: 0.0        z: 0.0        w: 1.0
+
+frame_id: "head_camera_link"    child_frame_id: "head_camera_rgb_frame"
+transform:       translation:         x: -0.00193118        y: 0.02186904        z: -0.00804435      rotation:         x: -0.00373030636061        y: -0.0001874990171        z: -0.00723994109199        w: 0.999966815905
+
+frame_id: "head_camera_rgb_frame"    child_frame_id: "head_camera_rgb_optical_frame"
+transform:       translation:         x: 0.0        y: 0.0        z: 0.0      rotation:         x: -0.5        y: 0.499999999998        z: -0.5        w: 0.500000000002
+
+frame_id: "base_link"    child_frame_id: "laser_link"
+transform:       translation:         x: 0.235        y: 0.0        z: 0.2878      rotation:         x: 1.0        y: 0.0        z: 0.0        w: -1.03411553555e-13
+
+frame_id: "base_link"    child_frame_id: "torso_fixed_link"
+transform:       translation:         x: -0.086875        y: 0.0        z: 0.377425      rotation:         x: -3.06151588456e-17        y: 0.0        z: 0.0        w: 1.0
+
+If you want to find the transform between a combination of frames of any two frames given above, you can use the following rosrun script:
+
+rosrun tf tf_echo base_link wrist_roll_link
+
+This gives the transform between the base_link and the wrist_roll_link.
+These transforms are updated with the movements of the robots, so they always give you the current transformation matrices.
+
+To subscribe to the above topics like /joint_states or /robot_state etc. you have to know the type of the messages in these topics.
+This is given by the following command:
+
+rostopic type /joint_states
+
+This will give the output as:
+
+sensor_msgs/JointState
+
+and you can import this datatype into your python script as 
+
+from sensor_msgs.msg import JointState
+
+and then define a subscriber as follows:
+
+rospy.Subscriber( '/joint_states', JointState, self.callback_function )
+
+================================================================================
+
+The fetch has 4 frames for the camera.
+
+'head_camera_rgb_optical_frame'
+'head_camera_rgb_frame'
+'head_camera_depth_optical_frame'
+'head_camera_depth_frame'
+
+The head_camera_depth_frame and the head_camera_rgb_frame are the ones which are aligned with the depth and rgb images respectively.
+The head_camera_depth_optical_frame and the head_camera_rgb_optical_frame are not aligned with the images, they have 90 degrees offset with the images in the x and z axes.
+
+You can use the commands like:
+rosrun tf tf_echo head_camera_rgb_frame head_camera_rgb_optical_frame
+To know the transforms between these frames.
+
+================================================================================
+
+Create a map of the world with fetch laser scan:
+
+The fetch tutorial http://docs.fetchrobotics.com/navigation.html
+gives the basics of how to build a map of the environment.
+
+For building a map use the command (common to both fetch and freight):
+roslaunch fetch_navigation build_map.launch
+
+Then teleoperate the robot around. Then after the data is collected use 
+rosrun map_server map_saver -f ~/maps/freight_map_1
+
+Here the directory 'maps' should be already existing before calling this command.
+This will create two files 'freight_map_1.yaml' (you do not have to say .yaml in the map name in the above command) 
+which contains the map metedata and another file 'freight_map_1.pgm' which is an image file to view the map.
+
+You can launch the navigation using (for fetch robot)
+roslaunch fetch_navigation fetch_nav.launch map_file := /home/fetch/maps/freight_map_1.yaml
+
+You have to specify the entire path (not just ~/maps/freight_map_1.yaml)
+
+for freight navigation the 'freight_nav.launch' file is used instead:
+roslaunch fetch_navigation freight_nav.launch map_file := /home/fetch/maps/freight_map_1.yaml
+
+Or create a new launch file in your own package which includes launch file and passes in arguments:
+
+<launch>
+  <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
+    <arg name="map_file" value="$(find my_package)/maps/my_map.yaml" />
+    <arg name="map_keepout_file" value="$(find my_package)/maps/my_keepout_map.yaml" />
+    <arg name="use_keepout" value="true" />
+  </include>
+</launch>
+
+Additional YAML file containing metadata for a keepout map. This locates the positions where the robot will not go.
+The “keepout” map can be created by copying the YAML file of your saved map, editing the name of the .pgm file and then copying the .pgm file. 
+You can then open the .pgm file in an image editor, such as GIMP, and black out areas that you do not want the robot to drive through. 
+This must be done in a separate map that is only used for planning so that the edits do not disturb the functionality of localization (AMCL).
+
+================================================================================
+
+Pcl installation on laptop:
+https://askubuntu.com/questions/916260/how-to-install-point-cloud-library-v1-8-pcl-1-8-0-on-ubuntu-16-04-2-lts-for
+
+Dont worry about the oracle java istallation just do the other steps.
+
+The following is a list of good pcl functions:
+https://pointclouds.org/documentation/group__common.html#gaa67d411e0077c68c31adbc7d0d995e9c
+
+This is another link:
+http://docs.ros.org/groovy/api/pcl/html/namespacepcl.html#ab831a44b375fa7e6bada740d1d17e247
+
+and this is the common.hpp file that has the source code of the functions:
+http://docs.ros.org/groovy/api/pcl/html/common_8hpp_source.html
+
+Some of the functions may not be compatible with the pcl version you are using. So in that case you can copy the source code of the functions 
+from the above link and then write it directly into your c++ script to get it working.
+
+Some more help functions:
+https://stackoverflow.com/questions/41960911/how-can-i-get-the-pointindices-of-a-given-pointcloud   ---> how to convert a vector of indices into pointcloud indices.
+https://answers.ros.org/question/238083/how-to-get-yaw-from-quaternion-values/      ---> how to get roll, pitch, yaw from quaternion.
+
+================================================================================
+
+Creating a ros package:
+
+reference:      https://github.com/cse481wi18/cse481wi18/wiki/Lab-27%3A-Our-first-cpp-package
+reference:      http://wiki.ros.org/catkin/Tutorials/CreatingPackage
+reference:      http://wiki.ros.org/rosbag/Code%20API
+
+cd ~/catkin_ws/src/
+mkdir packageDir              ----------------------> this is the location of the package.
+catkin_create_pkg perception roscpp rospy       -----> perception is the package name and rospy and roscpp are the dependencies. 
+                                                       A folder called perception be created automatically in which the src directory and CMakeLists will be present.
+
+This will create the package perception in a directory called 'perception'. And inside the directory there will be a 'CMakeLists.txt', 'package.xml' file and a 'src' and 'include' directory.
+'package.xml' is a catkin-specific file that lists what ROS packages your package depends on. 
+'CMakeLists.txt' is a CMake config file with special catkin-specific code in it.
+Now, writing a simple program that waits for a point cloud, serializes it, and saves it to a file.
+
+cd ~/catkin_ws/src/packageDir/src
+touch save_cloud_main.cpp
+chmod a+x save_cloud_main.cpp
+
+Now write the following in the save_cloud_main.cpp file.
+
+--------------------------------------------------------------------------------
+#include <iostream>
+#include <string>
+
+#include "ros/ros.h"
+
+void print_usage() { 
+  std::cout << "Saves a point cloud on head_camera/depth_registered/points to "
+               "NAME.bag in the current directory."
+            << std::endl;
+  std::cout << "Usage: rosrun perception save_cloud NAME" << std::endl;
+}
+
+int main(int argc, char** argv) { 
+  ros::init(argc, argv, "save_cloud_main");
+  if (argc < 2) { 
+    print_usage();
+    return 1;
+  } 
+  std::string name(argv[1]);
+  std::cout << "Hello, " << name << std::endl;
+
+  return 0;
+}
+--------------------------------------------------------------------------------
+
+Make sure that the skeleton code above compiles. When building C++ code, you must configure catkin by editing package.xml and CMakeLists.txt. 
+
+In package.xml, you will add a <depend> tag for each ROS package that your code depends on. All ROS C++ code must depend on the roscpp package. 
+If your package.xml contains <build_depend>, <build_export_depend>, and <exec_depend>, they can all be replaced with a single <depend> tag, 
+as described in this catkin documentation [ http://docs.ros.org/indigo/api/catkin/html/howto/format2/catkin_library_dependencies.html ].
+
+Ignoring comments, try to make your CMakeLists.txt look like this by uncommenting some of the lines:
+
+--------------------------------------------------------------------------------
+cmake_minimum_required(VERSION 2.8.3)
+project(perception)
+
+find_package(catkin REQUIRED COMPONENTS                             ------------------>  LIST ALL PACKAGES THAT YOUR PACKAGE IS DEPENDED ON
+  roscpp
+  rospy
+)
+
+catkin_package(
+)
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
+add_executable(perception_save_cloud_main src/save_cloud_main.cpp)                                  -----------------> CODE TO COMPILE
+set_target_properties(perception_save_cloud_main PROPERTIES OUTPUT_NAME save_cloud PREFIX "")       -----------------> OUTPUT NAME
+add_dependencies(perception_save_cloud_main ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(perception_save_cloud_main                                                    -----------------> LIBRARIES TO LINK WITH
+   ${catkin_LIBRARIES}
+)
+--------------------------------------------------------------------------------
+
+If you already have some experience building C++ code, then you know that to build a program, you run g++ like this:
+
+# NOT a real command dont use this command.
+g++ save_cloud_main.cpp -I /opt/ros/indigo/include -lroscpp -o save_cloud
+
+It means:
+Compile code in the files: save_cloud_main.cpp
+Search for header files (When using #include) in /opt/ros/include
+Link with the roscpp library
+Name the output executable save_cloud
+You can remember this with the acronym COIL: Code, Output, Includes, Libraries. All of the elements of COIL are specified in CMakeLists.txt as well, just in a different way.
+
+Now building the package.
+
+cd ~/catkin_ws/
+catkin_make
+source ~/.bashrc    --------------> Because we created a new package, workspace packages have changed, so re-source setup files to use them by re-sourcing the .bashrc file for ROS to be aware of the new package.
+
+You can now run the skeleton code:
+
+cd ~
+rosrun perception save_cloud Robot
+Hello, Robot
+
+If you write an algorithm and want to use it in other code, you can export it as a library. 
+Assuming you wrote your algorithm in src/algorithm.cpp and include/perception/algorithm.h, then the CMakeLists will look like:
+
+--------------------------------------------------------------------------------
+cmake_minimum_required(VERSION 2.8.3)
+project(perception)
+
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+)
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES perception_algorithm
+  CATKIN_DEPENDS roscpp rospy
+)
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
+
+add_library(perception_algorithm src/algorithm.cpp)
+add_dependencies(perception_algorithm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(perception_algorithm
+   ${catkin_LIBRARIES}
+)
+
+add_executable(perception_save_cloud_main src/save_cloud_main.cpp)
+set_target_properties(perception_save_cloud_main PROPERTIES OUTPUT_NAME save_cloud PREFIX "")
+add_dependencies(perception_save_cloud_main ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(perception_save_cloud_main
+   perception_algorithm
+   ${catkin_LIBRARIES}
+)
+--------------------------------------------------------------------------------
+
+Here, we create a library named 'perception_algorithm' with 'add_library'. We link it to 'roscpp' via 'target_link_libraries(perception_algorithm ${catkin_LIBRARIES})'. 
+We also specify that our package contains header files in the 'include' folder, using 'include_directories' and 'catkin(INCLUDE_DIRS include)'. 
+The former is needed to successfully compile our code, while the latter is necessary to export our header files so that other packages can find 'algorithm.h'.
+In this example, we are assuming that the 'save_cloud' executable wants to use the 'algorithm'. In that case, it must link against the 'perception_algorithm' library by listing it in 'target_link_libraries'.
+
+Now reading and saving the point cloud.
+
+Modify the save_cloud_main.cpp file as follows:
+
+--------------------------------------------------------------------------------
+#include <iostream>
+#include <string>
+
+#include "ros/ros.h"
+#include "sensor_msgs/PointCloud2.h"
+#include "pcl_ros/transforms.h"
+#include "tf/transform_listener.h"
+#include "rosbag/bag.h"
+
+void print_usage()  {
+    std::cout << "Saves a point cloud on head_camera/depth_registered/points to "
+               "NAME.bag in the current directory."
+              << std::endl;
+    std::cout << "Usage: rosrun perception save_cloud NAME" << std::endl;
+}
+
+
+int main(int argc, char** argv) {
+    
+    ros::init(argc, argv, "save_cloud_main");
+    if (argc < 1)   {
+        print_usage();
+        return 1;
+    }
+    std::string name(argv[1]);
+//     std::cout << "Hello, " << name << std::endl;
+    
+//     To read a point cloud, we will use ros::topic::wait_for_message.
+    sensor_msgs::PointCloud2ConstPtr cloud =
+        ros::topic::waitForMessage<sensor_msgs::PointCloud2>(
+            "head_camera/depth_registered/points");
+
+//     We will also transform the cloud into base_link using transformPointCloud. 
+//     It is important to transform this into a fixed frame now otherwise, 
+//     the point cloud depends on how the head is tilted. 
+//     This code looks up the latest transform between the cloud frame and the 
+//     base frame and transforms the point cloud into the base frame.
+        
+    tf::TransformListener tf_listener;
+    tf_listener.waitForTransform("base_link", cloud->header.frame_id, 
+                                 ros::Time(0), ros::Duration(5.0));
+    
+    tf::StampedTransform transform;
+    try {
+        tf_listener.lookupTransform("base_link", cloud->header.frame_id, 
+                                    ros::Time(0), transform);
+    } catch (tf::LookupException& e) {
+      std::cerr << e.what() << std::endl;
+      return 1;
+    } catch (tf::ExtrapolationException& e) {
+      std::cerr << e.what() << std::endl;
+      return 1;
+    }
+    
+    sensor_msgs::PointCloud2 cloud_out;
+    pcl_ros::transformPointCloud("base_link", transform, *cloud, cloud_out);
+            
+//     Finally, we will write the cloud to a bag file.
+    std::string filename(name + ".bag");
+    rosbag::Bag bag;
+    bag.open(filename, rosbag::bagmode::Write);
+    bag.write("head_camera/depth_registered/points", ros::Time::now(), cloud_out);
+    bag.close();
+
+    return 0;
+}
+--------------------------------------------------------------------------------
+
+Now modify the following section in the ~/catkin_ws/src/packageDir/perception/CMakeLists.txt
+
+find_package(catkin REQUIRED COMPONENTS
+  pcl_ros
+  rosbag       
+  roscpp    
+  rospy
+  sensor_msgs
+  tf
+)
+
+And then build the catkin_ws again.
+
+cd ~/catkin_ws/
+catkin_make
+
+With the gazebo simulator open, you should be able to record a point cloud.
+But for that you have to run the fetch playground demo.
+
+roscore
+roslaunch fetch_gazebo playground.launch
+
+rosrun perception save_cloud cloud
+rosbag info cloud.bag          -------------> Checking if the point cloud is saved or not. It will be saved in the current directory.
+
+Save a point cloud from the real robot:
+
+First, use RViz and then save the cloud. 
+
+rosrun rviz rviz
+rosrun perception save_cloud tags       -------------------> This operation may take some time to execute.
+rosbag info tags.bag           -------------> Checking if the point cloud is saved or not. It will be saved in the current directory.
+
+Now that we have saved a point cloud, let's simulate it in the scene. 
+
+Write a class in 'perception/src/perception/mock_camera.py' that allows us to publish a saved point cloud.
+
+mkdir ~/catkin_ws/src/packageDir/data
+mv ~/tags.bag ~/catkin_ws/src/packageDir/data          --------> move the saved cloud into the data folder.
+cd ~/catkin_ws/src/packageDir/perception/src/
+mkdir perception                ------------------> create the folder perception/src/perception/ inside which the mock_camera.py file will be created.
+cd perception
+touch mock_camera.py
+
+--------------------------------------------------------------------------------
+import rosbag
+from sensor_msgs.msg import PointCloud2
+
+def pc_filter(topic, datatype, md5sum, msg_def, header):
+    if datatype == 'sensor_msgs/PointCloud2':
+        return True
+    return False
+
+
+class MockCamera(object):
+    '''
+    A MockCamera reads saved point clouds.
+    '''
+
+    def __init__(self):
+        pass
+
+    def read_cloud(self, path):
+        '''
+        Returns the sensor_msgs/PointCloud2 in the given bag file.
+        Args:
+            path: string, the path to a bag file with a single
+                sensor_msgs/PointCloud2 in it.
+        Returns: A sensor_msgs/PointCloud2 message, or None if there were no
+            PointCloud2 messages in the bag file.
+        '''
+        bag = rosbag.Bag(path)
+        for topic, msg, time in bag.read_messages(connection_filter=pc_filter):
+            return msg
+        bag.close()
+        return None
+--------------------------------------------------------------------------------
+
+Now set up the perception Python module by creating 'perception/src/perception/__init__.py' (this will be in the same location as the mock_camera.py file):
+
+cd ~/catkin_ws/src/packageDir/perception/src/perception
+touch __init__.py
+
+Write the following in the '__init__.py' file.
+
+--------------------------------------------------------------------------------
+from .mock_camera import MockCamera
+--------------------------------------------------------------------------------
+
+Create a 'setup.py' for your module in '~/catkin_ws/src/packageDir/perception/setup.py'
+
+DO NOT MANUALLY INVOKE THIS setup.py, USE CATKIN INSTEAD.
+
+cd ~/catkin_ws/src/packageDir/perception/
+touch setup.py
+
+Write the following in this 'setup.py' file.
+
+--------------------------------------------------------------------------------
+from distutils.core import setup
+from catkin_pkg.python_setup import generate_distutils_setup
+
+# fetch values from package.xml
+setup_args = generate_distutils_setup(
+    packages=['perception'],
+    package_dir={'': 'src'})
+
+setup(**setup_args)
+--------------------------------------------------------------------------------
+
+Finally, in '~/catkin_ws/src/packageDir/perception/CMakeLists.txt', uncomment catkin_python_setup().
+
+cd ~/catkin_ws/src/packageDir/perception/
+nano CMakeLists.txt
+
+And now uncomment 'catkin_python_setup()'.
+
+Now,
+
+cd ~/catkin_ws/
+catkin_make
+
+Now create a file 'publish_saved_cloud.py' and put it in the '~/catkin_ws/src/packageDir/perception/src' in that. 
+This script reads the saved point cloud data and republishes it.
+
+cd ~/catkin_ws/src/packageDir/perception/src
+touch publish_saved_cloud.py
+
+Now write the following in this file:
+
+--------------------------------------------------------------------------------
+#!/usr/bin/env python 
+
+from sensor_msgs.msg import PointCloud2
+import perception
+import rospy
+
+
+def wait_for_time(): 
+    """Wait for simulated time to begin.
+    """
+    while rospy.Time().now().to_sec() == 0:
+        pass
+
+    
+def main():                                                                             
+    rospy.init_node('publish_saved_cloud')
+    wait_for_time()                                                                     
+    argv = rospy.myargv()
+    if len(argv) < 2:
+        print 'Publishes a saved point cloud to a latched topic.'
+        print 'Usage: rosrun perception publish_saved_cloud.py ~/cloud.bag'
+        return
+    path = argv[1]
+    camera = perception.MockCamera()
+    cloud = camera.read_cloud(path)
+
+    if cloud is None:
+        rospy.logerr('Could not load point cloud from {}'.format(path))
+        return
+
+    pub = rospy.Publisher('mock_point_cloud', PointCloud2, queue_size=1)       
+    rate = rospy.Rate(2)
+    while not rospy.is_shutdown():
+        cloud.header.stamp = rospy.Time.now()
+        pub.publish(cloud)
+        rate.sleep()                                          
+    
+    
+if __name__ == '__main__':
+    main()
+--------------------------------------------------------------------------------
+
+Now 
+
+cd ~/catkin_ws/
+catkin_make
+
+Now you can run in different terminals,
+
+roscore
+rosrun fetch_gazebo playground.launch
+rosrun rviz rviz
+
+Once rviz opens, add a 'RobotModel' in that, put the 'fixed frame' as base_link, 
+add a 'PointCloud2' in that and set its 'Color Transformer' to RGB8 and set its 'Topic' to '/mock_point_cloud'.
+
+rosrun perception publish_saved_cloud ~/catkin_ws/src/packageDir/data/tags.bag
+
+And the point cloud will be visible in front of the robot in rviz.
+
+================================================================================
+

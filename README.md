@@ -48,7 +48,7 @@ Several other help links and topics are also mentioned in this [file](documents/
 * [Fetch robot.](https://fetchrobotics.com/)
 
 #### Intel Realsense R200 Depth Camera and Odroid XU4:
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/fetch_picture.png" width="200" height="360">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/fetch_picture.png" width="300" height="400">
 ![Fetch robot](images/fetch_picture.png)
 
 #### Overall Setup mounted on the test Drone:

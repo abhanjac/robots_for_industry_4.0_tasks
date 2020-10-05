@@ -25,20 +25,15 @@ As mobile robots can be programmed for tasks such as picking up items and droppi
 
 **Ease in shifting between facilities:**
 Many manufacturers do not opt for automation as they need to move them to new facilities if need arises. If an automation system is purchased and the company needs to shift to new facility in the next three years, the whole system needs to be dismantled to move. However, mobile robots are easy to move and will not take much efforts to move from one place to another. 
+
+But owing to their mobility, there comes additional challenges for proper positioning or localization when it comes to interacting with physical objects. 
+In this work, we use a Fetch mobile robot equipped with an RGBD camera and a manipulator arm to pick up some objects in a factory environment. 
+The overall objective is to analyze the position and orientation of the objects and then use the robotic arm to pick them up.
+
+The Fetch robot is fitted with a [Primesense Carmine 1.09 short-range RGBD sensor](http://xtionprolive.com/primesense-carmine-1.09#:~:text=This%20is%20the%20Primesense%20Carmine,based%20on%20the%20Primesense%20technology.&text=The%203D%20depth%20Sensor%20sees%20and%20tracks%20user%20movements%20within%20a%20scene) as its depth camera. It also has a 7 Degree of Freedom (DOF) arm. 
+Details of the design of the Fetch robot can be found in this [paper](https://www.semanticscholar.org/paper/Fetch-%26-Freight-%3A-Standard-Platforms-for-Service-Wise-Ferguson/569cd8dd665f78ae021b715adea6dd30db5e499d?p2df). The paper is also present [here](documents/FetchAndFreight2016.pdf) in this repository.
+
  
-
-Project is focused towards incorporating this technology into a drone for assisting it to open the door in air autonomously. 
-Drones are being used extensively for surveillance and reconnaissance tasks.
-But in the recent past they are also being employed for interacting physically with the environment.
-This can involve tasks like picking up packages or boxes, mounting some sensor on a wall or opening doors while hovering.
-Several sophisticated end effectors have also been designed for this purpose. 
-But for all of them to work the drone needs to identify the target object in front of it.
-So the focus of this project is to identify an electrical panel box and its handle and measure the distance of the drone from it.
-This information will be later used (in a separate project) by the drone for controlling its position and the movement of its end effector to grab the box handle and pull open the box.
-
-This project is only about the image processing part to identify and electrical panel box. 
-The camera to be used should be small and light, so that it can be put on a drone. So we selected the Intel Realsense Depth camera for this purpose.
-
 # Requirements: 
 * Algorithm should be able to run in real time on a laptop as well as on a sigle board computer (without any dependence on GPUs).
 * Algorithm should be able to detect the electrical panel box and show the position of the box handle.

@@ -26,15 +26,14 @@ As mobile robots can be programmed for tasks such as picking up items and droppi
 **Ease in shifting between facilities:**
 Many manufacturers do not opt for automation as they need to move them to new facilities if need arises. If an automation system is purchased and the company needs to shift to new facility in the next three years, the whole system needs to be dismantled to move. However, mobile robots are easy to move and will not take much efforts to move from one place to another. 
 
-But owing to their mobility, there comes additional challenges for proper positioning or localization when it comes to interacting with physical objects. 
-In this work, we use a Fetch mobile robot equipped with an RGBD camera and a manipulator arm to pick up some objects in a factory environment. 
-The overall objective is to analyze the position and orientation of the objects and then use the robotic arm to pick them up.
+But owing to their mobility, there comes additional challenges for proper positioning or localization when it comes to interacting with physical objects. In this work, we use a Fetch mobile robot equipped with an RGBD camera and a manipulator arm to pick up some objects in a factory environment. The overall objective is to analyze the position and orientation of the objects and then use the robotic arm to pick them up.
+
+The overall idea is to have the fetch robot pick up all the different objects required by the human workers in a factory for their tasks, and carry it to them. Basically, assisting the humam operators to with the small tasks so that they can concentrate on the more complicated tasks like assembling different parts together to create a complete product, etc.
 
 The fetch robot is fitted with a [Primesense Carmine 1.09 short-range RGBD sensor](http://xtionprolive.com/primesense-carmine-1.09#:~:text=This%20is%20the%20Primesense%20Carmine,based%20on%20the%20Primesense%20technology.&text=The%203D%20depth%20Sensor%20sees%20and%20tracks%20user%20movements%20within%20a%20scene) as its depth camera. It also has a 7 Degree of Freedom (DOF) arm and has an on-board Intel Core i5 computer. 
 Details of the design of the Fetch robot can be found in this [paper](https://www.semanticscholar.org/paper/Fetch-%26-Freight-%3A-Standard-Platforms-for-Service-Wise-Ferguson/569cd8dd665f78ae021b715adea6dd30db5e499d?p2df). The paper is also present [here](documents/FetchAndFreight2016.pdf) in this repository.
 
 Several other help links and topics are also mentioned in this [file](documents/tutorial_for_fetch_robot.txt) about the fetch robot.
-
 
 # Requirements: 
 * Algorithm should be able to detect the different objects to be picked up.
@@ -47,27 +46,17 @@ Several other help links and topics are also mentioned in this [file](documents/
 * Python, C++.
 * [Fetch robot.](https://fetchrobotics.com/)
 
-#### Intel Realsense R200 Depth Camera and Odroid XU4:
+#### Fetch Robot:
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/fetch_picture.png" width="300" height="480">
 
-#### Overall Setup mounted on the test Drone:
-**[ Odroid is inside the white case ]**
+#### Objects to be picked up:
+![crankshaft](images/crankshaft.png)
+**crankshaft**
 
-![setup_on_drone_1_marked](images/setup_on_drone_1_marked.jpg)
-![setup_on_drone_2_marked](images/setup_on_drone_2_marked.jpg)
+![bluebin](images/bluebin.png)
+**blue bin**
 
-![setup_on_drone_3](images/setup_on_drone_3.jpg)
-![setup_on_drone_4](images/setup_on_drone_4.jpg)
-
-The next figure shows the **electrical panel box** mounted on a dummy wall in the lab. 
-The figure also shows the **yellow claws with fingers** to grab the box handle. 
-This will be later attached to the drone. For now it is only mounted on a stand so that the overall setup looks like a real image as seen by the realsense camera.
-The claws will be visible from one side of the frame, as it is supposed to be mounted on one arm of the drone.
-
-![original_rgb_frame](images/original_rgb_frame.png)
-
-[ **NOTE:** All of the figures of the electrical panel door has a green circle patch beside it. But this patch is not used in any of the image processing that we do in this project.
-This patch was made for an earlier experiment and was still kept there as it might be used later as well. But it has nothing to do with the task that is discussed here. ]
+[ **NOTE:** The **blue bin** may contain different types of small objects like screws, nuts, washers, etc. in it or may be empty as well. ]
 
 # Algorithm for Detecting the Box: 
 The algorithm goes through several stages for detecting the box.

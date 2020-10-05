@@ -52,8 +52,8 @@ Several other help links and topics are also mentioned in this [file](documents/
 #### Objects to be picked up:
 | | |
 |:---:|:---:|
-|![crankshaft](images/crankshaft.png)|![bluebin](images/bluebin.png)|
-|**crankshaft**|**blue bin**|
+|![bluebin](images/bluebin.png)|![crankshaft](images/crankshaft.png)|
+|**blue bin**|**crankshaft**|
 
 [ **NOTE:** The **blue bin** may contain different types of small objects like screws, nuts, washers, etc. in it or may be empty as well. ]
 

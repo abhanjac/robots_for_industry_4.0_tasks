@@ -50,13 +50,10 @@ Several other help links and topics are also mentioned in this [file](documents/
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/fetch_picture.png" width="300" height="480">
 
 #### Objects to be picked up:
-![crankshaft](images/crankshaft.png)
-
-**crankshaft**
-
-![bluebin](images/bluebin.png)
-
-**blue bin**
+| | |
+|:---:|:---:|
+|![crankshaft](images/crankshaft.png)|![bluebin](images/bluebin.png)|
+|**crankshaft**|**blue bin**|
 
 [ **NOTE:** The **blue bin** may contain different types of small objects like screws, nuts, washers, etc. in it or may be empty as well. ]
 

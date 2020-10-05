@@ -30,18 +30,17 @@ But owing to their mobility, there comes additional challenges for proper positi
 In this work, we use a Fetch mobile robot equipped with an RGBD camera and a manipulator arm to pick up some objects in a factory environment. 
 The overall objective is to analyze the position and orientation of the objects and then use the robotic arm to pick them up.
 
-The fetch robot is fitted with a [Primesense Carmine 1.09 short-range RGBD sensor](http://xtionprolive.com/primesense-carmine-1.09#:~:text=This%20is%20the%20Primesense%20Carmine,based%20on%20the%20Primesense%20technology.&text=The%203D%20depth%20Sensor%20sees%20and%20tracks%20user%20movements%20within%20a%20scene) as its depth camera. It also has a 7 Degree of Freedom (DOF) arm. 
+The fetch robot is fitted with a [Primesense Carmine 1.09 short-range RGBD sensor](http://xtionprolive.com/primesense-carmine-1.09#:~:text=This%20is%20the%20Primesense%20Carmine,based%20on%20the%20Primesense%20technology.&text=The%203D%20depth%20Sensor%20sees%20and%20tracks%20user%20movements%20within%20a%20scene) as its depth camera. It also has a 7 Degree of Freedom (DOF) arm and has an on-board Intel Core i5 computer. 
 Details of the design of the Fetch robot can be found in this [paper](https://www.semanticscholar.org/paper/Fetch-%26-Freight-%3A-Standard-Platforms-for-Service-Wise-Ferguson/569cd8dd665f78ae021b715adea6dd30db5e499d?p2df). The paper is also present [here](documents/FetchAndFreight2016.pdf) in this repository.
 
 Several other help links and topics are also mentioned in this [file](documents/tutorial_for_fetch_robot.txt) about the fetch robot.
 
 
 # Requirements: 
-* Algorithm should be able to run in real time on a laptop as well as on a sigle board computer (without any dependence on GPUs).
-* Algorithm should be able to detect the electrical panel box and show the position of the box handle.
-* The distance of the box handle from the camera should also be calculated continuously in real time.
+* Algorithm should be able to detect the different objects to be picked up.
+* Algorithm should be able to find the 3D location and orientation of the objects and pick them up with the robot arm.
+* Algorithm should be able to run without the help of a GPU completely on the computer of the robot.
 * All software should be open source. 
-* Overall setup should be battery operated and should be small and light enough to be mounted on a drone. 
 
 # Current Framework: 
 * OpenCV, Robot Operating System (ROS), PointCloud Library (PCL), Tensorflow, Ubuntu 16.04. 
@@ -49,8 +48,7 @@ Several other help links and topics are also mentioned in this [file](documents/
 * [Fetch robot.](https://fetchrobotics.com/)
 
 #### Intel Realsense R200 Depth Camera and Odroid XU4:
-![intel_realsense](images/intel_realsense_r200.png)
-![Odroid_XU4](images/odroid_XU4.jpg)
+![Fetch robot](images/fetch_picture.png)
 
 #### Overall Setup mounted on the test Drone:
 **[ Odroid is inside the white case ]**

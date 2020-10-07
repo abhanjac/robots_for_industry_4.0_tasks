@@ -52,9 +52,13 @@ Several other help links and topics are also mentioned in this [file](documents/
 #### Objects to be picked up:
 ![object_images](images/object_images.png)
 
-[ **NOTE:** The **blue bin** may contain different types of small objects like screws, nuts, washers, etc. in it or may be empty as well. ]
+[ **NOTE:** Some of these objects are small in size and they are likely to be stored inside some containers in the factory warehouse. Hence, images of those objects are created with the containing bin itself.
+Picking up procedure for the **emptyBin** is the same as picking up the bins with objects in it linke **nuts**, **coins**, **washers**, and **gears**. And the pick up procedure of the **crankShaft** is the same as the picking up **crankArmX** and **crankArmW** as these are parts of the crankshaft itself. So, we only show picking up the **emptyBin** and **crankShaft** in this repository. ]
 
 # Dataset Creation:
+A binary mask is created by image thresholding for each of these images as shown in the following figure.
+
+![object_images](images/object_masks.png)
 
 # Algorithm for Detecting the Box: 
 The algorithm goes through several stages for detecting the box.

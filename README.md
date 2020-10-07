@@ -64,7 +64,7 @@ The total number of sample images of the objects are divided into three groups n
 
 | | | | |
 |:---:|:---:|:---:|:---:|
-| **Class Names** | **Training Samples** | **Validation Samples** | **Testing Samples** |
+| **Class Names** | **Number of Training Samples** | **Number of Validation Samples** | **Number of Testing Samples** |
 |  |  |  |  |
 |  |  |  |  |
 |  |  |  |  |

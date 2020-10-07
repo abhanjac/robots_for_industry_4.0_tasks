@@ -50,12 +50,11 @@ Several other help links and topics are also mentioned in this [file](documents/
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/fetch_picture.png" width="300" height="480">
 
 #### Objects to be picked up:
-| | |
-|:---:|:---:|
-| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/bluebin.png" width="200" height="200"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/crankshaft.png" width="200" height="200"> |
-|**blue bin**|**crankshaft**|
+![object_images](images/object_images.png)
 
 [ **NOTE:** The **blue bin** may contain different types of small objects like screws, nuts, washers, etc. in it or may be empty as well. ]
+
+# Dataset Creation:
 
 # Algorithm for Detecting the Box: 
 The algorithm goes through several stages for detecting the box.

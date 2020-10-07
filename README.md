@@ -62,6 +62,7 @@ A binary mask is created by image thresholding for each of these images as shown
 
 The total number of sample images of the objects are divided into three groups namely: **training samples**, **testing samples** and **validation samples**. The overall number of such sample images of each object to create these datasets is shown in following Table. Only images of training samples set are used to create the training dataset and viceversa for the testing and validation datasets, so that there are no overlap of samples among the final datasets created.
 
+| | | | |
 |:---:|:---:|:---:|:---:|
 | **Class Names** | **Training Samples** | **Validation Samples** | **Testing Samples** |
 |  |  |  |  |

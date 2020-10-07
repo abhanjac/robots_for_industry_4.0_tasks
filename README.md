@@ -65,14 +65,14 @@ The total number of sample images of the objects are divided into three groups n
 | | | | |
 |:---:|:---:|:---:|:---:|
 | **Class Names** | **Number of Training Samples** | **Number of Validation Samples** | **Number of Testing Samples** |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| nuts | 8 | 2 | 2 |
+| coins | 8 | 2 | 2 |
+| washers | 8 | 2 | 2 |
+| gears | 20 | 2 | 2 |
+| emptyBin | 8 | 2 | 2 |
+| crankArmW | 38 | 4 | 4 |
+| crankArmX | 14 | 2 | 2 |
+| crankShaft | 20 | 2 | 2 |
 
 # Algorithm for Detecting the Box: 
 The algorithm goes through several stages for detecting the box.

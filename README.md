@@ -45,6 +45,7 @@ Several other help links and topics are also mentioned in this [file](documents/
 * OpenCV, Robot Operating System (ROS), PointCloud Library (PCL), Tensorflow, Ubuntu 16.04. 
 * Python, C++.
 * [Fetch robot.](https://fetchrobotics.com/)
+* NVIDIA Tesla P100 GPU for training the CNN.
 
 #### Fetch Robot:
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/fetch_picture.png" width="300" height="480">
@@ -79,8 +80,13 @@ Now to create the actual images of the datasets, several background images of a 
 
 ![sample_dataset_images](images/sample_dataset_images.png)
 
-# Algorithm for Detecting the Box: 
-The algorithm goes through several stages for detecting the box.
+# CNN Architecture and Training Statistics: 
+
+The CNN architecture used here is shown in the following table. The input to this network are 640 x 480 RGB images directly from the Fetch camera. Every convolution layer is followed by a leaky Relu activation (with alpha = 0.1) and batch normalization layer. The last convolution layer opens into a global average pooling layer with a sigmoid activation. The output is a **8** element vector which predicts the probability of each class object in the input image. The network is trained in two stages. 
+First, it is only trained for classification, where it predicts what object is present in the input image without any bounding box prediction. This training took **44** epochs and approximately **25** hours on an **NVIDIA Tesla P100 GPU**, to reach a validation accuracy of **92.92 %** with a learning rate of **0.0001**. 
+
+After this, the last convolutional layer is replaced with **3** new convolutional layers for detection training. This makes the network more powerful and reshapes the last layer into the required number of output elements needed. 
+The first layer of the network has a height and width of **640 x 480**. This is reduced to **20 x 15** in the last layers. Each of these grid cells in the last layer is a potential location for an object and for each grid cell, **7** anchor boxes are predefined. The dimensions of these boxes are defined to suit the shapes of the detected objects. Every anchor box has **15** elements for object detection. **2** for offsets in x, y coordinates of the bounding box center, next **2** are the height and width. **5th** one is a score showing the probability of the presence of an object in the box and last **8** are an **8** element one-hot vector for the **8** object classes. Hence, the last layer has a depth of **7 x (5 + 8) = 91**. Non-maximum suppression (NMS) was used to remove redundant bounding boxes based on the intersection over union (IOU) value.
 
 ### Stage 1:
 The videos from the realsense is read as a numpy array. This included both the **rgb frame** as well as the depth frame.

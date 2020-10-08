@@ -103,7 +103,7 @@ The overall mean average precision (mAP) for determining the detection performan
 
 A few example detection results on the input images are shown in the following figure.
 
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results.png" width="800" height="360">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results.png" width="800" height="340">
 
 ### Stage 1:
 The videos from the realsense is read as a numpy array. This included both the **rgb frame** as well as the depth frame.

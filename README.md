@@ -97,7 +97,7 @@ The first layer of the network has a height and width of **640 x 480**. This is 
 ### Detection Results:
 
 Detection training of the CNN took about **10** hours on the NVIDIA Tesla P100 GPU for **29** epochs with a learning rate of **0.001** for the first **26** epochs and then changed to **0.0001** for the last **3**. 
-The overall mean average precision (mAP) for determining the detection performance of a CNN, is calculated over the testing and validation datasets as shown below for the different classes. 
+The overall mean average precision (mAP) for determining the detection performance of a CNN, is calculated over the testing and validation datasets and shown below for the different classes. 
 
 ![detection_result_of_cnn](images/detection_result_of_cnn.png)
 

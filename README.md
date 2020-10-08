@@ -116,17 +116,17 @@ However an already created [model.p](codes/model.p) is present in this repositor
 # Object Pose Estimation:
 
 For estimating the pose of the object in 3D space, the depth image of the Fetch camera, its dimensions **dim_x = 640, dim_y = 480** and its field of view (FOV) are used. Fetch camera has a horizontal FOV of **f_h = 54 degrees** and vertical FOV of **f_v = 45 degrees**. To map any pixel **(x, y)** of the RGB image into 3D space, first the horizontal and vertical angles (**alpha_h, alpha_v**) subtended by this pixel relative to the corresponding FOVs are calculated as follows:
-
-    alpha_h = (x - 0.5 * dim_x) * f_h / dim_x
-    alpha_v = (y - 0.5 * dim_y) * f_v / dim_y
-
+```
+alpha_h = (x - 0.5 * dim_x) * f_h / dim_x
+alpha_v = (y - 0.5 * dim_y) * f_v / dim_y
+```
 Then using its depth value (**d**) of the pixel, the distance of pixel in the front (**d_f**), right (**d_r**), down (**d_d**) directions are calculated which are then mapped into the right handed coordinate (**X, Y, Z**) using the following equation:
-
-    d_r = d * sin(alpha_h)
-    d_d = d * sin(alpha_v) 
-    d_f = d * cos(alpha_h) * cos(alpha_v)
-    X = d_f ; Y = -d_r ; Z = -d_d
-    
+```
+d_r = d * sin(alpha_h)
+d_d = d * sin(alpha_v) 
+d_f = d * cos(alpha_h) * cos(alpha_v)
+X = d_f ; Y = -d_r ; Z = -d_d   
+```
 There is however a problem that sometimes the value of $d$ at the ($x, y$) location in the depth frame is read as $0$. This happens because, sometimes the projected IR rays from the Fetch depth camera does not get reflected back to the camera from all locations. To solve this, the same procedure is used as done in \cite{mcarthur2019autonomous} and \cite{mcarthur2020autonomous}. For measuring $d$ a histogram of the depths of all pixels in a window around ($x, y$) is considered, and the most populated bin of the histogram is considered as the value of $d$. 
 
 Now, after recognizing objects using the CNN, the depths of the pixels of the corner points of their predicted bounding boxes are mapped into 3D space using \ref{angles} and \ref{xyz} as mentioned earlier. 

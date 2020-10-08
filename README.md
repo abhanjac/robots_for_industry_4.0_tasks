@@ -132,17 +132,7 @@ The following figure shows one such histograms.
 
 ![histogram](images/histogram.png)
 
-
 Now, after recognizing objects using the CNN, the depths of the pixels of the corner points of their predicted bounding boxes are mapped into 3D space using \ref{angles} and \ref{xyz} as mentioned earlier. 
-
-
-
-
-### Stage 5:
-The HOG features from the final contour found in stage 4 are extracted and fed to this SVM model found in the file [model.p](codes/model.p).
-If the final contour really represents the box, then the output of the model should be **True** else **False**.
-So if the model output is True, then it is confirmed that the box is detected.
-Use of the SVM ensures that there are no false detections or unwanted contours left behind in the final contour frame.
 
 # Finding the Distance of the Box:
 Once the final box contour is found, a **rotated rectangle** ( **cyan** in color ) is drawn around it as shown in the **final detection frame**.

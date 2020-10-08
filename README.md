@@ -99,12 +99,12 @@ The first layer of the network has a height and width of **640 x 480**. This is 
 Detection training of the CNN took about **10** hours on the NVIDIA Tesla P100 GPU for **29** epochs with a learning rate of **0.001** for the first **26** epochs and then changed to **0.0001** for the last **3**. 
 The overall mean average precision (mAP) for determining the detection performance of a CNN, is calculated over the testing and validation datasets as shown below for the different classes. 
 
-![detection_result_of_cnn](images/detection_result_of_cnn.png)
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_result_of_cnn.png" width="800" height="640">
 
 A few example detection results on the input images are shown in the following figure.
 
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_1.png" width="800" height="340">
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_2.png" width="400" height="340">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_1.png" width="800" height="320">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_2.png" width="400" height="320">
 
 #### Procedure for creating the SVM model:
 The [svm_data.tar.gz](codes/svm_data.tar.gz) file has to be extacted. This will create have a **train** and a **test** directory.

@@ -77,6 +77,7 @@ The total number of sample images of the objects are divided into three groups n
 The size of the images in the datasets are **640 x 480** pixels. This is because the Fetch robot camera has a frame size of **640 x 480**. So, the dataset images are of the same size, so that the CNN can take the RGB images from the camera directly as input without any downsampling.
 Now to create the actual images of the datasets, several background images of a warehouse environment is taken and then 640 x 480 blocks are cropped out of these images from random locations. Samples of different objects are then affixed on these 640 x 480 blocks randomly. The samples are also flipped vertically and horizontally while affixing them. For each such image created, the class names of the objects and their position and size of bounding boxes are recorded in a separate file. Some sample images obtained are shown below. 
 
+![sample_dataset_images](images/sample_dataset_images.png)
 
 # Algorithm for Detecting the Box: 
 The algorithm goes through several stages for detecting the box.

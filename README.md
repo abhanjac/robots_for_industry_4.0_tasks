@@ -103,7 +103,8 @@ The overall mean average precision (mAP) for determining the detection performan
 
 A few example detection results on the input images are shown in the following figure.
 
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results.png" width="800" height="340">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_1.png" width="800" height="340">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_2.png" width="400" height="340">
 
 #### Procedure for creating the SVM model:
 The [svm_data.tar.gz](codes/svm_data.tar.gz) file has to be extacted. This will create have a **train** and a **test** directory.

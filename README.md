@@ -127,7 +127,11 @@ d_d = d * sin(alpha_v)
 d_f = d * cos(alpha_h) * cos(alpha_v)
 X = d_f ; Y = -d_r ; Z = -d_d   
 ```
-There is however a problem that sometimes the value of $d$ at the ($x, y$) location in the depth frame is read as $0$. This happens because, sometimes the projected IR rays from the Fetch depth camera does not get reflected back to the camera from all locations. To solve this, the same procedure is used as done in \cite{mcarthur2019autonomous} and \cite{mcarthur2020autonomous}. For measuring $d$ a histogram of the depths of all pixels in a window around ($x, y$) is considered, and the most populated bin of the histogram is considered as the value of $d$. 
+There is however a problem that sometimes the value of **d** at the (**x, y**) location in the depth frame is read as **0**. This happens because, sometimes the projected IR rays from the Fetch depth camera does not get reflected back to the camera from all locations. To solve this, while measuring **d** a histogram of the depths of all pixels in a window around (**x, y**) is considered, and the most populated bin of the histogram is considered as the value of **d**. 
+The following figure shows one such histograms. 
+
+![histogram](images/histogram.png)
+
 
 Now, after recognizing objects using the CNN, the depths of the pixels of the corner points of their predicted bounding boxes are mapped into 3D space using \ref{angles} and \ref{xyz} as mentioned earlier. 
 

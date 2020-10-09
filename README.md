@@ -136,44 +136,10 @@ Now, after recognizing objects using the CNN, the depths of the pixels of the co
 
 # PCL Processing and 3D Pose Estimation:
 
-# Finding the Distance of the Box:
-Once the final box contour is found, a **rotated rectangle** ( **cyan** in color ) is drawn around it as shown in the **final detection frame**.
-The position of the handle of the box is inferred from this bounding rectangle.
-Since the corner vertices and angle of tilt of the rectangle is known, a rotation matrix transformation is able to find the exact loaction of the box handle.
-This is marked by the **purple dot** inside the bounding rectangle. The detected box and the handle are shown below.
+At first, all 3D points in the point cloud which belongs to the surface on which the object is sitting, is identified by fitting a plane to the 3D points using RANSAC algorithm. Then all the 3D points included and below this surface are ignored. 
 
-![final_detection_frame](images/final_detection_frame.png)
+After this, the region in the remaining point cloud bounded by the 3D points, which are mapped from the corners of the predicted 2D bounding box, is cropped out as the object point cloud (OPCL) and a 3D bounding box is created around it. 
 
-Now, the Realsense R200 gives a good measure of the distance in a range of **0.5 mm to 2 mm**. 
-So, in this code if the distance of the camera from the box is **beyond 1.5 mm** the distance is estimated using the approximate focal length of the **rgb camera**.
-
-The approximate focal length is found out based on the assumption that the size of the object will be the same as the size of its image, if the object is at the focal length of the camera.
-
-**Focal Length (F) = Object Distance (D) x Image Size (P) / Object Size (W)**
-
-Within **0.5 mm and 1.5 mm** the distance is measured using the **depth image**.
-The value of every pixels of the region of the frame where the final contour was detected is taken into account and a historgram of these values is created.
-This is because there may be a few values that may be from the pixels which actually belong to the background. 
-Also there may be some fluctuations in the depth frame as well, which may lead to some sudden 0 values for some pixels even if they belong to the box contour.
-But these erronous pixels are not very large in number. 
-So if a historgram of the number of pixels at different distance values, is created, then it is seen that the majority of the pixels are belonging to the bin that gives the correct distance of the box.
-Hence, this distance corresponding to the group of majority of the pixels is considered as the detected distance of the box.
-An image of such a historgram is shown below. It shows the peak as well which belongs bin that represents the actual distance of the box.
-
-![distance_histogram](images/distance_histogram.png)
-
-**Below 0.5 mm** however, there is no proper way to measure the distance solely based on rgb or depth image. 
-The final contour of the box becomes bigger than the frame size itself and the depth frame values are also not usable.
-So in such a position the drone either has to move blindly or has to use some other sensor like sonar etc.
-But this is not much of a problem as in the final configuration the drone will have the claws mounted on a front rod or boom, which will be around 0.4 m anyways.
-So the camera is at 0.5 m from the box will imply that the claws are at only 0.1 m from the box, which is a very short distance. 
-Hence, moving blindly in this short distance is not a problem.
-
-The final distances **in meters** measured is also displayed on the final detected frame. 
-This distance show how much the camera or the drone has to be moved so that the **red crosshairs** drawn on the frame will merge with the **purple dot** showing the position of the handle.
-**X axis** is directed **Outward** from the plane of the frame (towards the viewer).
-**Y axis** is directed to the **Left**.
-**Z axis** is directed **Upwards**.
 
 # Results:
 There is a video file that can be used to test the output the algorithm.

@@ -113,7 +113,7 @@ The [train_svm.py](codes/train_svm.py) script has to be run to create the [model
 
 However an already created [model.p](codes/model.p) is present in this repository (which is an already trained SVM model) which can also be used.
 
-# Object Pose Estimation:
+# Mapping 2D Bounding Box to 3D Point Cloud Domain:
 
 For estimating the pose of the object in 3D space, the depth image of the Fetch camera, its dimensions **dim_x = 640, dim_y = 480** and its field of view (FOV) are used. Fetch camera has a horizontal FOV of **f_h = 54 degrees** and vertical FOV of **f_v = 45 degrees**. To map any pixel **(x, y)** of the RGB image into 3D space, first the horizontal and vertical angles (**alpha_h, alpha_v**) subtended by this pixel relative to the corresponding FOVs are calculated as follows:
 ```
@@ -132,7 +132,9 @@ The following figure shows one such histograms.
 
 ![histogram](images/histogram.png)
 
-Now, after recognizing objects using the CNN, the depths of the pixels of the corner points of their predicted bounding boxes are mapped into 3D space using \ref{angles} and \ref{xyz} as mentioned earlier. 
+Now, after recognizing objects using the CNN, the depths of the pixels of the corner points of their predicted bounding boxes are mapped into 3D space using the above equations as mentioned earlier. These 3D points are then transferred into the point cloud (PCL) domain.
+
+# PCL Processing and 3D Pose Estimation:
 
 # Finding the Distance of the Box:
 Once the final box contour is found, a **rotated rectangle** ( **cyan** in color ) is drawn around it as shown in the **final detection frame**.

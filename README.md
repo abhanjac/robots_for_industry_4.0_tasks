@@ -163,7 +163,8 @@ The videos of the object pickups can also be found on Youtube.
 [**emptyBin** pickup](https://youtu.be/klYFTt6hRl0).
 [**crankShaft** pickup](https://youtu.be/IzMjBAbnvCU).
 
-A gif showing a glimpse of the object pickups are also shown below.
+Gif showing a glimpse of the object pickups are also shown below.
+
 ![](images/blue_bin_pickup_without_ar_tag.gif)
 ![](images/crank_shaft_pickup.gif)
 

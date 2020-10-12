@@ -122,6 +122,10 @@ d_d = d * sin(alpha_v)
 d_f = d * cos(alpha_h) * cos(alpha_v)
 X = d_f ; Y = -d_r ; Z = -d_d   
 ```
+The next figure shows a schematic of the point (**x, y**) along with the related angles and distances, which is used to derive the above equations.
+
+![2D_to_3D_mapping_image](images/2D_to_3D_mapping_image.png)
+
 There is however a problem that sometimes the value of **d** at the (**x, y**) location in the depth frame is read as **0**. This happens because, sometimes the projected IR rays from the Fetch depth camera does not get reflected back to the camera from all locations. To solve this, while measuring **d** a histogram of the depths of all pixels in a window around (**x, y**) is considered, and the most populated bin of the histogram is considered as the value of **d**. 
 The following figure shows one such histograms. 
 

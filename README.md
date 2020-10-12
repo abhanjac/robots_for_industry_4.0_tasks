@@ -138,7 +138,8 @@ Now, after recognizing objects using the CNN, the depths of the pixels of the co
 | |
 |:---:|
 | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/PCL_processing_crankShaft_approach1.png" width="160" height="120"> |
-| **Figure: PCL_processing_crankShaft**. **Top Left:** 2D bounding box created by CNN around the identified crankShaft shown in RGB image. **Top Right:** Corresponding depth image. **Bottom:** PCL domain showing points belonging to the table surface (**red**) detected by RANSAC. Corner points from predicted 2D bounding box is projected to PCL domain and the crankShaft OPCL is extracted. 3D tight cuboid bounding box (**green**) is fitted to the OPCL. |
+| **Figure: PCL_processing_crankShaft**. 
+**Top Left:** 2D bounding box created by CNN around the identified crankShaft shown in RGB image. **Top Right:** Corresponding depth image. **Bottom:** PCL domain showing points belonging to the table surface (**red**) detected by RANSAC. Corner points from predicted 2D bounding box is projected to PCL domain and the crankShaft OPCL is extracted. 3D tight cuboid bounding box (**green**) is fitted to the OPCL. |
 
 
 ![PCL_processing_crankShaft_approach1](images/PCL_processing_crankShaft_approach1.png)

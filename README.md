@@ -156,12 +156,12 @@ Now, if the object is a cuboid object, like the **emptyBin** or any other object
 However, if the object is not cuboid, like the **crankShaft**, then the 3D bounding box will not fit it very well. Therefore, the Fetch arm may fail to pick up the object even if it tries to grab it using the orientation of the lateral sides of the 3D bounding box, as not all the lateral sides have 3D points aligned with them (as seen in figure **PCL_processing_crankShaft** bottom image). Hence, for these kind of objects, a 3D straight line segment is fitted to the points of the OPCL using RANSAC as seen in figure **3D_bounding_box_emptyBin_crankShaft** right image). Since this segment is a straight line, it always includes 3D points belonging to the OPCL in it. Hence, there is no chance of a failed pickup if the Fetch arm tries to grab the object using the orientation of this straight line segment. So, for the crankShaft and crank arm objects, the Fetch arm is positioned vertically on the center of the fitted 3D straight line and similar manipulation movement is done (as in the case of the emptyBin) to pick up the object. 
 
 # Results:
-The video showing the final emptyBin pickup is present in this [link](videos/blue_bin_pickup_without_ar_tag.mp4).
-The video showing the final crankShaft pickup is present in this [link](videos/crank_shaft_pickup.mp4).
+The video showing the final **emptyBin** pickup is present in this [link](videos/blue_bin_pickup_without_ar_tag.mp4).
+The video showing the final **crankShaft** pickup is present in this [link](videos/crank_shaft_pickup.mp4).
 
 The videos of the object pickups can also be found on Youtube.
-[**emptyBin** pickup](https://youtu.be/klYFTt6hRl0).
-[**crankShaft** pickup](https://youtu.be/IzMjBAbnvCU).
+[emptyBin pickup](https://youtu.be/klYFTt6hRl0).
+[crankShaft pickup](https://youtu.be/IzMjBAbnvCU).
 
 Gif showing a glimpse of the object pickups are also shown below.
 

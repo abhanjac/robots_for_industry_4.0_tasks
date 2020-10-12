@@ -147,7 +147,7 @@ After this, the region in the remaining point cloud bounded by the 3D points, wh
 
 | |
 |:---:|
-| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/3D_bounding_box_emptyBin_crankShaft.png" width="700" height="350"> |
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/3D_bounding_box_emptyBin_crankShaft_1.png" width="700" height="350"> |
 | **Figure: 3D_bounding_box_emptyBin_crankShaft** 
 **Left:** 3D tight cuboid bounding box (**green**) created around the emptyBin OPCL. The box fits the OPCL very well as the object is cuboid in shape. **Right:** 3D bounding box (**green**) is created around the crankShaft OPCL. Box does not fit well to the object, since it is not cuboid in shape. Hence, a straight line (**blue**) is fitted to the crankshaft OPCL. |
 

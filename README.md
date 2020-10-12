@@ -137,7 +137,7 @@ Now, after recognizing objects using the CNN, the depths of the pixels of the co
 
 | |
 |:---:|
-| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/PCL_processing_crankShaft_approach1.png" width="500" height="500"> |
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/PCL_processing_crankShaft.png" width="500" height="500"> |
 | **Figure: PCL_processing_crankShaft** 
 **Top Left:** 2D bounding box created by CNN around the identified crankShaft shown in RGB image. **Top Right:** Corresponding depth image. **Bottom:** PCL domain showing points belonging to the table surface (**red**) detected by RANSAC. Corner points from predicted 2D bounding box is projected to PCL domain and the crankShaft OPCL is extracted. 3D tight cuboid bounding box (**green**) is fitted to the OPCL. |
 
@@ -147,7 +147,7 @@ After this, the region in the remaining point cloud bounded by the 3D points, wh
 
 | |
 |:---:|
-| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/3D_bounding_box_emptyBin_crankShaft_approach1.png" width="700" height="350"> |
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/3D_bounding_box_emptyBin_crankShaft.png" width="700" height="350"> |
 | **Figure: 3D_bounding_box_emptyBin_crankShaft** 
 **Left:** 3D tight cuboid bounding box (**green**) created around the emptyBin OPCL. The box fits the OPCL very well as the object is cuboid in shape. **Right:** 3D bounding box (**green**) is created around the crankShaft OPCL. Box does not fit well to the object, since it is not cuboid in shape. Hence, a straight line (**blue**) is fitted to the crankshaft OPCL. |
 

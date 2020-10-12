@@ -135,9 +135,30 @@ Now, after recognizing objects using the CNN, the depths of the pixels of the co
 
 # PCL Processing and 3D Pose Estimation:
 
-At first, all 3D points in the point cloud which belongs to the surface on which the object is sitting, is identified by fitting a plane to the 3D points using RANSAC algorithm. Then all the 3D points included and below this surface are ignored. 
+![PCL_processing_crankShaft_approach1](images/PCL_processing_crankShaft_approach1.png)
+#### Figure: PCL_processing_crankShaft
 
-After this, the region in the remaining point cloud bounded by the 3D points, which are mapped from the corners of the predicted 2D bounding box, is cropped out as the object point cloud (OPCL) and a 3D bounding box is created around it. 
+**Top Left:** 2D bounding box created by CNN around the identified crankShaft shown in RGB image. **Top Right:** Corresponding depth image. 
+**Bottom:** PCL domain showing points belonging to the table surface (**red**) detected by RANSAC. Corner points from predicted 2D bounding box is projected to PCL domain and the crankShaft OPCL is extracted. 3D tight cuboid bounding box (**green**) is fitted to the OPCL.
+
+At first, all 3D points in the point cloud which belongs to the surface on which the object is sitting, is identified by fitting a plane to the 3D points using RANSAC algorithm. Then all the 3D points included and below this surface are ignored. This surface is shown in the above figure (bottom image) in red color. 
+
+After this, the region in the remaining point cloud bounded by the 3D points, which are mapped from the corners of the predicted 2D bounding box, is cropped out as the object point cloud (OPCL) and a cubic 3D bounding box is created around it, which tightly fits the OPCL. This is shown in figure (bottom image). 
+
+![3D_bounding_box_emptyBin_crankShaft_approach1](images/3D_bounding_box_emptyBin_crankShaft_approach1.png)
+#### Figure: 3D_bounding_box_emptyBin_crankShaft
+
+**Left:** 3D tight cuboid bounding box (**green**) created around the emptyBin OPCL. The box fits the OPCL very well as the object is cuboid in shape. **Right:** 3D bounding box (**green**) is created around the crankShaft OPCL. Box does not fit well to the object, since it is not cuboid in shape. Hence, a straight line (**blue**) is fitted to the crankshaft OPCL.
+
+Now, if the object is a cuboid object, like the **emptyBin** or any other objects which were contained in the bins, then this cubic 3D bounding box aligns very well with the object shape (as seen in figure *3D_bounding_box_emptyBin_crankShaft*). So, the orientation of the box itself is then used to position the Fetch arm to pickup the object. 
+The Fetch arm is positioned vertically to one of the lateral sides of the 3D bounding box with the gripper open and the arm is gradually lowered to the level equal to the height of the box. This causes the side wall of the bin to come in-between the gripper fingers and then the gripper is closed to grab the bin. The arm is then raised to pick up the object.
+
+However, if the object is not cuboid, like the **crankShaft**, then the 3D bounding box will not fit it very well. Therefore, the Fetch arm may fail to pick up the object even if it tries to grab it using the orientation of the lateral sides of the 3D bounding box, as not all the lateral sides have 3D points aligned with them (as seen in figure *3D_bounding_box_emptyBin_crankShaft* bottom image). Hence, for these kind of objects, a 3D straight line segment is fitted to the points of the OPCL using RANSAC. Since this segment is a straight line, it always includes 3D points belonging to the OPCL in it. Hence, there is no chance of a failed pickup if the Fetch arm tries to grab the object using the orientation of this straight line segment. So, for the crankShaft and crank arm objects, the Fetch arm is positioned vertically on the center of the fitted 3D straight line and similar manipulation movement is done (as in the case of the emptyBin) to pick up the object. 
+
+
+
+
+
 
 
 # Results:

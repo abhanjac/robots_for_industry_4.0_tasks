@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "crankShaft",
+        "classIdx": 7,
+        "posX": 203,
+        "posY": 352,
+        "bboxW": 310,
+        "bboxH": 145,
+        "tlX": 48,
+        "tlY": 279,
+        "samplePath": "color_images/crankShaft/train/crankShaft_136.png",
+        "bgPath": "background/train/ori_8.jpeg"
+    }
+}

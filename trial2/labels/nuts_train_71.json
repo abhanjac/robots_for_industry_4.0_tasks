@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "nuts",
+        "classIdx": 0,
+        "posX": 504,
+        "posY": 270,
+        "bboxW": 133,
+        "bboxH": 123,
+        "tlX": 437,
+        "tlY": 208,
+        "samplePath": "color_images/nuts/train/nuts_8.png",
+        "bgPath": "background/train/ori_2.jpeg"
+    }
+}

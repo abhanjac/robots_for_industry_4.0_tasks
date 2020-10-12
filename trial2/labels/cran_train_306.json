@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "crankArmW",
+        "classIdx": 5,
+        "posX": 160,
+        "posY": 286,
+        "bboxW": 96,
+        "bboxH": 174,
+        "tlX": 112,
+        "tlY": 199,
+        "samplePath": "color_images/crankArmW/train/crankArmW_160.png",
+        "bgPath": "background/train/ori_10.png"
+    }
+}

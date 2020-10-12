@@ -156,29 +156,23 @@ Now, if the object is a cuboid object, like the **emptyBin** or any other object
 However, if the object is not cuboid, like the **crankShaft**, then the 3D bounding box will not fit it very well. Therefore, the Fetch arm may fail to pick up the object even if it tries to grab it using the orientation of the lateral sides of the 3D bounding box, as not all the lateral sides have 3D points aligned with them (as seen in figure **PCL_processing_crankShaft** bottom image). Hence, for these kind of objects, a 3D straight line segment is fitted to the points of the OPCL using RANSAC as seen in figure **3D_bounding_box_emptyBin_crankShaft** right image). Since this segment is a straight line, it always includes 3D points belonging to the OPCL in it. Hence, there is no chance of a failed pickup if the Fetch arm tries to grab the object using the orientation of this straight line segment. So, for the crankShaft and crank arm objects, the Fetch arm is positioned vertically on the center of the fitted 3D straight line and similar manipulation movement is done (as in the case of the emptyBin) to pick up the object. 
 
 # Results:
-There is a video file that can be used to test the output the algorithm.
-The raw video file, a recorded video showing the final detection is present in the [videos](videos) directory.
+The video showing the final **emptyBin** pickup is present in this [link](videos/blue_bin_pickup_without_ar_tag.mp4).
+The video showing the final **crankShaft** pickup is present in this [link](videos/crank_shaft_pickup.mp4).
 
-The output [detection_video](videos/detection_video.avi) is recorded by running the algorithm on the [raw_input_video](videos/raw_input_video.avi) file.
+The videos of the object pickups can also be found on Youtube.
+[**emptyBin** pickup](https://youtu.be/klYFTt6hRl0).
+[**crankShaft** pickup](https://youtu.be/IzMjBAbnvCU).
 
-The detection video can also be found on [Youtube](https://www.youtube.com/) at the following link:
-* [final box detection video with distance measurement](https://www.youtube.com/watch?v=hQYESMS1604&feature=youtu.be)
-* [combined video for box detection](https://www.youtube.com/watch?v=bSGtvHl_pHU)
-
-A gif showing a glimpse of the box detection is also shown below.
-![](images/detection_snap.gif)
-
-This algorithm ran on the Odroid XU4 in real time at **14 Hz**.
+A gif showing a glimpse of the object pickups are also shown below.
+![](images/blue_bin_pickup_without_ar_tag.gif)
+![](images/crank_shaft_pickup.gif)
 
 # Observations:
-* It can be seen that if the box is too near to the camera, (which is within 0.5 m) the box is not detected. This is because of the range limitation of the depth camera and the incapability of measuring the distance using rgb image at this close distance.
-* Even if the claws obstruct the box to some extent, it can still be detected. This is because the processing is based on the modified rgb frame that cloaks the claws. But the detection flickers if the claws obstruct the box too much.
-* Other than these two cases the detection is pretty stable and robust.
-* Algorithm was able to run on the Odroid in real time at **14 Hz**
+* 
+* 
+* 
 
 # Future Work:
-Future work will include using the distance measured from this algorithm to be used to modulate the movement of the drone.
-The drone is controlled using the **Robot Operating System (ROS)** which will take this **box detected** signal and the subsequent distance measurement as an input and try to perform the task of opening the box by the handle.
 
 
 

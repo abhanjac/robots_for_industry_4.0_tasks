@@ -135,15 +135,17 @@ Now, after recognizing objects using the CNN, the depths of the pixels of the co
 
 # PCL Processing and 3D Pose Estimation:
 
-![PCL_processing_crankShaft_approach1](images/PCL_processing_crankShaft_approach1.png)
-#### Figure: PCL_processing_crankShaft
+| |
+|:---:|
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/PCL_processing_crankShaft_approach1.png" width="160" height="120"> |
+| **Figure: PCL_processing_crankShaft**. **Top Left:** 2D bounding box created by CNN around the identified crankShaft shown in RGB image. **Top Right:** Corresponding depth image. **Bottom:** PCL domain showing points belonging to the table surface (**red**) detected by RANSAC. Corner points from predicted 2D bounding box is projected to PCL domain and the crankShaft OPCL is extracted. 3D tight cuboid bounding box (**green**) is fitted to the OPCL. |
 
-**Top Left:** 2D bounding box created by CNN around the identified crankShaft shown in RGB image. **Top Right:** Corresponding depth image. 
-**Bottom:** PCL domain showing points belonging to the table surface (**red**) detected by RANSAC. Corner points from predicted 2D bounding box is projected to PCL domain and the crankShaft OPCL is extracted. 3D tight cuboid bounding box (**green**) is fitted to the OPCL.
+
+![PCL_processing_crankShaft_approach1](images/PCL_processing_crankShaft_approach1.png)
 
 At first, all 3D points in the point cloud which belongs to the surface on which the object is sitting, is identified by fitting a plane to the 3D points using RANSAC algorithm. Then all the 3D points included and below this surface are ignored. This surface is shown in the above figure (bottom image) in red color. 
 
-After this, the region in the remaining point cloud bounded by the 3D points, which are mapped from the corners of the predicted 2D bounding box, is cropped out as the object point cloud (OPCL) and a cubic 3D bounding box is created around it, which tightly fits the OPCL. This is shown in figure (bottom image). 
+After this, the region in the remaining point cloud bounded by the 3D points, which are mapped from the corners of the predicted 2D bounding box, is cropped out as the object point cloud (OPCL) and a cubic 3D bounding box is created around it, which tightly fits the OPCL. This is shown in the above figure (bottom image). 
 
 ![3D_bounding_box_emptyBin_crankShaft_approach1](images/3D_bounding_box_emptyBin_crankShaft_approach1.png)
 #### Figure: 3D_bounding_box_emptyBin_crankShaft

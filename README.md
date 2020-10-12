@@ -106,12 +106,7 @@ A few example detection results on the input images are shown in the following f
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_1.png" width="800" height="300">
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_2.png" width="400" height="320">
 
-#### Procedure for creating the SVM model:
-The [svm_data.tar.gz](codes/svm_data.tar.gz) file has to be extacted. This will create have a **train** and a **test** directory.
-The train directory has 117 positive examples of the box and 296 negative examples (all are cropped images like the ones shown above).
-The [train_svm.py](codes/train_svm.py) script has to be run to create the [model.p](codes/model.p) file.
-
-However an already created [model.p](codes/model.p) is present in this repository (which is an already trained SVM model) which can also be used.
+The weights of the model for [classification](codes/saved_models) and [detection](saved_models_detector) are also present in this repository.
 
 # Mapping 2D Bounding Box to 3D Point Cloud Domain:
 

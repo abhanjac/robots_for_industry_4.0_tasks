@@ -160,8 +160,8 @@ The video showing the final **emptyBin** pickup is present in this [link](videos
 The video showing the final **crankShaft** pickup is present in this [link](videos/crank_shaft_pickup.mp4).
 
 The videos of the object pickups can also be found on Youtube.
-[emptyBin pickup](https://youtu.be/klYFTt6hRl0).
-[crankShaft pickup](https://youtu.be/IzMjBAbnvCU).
+* [emptyBin pickup](https://youtu.be/klYFTt6hRl0).
+* [crankShaft pickup](https://youtu.be/IzMjBAbnvCU).
 
 Gif showing a glimpse of the object pickups are also shown below.
 

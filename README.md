@@ -101,7 +101,7 @@ The overall mean average precision (mAP) for determining the detection performan
 
 ![detection_result_of_cnn](images/detection_result_of_cnn.png)
 
-A few example detection results on the input images are shown in the following figure.
+A few example detection results on the input images are shown in the following figure. The images shows that the CNN was able to recognize the known objects and create bounding box around them and ignore the unwanted objects.
 
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_1.png" width="800" height="300">
 <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/detection_results_2.png" width="400" height="320">

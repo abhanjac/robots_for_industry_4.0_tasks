@@ -462,35 +462,17 @@ int main(int argc, char** argv) {
 
 // //     std::cout << tight_cropped_shape.dimensions[0];   // 0 is same as tight_cropped_shape.BOX_X.
     
-// ////////////////////////////////////////////////////////////////////////////////
-// 
-//     // Finding out the orientation in terms of roll, pitch and yaw as well, as 
-//     // it will be needed later.    
-//     double quatx = tight_cropped_pose.orientation.x;
-//     double quaty = tight_cropped_pose.orientation.y;
-//     double quatz = tight_cropped_pose.orientation.z;
-//     double quatw = tight_cropped_pose.orientation.w;
-// 
-//     tf::Quaternion q(quatx, quaty, quatz, quatw);
-//     tf::Matrix3x3 m(q);
-//     double roll, pitch, yaw, rollD, pitchD, yawD;
-//     m.getRPY(roll, pitch, yaw);
-//     
-//     rollD = roll * 180 / M_PI;      // Converting to degrees.
-//     pitchD = pitch * 180 / M_PI;    // Converting to degrees.
-//     yawD = yaw * 180 / M_PI;        // Converting to degrees.
-//         
-// ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
     // Now based on what object is considered, the gripping mechanism will be 
     // different.
     PointCloudC::Ptr output_cloud(new PointCloudC);
     
-    if (objectName == "nuts")  {}
-    if (objectName == "coins")  {}
-    if (objectName == "washers")  {}
-    if (objectName == "gears")  {}
-    if (objectName == "emptyBin")  {}
+    if (objectName == "nuts" || objectName == "coins" || objectName == "washers" ||
+        objectName == "gears" || objectName == "emptyBin")
+    {
+        output_cloud = cropped_cloud;
+    }
     if (objectName == "crankArmW" || objectName == "crankArmX" || objectName == "crankShaft")
     {
 // ////////////////////////////////////////////////////////////////////////////////
@@ -565,6 +547,24 @@ int main(int argc, char** argv) {
     output_marker.color.b = 1;
     output_marker.color.a = 0.5;
 
+////////////////////////////////////////////////////////////////////////////////
+
+    // Finding out the orientation in terms of roll, pitch and yaw as well, as 
+    // it will be needed later.    
+    double quatx = tight_object_pose.orientation.x;
+    double quaty = tight_object_pose.orientation.y;
+    double quatz = tight_object_pose.orientation.z;
+    double quatw = tight_object_pose.orientation.w;
+
+    tf::Quaternion q(quatx, quaty, quatz, quatw);
+    tf::Matrix3x3 m(q);
+    double roll, pitch, yaw, rollD, pitchD, yawD;
+    m.getRPY(roll, pitch, yaw);
+    
+    rollD = roll * 180 / M_PI;      // Converting to degrees.
+    pitchD = pitch * 180 / M_PI;    // Converting to degrees.
+    yawD = yaw * 180 / M_PI;        // Converting to degrees.
+        
 // ////////////////////////////////////////////////////////////////////////////////
 //     
 //     // Putting an example marker before cropping.
@@ -628,10 +628,11 @@ int main(int argc, char** argv) {
         ROS_INFO("limitX: %f ", limitX);
         ROS_INFO("limitY: %f ", limitY);
         ROS_INFO_STREAM("objectName: " << objectName);
-//         ROS_INFO("Roll: %f, Pitch: %f, Yaw: %f (all in degrees)", rollD, pitchD, yawD);
         ROS_INFO("Cropped to %ld points", cropped_cloud->size());
         ROS_INFO_STREAM("Marker details: " << std::endl << output_marker.pose << 
-                        "scale: \n"<< output_marker.scale);
+                        "scale: \n" << output_marker.scale << "\nRoll (deg): " << 
+                        rollD << "\nPitch (deg): " << pitchD << "\nYaw (deg): " << 
+                        yawD << std::endl);
         
         ros::spinOnce();
         loop_rate.sleep();

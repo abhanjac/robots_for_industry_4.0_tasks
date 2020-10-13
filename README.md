@@ -170,11 +170,23 @@ Gif showing a glimpse of the object pickups are also shown below.
 ![](images/crank_shaft_pickup.gif)
 
 # Observations:
-* 
-* 
-* 
+* During PCL processing, sometimes some parts of an object may not be visible by a camera from certain angles, and because of this there are gaps in the PCL where there are not 3D points. These usually occurs in the regions falling in the shadows of objects. So, sometimes because of this lack of available points, the bounding box fitted to the object does not engulf the entire object region. 
+* The algorithm can run on the onboard computer of the Fetch robot having **Intel core i7 processor** and the processing time for one image is **13 seconds**. 
+* To have a quantitative evaluation of the position estimate the outputs of this algorithm, the position of the emptyBin is compared with that of the output of this algorithm by placing the emptyBin at **10** different locations. The ground truth position of the emptyBin is calculated using an AR code. The overall root mean square (RMS) error (calculated over **10** different positions of emptyBin) is **2.8 cm**.
+Some of these positions are shown in the following image.
+
+![](images/comparison_with_ground_truth.png)
+
+
+# Contributions:
+* Created two synthetic datasets for two different algorithms for pose estimation.
+* Present an approach for pose estimation to enable mobile robotic manipulation in an industrial setting which is agnostic to the underlying robotic platform.
+* The algorithm is very light weight in terms of computations and need less run-time resources.
 
 # Future Work:
+Future work may involve implementing a more extensive version of this approach involving more objects, smarter gripping mechanisms and multiple robots. 
+Some of these robots may be mobile manipulators and some may be autonomous mobile platforms to transport objects from one point to another. 
+These two kinds of robots can work together to make the overall operations in the warehouse or factories smoother, thereby enabling human operators to focus only on the more complex operations like assembling parts together and leave the elementary tasks to these robots.
 
 
 

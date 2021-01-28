@@ -197,7 +197,7 @@ The image processing used using the RGB and depth images used to detect the big 
 
 | |
 |:---:|
-| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/big_blue_bin_image_processing_4.png" width="600" height="700"> |
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/big_blue_bin_image_processing_4.png" width="500" height="700"> |
 | **Figure: Stages of image processing to detect the big blue bin** 
 **A:** Raw RGB image. **B:** Corresponding colormapped depth image. **C:** Binary Color Filtered Image. **D:** Dilated Image **E:** Blue Channel of the Colormapped Depth Image. **F:** Combined Image created by combining the images shown in stages B and C. **G:** Final Binary Image. **H:** Image showing the contour surrounding the blue bin (**green**) and the bounding box around it (**red**). |
 

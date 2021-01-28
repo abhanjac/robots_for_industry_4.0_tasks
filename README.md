@@ -230,12 +230,12 @@ Once all objects has been picked up, the Fetch stays near the table (**step 23**
 
 # Video of Full Operation:
 
-<!--The videos of the object pickups can also be found on Youtube.
-* [full operation](https://youtu.be/klYFTt6hRl0).
+The videos of the object pickups can also be found on Youtube.
+* [full operation](https://youtu.be/NkO_WeDJ9Ng).
 
 Gif showing a glimpse of the object pickups are also shown below.
 
-![](images/full_operation.gif)-->
+<!-- ![](images/full_operation.gif) -->
 
 # Observations:
 * During PCL processing, sometimes some parts of an object may not be visible by a camera from certain angles, and because of this there are gaps in the PCL where there are not 3D points. These usually occurs in the regions falling in the shadows of objects. So, sometimes because of this lack of available points, the bounding box fitted to the object does not engulf the entire object region. 

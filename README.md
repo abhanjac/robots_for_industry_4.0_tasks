@@ -228,6 +228,15 @@ Once the big blue bin has been seen (**step 15**) and detected (**step 16**) usi
 
 Once all objects has been picked up, the Fetch stays near the table (**step 23**) and checks the table surface for any other remaining trained objects. If no other objects are detected for **4** consecutive attempts, the Fetch then moves away from the table (**step 24**) and moves its arm to the left (**step 25**) and folds it (**step 26**) in the reverse manner to how it had unfolded it earlier. The Freight at this stage moves away from the table carrying the objects inside the big blue bin to their destination (**step 27**). At this point, the Fetch waits here for further commands (**step 23**). It can be programmed to move to some other table for picking up other objects or move back to its home position.
 
+# Video of Full Operation:
+
+<!--The videos of the object pickups can also be found on Youtube.
+* [full operation](https://youtu.be/klYFTt6hRl0).
+
+Gif showing a glimpse of the object pickups are also shown below.
+
+![](images/full_operation.gif)-->
+
 # Observations:
 * During PCL processing, sometimes some parts of an object may not be visible by a camera from certain angles, and because of this there are gaps in the PCL where there are not 3D points. These usually occurs in the regions falling in the shadows of objects. So, sometimes because of this lack of available points, the bounding box fitted to the object does not engulf the entire object region. 
 * The algorithm can run on the onboard computer of the Fetch robot having **Intel core i7 processor** and the processing time for one image is **13 seconds**. 

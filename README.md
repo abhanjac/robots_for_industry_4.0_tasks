@@ -237,7 +237,7 @@ And it can also be found in this [link](videos/video_with_comments_compressed.m4
 
 Gif showing a glimpse of the full operation is also shown below.
 
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/full_operation.gif" width="600" height="400">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/full_operation.gif" width="600" height="340">
 
 # Observations:
 * During PCL processing, sometimes some parts of an object may not be visible by a camera from certain angles, and because of this there are gaps in the PCL where there are not 3D points. These usually occurs in the regions falling in the shadows of objects. So, sometimes because of this lack of available points, the bounding box fitted to the object does not engulf the entire object region. 

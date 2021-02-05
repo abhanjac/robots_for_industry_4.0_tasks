@@ -6,7 +6,7 @@ The mobile factory robot identifies different objects using deep learning and co
 
 | | | |
 |:---:|:---:|:---:|
-| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/blue_bin_pickup_without_ar_tag.gif" width="160" height="120"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/crank_shaft_drop.gif" width="160" height="120"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/full_operation.gif" width="200" height="120"> |
+| <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/blue_bin_pickup_without_ar_tag.gif" width="180" height="120"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/crank_shaft_drop.gif" width="180" height="120"> | <img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/full_operation.gif" width="200" height="120"> |
 | [**YouTube Link**](https://youtu.be/klYFTt6hRl0) | [**YouTube Link**](https://youtu.be/IzMjBAbnvCU) | [**YouTube Link**](https://youtu.be/NkO_WeDJ9Ng) |
 
 ---
@@ -237,7 +237,7 @@ And it can also be found in this [link](videos/video_with_comments_compressed.m4
 
 Gif showing a glimpse of the full operation is also shown below.
 
-<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/full_operation.gif" width="480" height="264">
+<img src="https://github.com/abhanjac/robots_for_industry_4.0_tasks/blob/master/images/full_operation.gif" width="600" height="340">
 
 # Observations:
 * During PCL processing, sometimes some parts of an object may not be visible by a camera from certain angles, and because of this there are gaps in the PCL where there are not 3D points. These usually occurs in the regions falling in the shadows of objects. So, sometimes because of this lack of available points, the bounding box fitted to the object does not engulf the entire object region. 

@@ -40,7 +40,8 @@ class networkClassifier(object):
         # This flag indicates if the network is in training mode or not.
         self.isTraining = False
         
-#===============================================================================
+################################################################################
+################################################################################
         
     def model(self, x):
         '''
@@ -51,7 +52,7 @@ class networkClassifier(object):
         1 max               2 x 2 / 2   480 x 640 x 8      ->   240 x 320 x 8
         2 conv    16        3 x 3 / 1   240 x 320 x 8      ->   240 x 320 x 16
         3 max               2 x 2 / 2   240 x 320 x 16     ->   120 x 160 x 16
-        2a conv    32       3 x 3 / 1   120 x 160 x 16     ->   120 x 160 x 32
+        2a conv    32       3 x 3 / 1   120 x 160 x 32     ->   120 x 160 x 32
         3a max              2 x 2 / 2   120 x 160 x 32     ->   60 x 80 x 32
         4 conv    16        1 x 1 / 1   60 x 80 x 32       ->   60 x 80 x 16
         5 conv    128       3 x 3 / 1   60 x 80 x 16       ->   60 x 80 x 128
@@ -90,7 +91,7 @@ class networkClassifier(object):
         
         # Output size 480 x 640 x 8 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 480 x 640 x 8 (H x W x D).
         layerIdx = '1'
@@ -101,7 +102,7 @@ class networkClassifier(object):
         
         # Output size 240 x 320 x 8 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 240 x 320 x 8 (H x W x D).
         layerIdx = '2'
@@ -123,7 +124,7 @@ class networkClassifier(object):
         
         # Output size 240 x 320 x 16 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 240 x 320 x 16 (H x W x D).
         layerIdx = '3'
@@ -134,7 +135,7 @@ class networkClassifier(object):
         
         # Output size 120 x 160 x 16 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 120 x 160 x 16 (H x W x D).
         layerIdx = '2a'
@@ -156,7 +157,7 @@ class networkClassifier(object):
         
         # Output size 120 x 160 x 32 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 120 x 160 x 32 (H x W x D).
         layerIdx = '3a'
@@ -167,7 +168,7 @@ class networkClassifier(object):
         
         # Output size 60 x 80 x 32 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 60 x 80 x 32 (H x W x D).
         layerIdx = '4'
@@ -189,7 +190,7 @@ class networkClassifier(object):
         
         # Output size 60 x 80 x 16 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 60 x 80 x 16 (H x W x D).
         layerIdx = '5'
@@ -211,7 +212,7 @@ class networkClassifier(object):
         
         # Output size 60 x 80 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 60 x 80 x 128 (H x W x D).
         layerIdx = '8'
@@ -222,7 +223,7 @@ class networkClassifier(object):
         
         # Output size 30 x 40 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 30 x 40 x 128 (H x W x D).
         layerIdx = '9'
@@ -244,7 +245,7 @@ class networkClassifier(object):
         
         # Output size 30 x 40 x 32 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 30 x 40 x 32 (H x W x D).
         layerIdx = '10'
@@ -266,7 +267,7 @@ class networkClassifier(object):
         
         # Output size 30 x 40 x 256 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 30 x 40 x 256 (H x W x D).
         layerIdx = '13'
@@ -277,7 +278,7 @@ class networkClassifier(object):
         
         # Output size 15 x 20 x 256 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 256 (H x W x D).
         layerIdx = '14'
@@ -299,7 +300,7 @@ class networkClassifier(object):
         
         # Output size 15 x 20 x 64 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 64 (H x W x D).
         layerIdx = '15'
@@ -321,7 +322,7 @@ class networkClassifier(object):
         
         # Output size 15 x 20 x 512 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 512 (H x W x D).
         layerIdx = '18'
@@ -343,7 +344,7 @@ class networkClassifier(object):
         
         # Output size 15 x 20 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 128 (H x W x D).
         layerIdx = '19'
@@ -365,7 +366,7 @@ class networkClassifier(object):
         
         # Output size 15 x 20 x nClasses (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 15 x 20 x nClasses (H x W x D).
         layerIdx = '20'
@@ -386,7 +387,8 @@ class networkClassifier(object):
         
         return x
     
-#===============================================================================
+################################################################################
+################################################################################
 
     def loss(self, logits, labels):
         '''
@@ -431,7 +433,7 @@ class networkClassifier(object):
         y = tfl.placeholder(dtype=tfl.int32, name='yPlaceholder', \
                             shape=[None, nClasses])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -448,7 +450,7 @@ class networkClassifier(object):
             #for v in listOfModelVars:
                 #print('Model: {}, Variable: {}'.format(modelName, v))
             
-#-------------------------------------------------------------------------------
+################################################################################
         
         # CALCULATE LOSS.
         
@@ -473,7 +475,7 @@ class networkClassifier(object):
         #for v in listOfOptimizerVars:
             #print('Optimizer: {}, Variable: {}'.format(self.optimizerName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # CREATE A LISTS TO HOLD ACCURACY AND LOSS VALUES.
         
@@ -486,7 +488,7 @@ class networkClassifier(object):
         statisticsFormat = 'epoch, learningRate, batchSize, trainLoss, trainAcc (%), ' \
                            'validLoss, validAcc (%), epochProcessTime'
                         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -502,7 +504,7 @@ class networkClassifier(object):
                                                               training=self.isTraining)
         startEpoch = latestEpoch + 1    # Start from the next epoch.
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # LOAD PARAMETERS FROM CHECKPOINTS.
         
@@ -522,7 +524,7 @@ class networkClassifier(object):
                 print('\nReloaded ALL variables from checkpoint: {}\n'.format(\
                                                             ckptPath))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             else:
                 # else load only weight and biases and skip optimizer 
@@ -568,7 +570,7 @@ class networkClassifier(object):
             if batchSize != infoDict['batchSize']:
                 minValidLoss = infoDict['minValidLoss'] * batchSize / infoDict['batchSize']
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         else:
             # When there are no valid checkpoints initialize the saver to 
@@ -589,7 +591,7 @@ class networkClassifier(object):
             maxValidAcc = 0.0
             minValidLoss = np.inf
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # TRAINING AND VALIDATION.
         
@@ -627,7 +629,7 @@ class networkClassifier(object):
             # This is recorded as a string for better visibility in the json file.
             currentStatistics = '{}, {}, {}, '.format(epoch, learningRate, batchSize)
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # Scan entire training dataset.
             while len(listOfRemainingTrainImg) > 0:
@@ -658,7 +660,7 @@ class networkClassifier(object):
                 # corresponding label element is considered as 1 else 0.
                 trainPredLabel = np.asarray(trainPredProb > threshProb, dtype=np.int32)
                 
-#-------------------------------------------------------------------------------                
+################################################################################                
                 
                 matches = np.array(trainPredLabel == trainLabelBatch, dtype=np.int32)
                 
@@ -688,7 +690,7 @@ class networkClassifier(object):
             # Recording training loss and accuracy in current statistics string.
             currentStatistics += '{}, {}, '.format(trainLoss, trainAcc)
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # VALIDATION PHASE.
             
@@ -712,7 +714,7 @@ class networkClassifier(object):
             
             print('\n\nValidation phase for epoch {}.\n'.format(epoch))
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # Scan entire validation dataset.
             while len(listOfRemainingValidImg) > 0:
@@ -744,7 +746,7 @@ class networkClassifier(object):
                 # corresponding label element is considered as 1 else 0.
                 validPredLabel = np.asarray(validPredProb > threshProb, dtype=np.int32)
                 
-#------------------------------------------------------------------------------- 
+################################################################################ 
                 
                 matches = np.array(validPredLabel == validLabelBatch, dtype=np.int32)
 
@@ -774,7 +776,7 @@ class networkClassifier(object):
             # Recording validation accuracy in current statistics string.
             currentStatistics += '{}, {}, '.format(validLoss, validAcc)
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # STATUS UPDATE.
             
@@ -827,7 +829,7 @@ class networkClassifier(object):
                 maxValidAcc = validAcc
                 minValidLoss = validLoss
             
-#-------------------------------------------------------------------------------
+################################################################################
         
         self.isTraining = False   # Indicates the end of training.
         print('\nTraining completed with {} epochs.'.format(nEpochs))
@@ -835,7 +837,8 @@ class networkClassifier(object):
         sess.close()        # Closing the session.
         tfl.reset_default_graph()    # Reset default graph, else it will be slow if rerun in loop.
 
-#===============================================================================
+################################################################################
+################################################################################
 
     def test(self, testDir=None):
         '''
@@ -858,7 +861,7 @@ class networkClassifier(object):
         y = tfl.placeholder(dtype=tfl.int32, name='yPlaceholder', \
                             shape=[None, nClasses])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -878,13 +881,13 @@ class networkClassifier(object):
                     listOfModelVars.append(v)
                     #print('Model: {}, Variable: {}'.format(modelName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # CALCULATE LOSS.
         
         loss = self.loss(logits=predLogits, labels=y)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -912,7 +915,7 @@ class networkClassifier(object):
         mean = np.array(infoDict['mean'])
         std = np.array(infoDict['std'])
 
-#-------------------------------------------------------------------------------
+################################################################################
                     
         print('\nStarted Testing...\n')
             
@@ -936,7 +939,7 @@ class networkClassifier(object):
         testLoss, testAcc = 0.0, 0.0
         testBatchIdx = 0    # Counts the number of batches processed.
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Just like the totalClsInstances, this totalDetectedClsInstances indicates
         # the number of times the class objects has been detected properly in the
@@ -944,7 +947,7 @@ class networkClassifier(object):
         # detection accuracy.
         totalDetectedClsInstances = np.zeros(nClasses)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Scan entire validation dataset.
         while len(listOfRemainingTestImg) > 0:
@@ -976,7 +979,7 @@ class networkClassifier(object):
             # corresponding label element is considered as 1 else 0.
             testPredLabel = np.asarray(testPredProb > threshProb, dtype=np.int32)
                 
-#------------------------------------------------------------------------------- 
+################################################################################ 
                 
             matches = np.array(testPredLabel == testLabelBatch, dtype=np.int32)
             
@@ -1008,7 +1011,7 @@ class networkClassifier(object):
                        'batch: {}'.format(testBatchIdx, nTestBatches, testBatchLoss, \
                         printInterval, prettyTime(testBatchProcessTime*printInterval)))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Creating a list of images which have been misclassified.            
             if testBatchIdx == 1:
@@ -1018,7 +1021,7 @@ class networkClassifier(object):
                 misclassificationList += [m for mdx, m in enumerate(\
                                            listOfSelectedTestImg) if matches1[mdx] == 0]
 
-#-------------------------------------------------------------------------------
+################################################################################
             
         # Calculate the individual class prediction accuracy.
         clsDetectionAcc = (totalDetectedClsInstances / nTestImgs) * 100
@@ -1029,7 +1032,7 @@ class networkClassifier(object):
             print('Detection Accuracy for class {}: {:0.3f} %'.format(classIdxToName[cdx], \
                                                          clsDetectionAcc[cdx]))
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         testingTime = time.time() - testingTime
         print('\n\nTesting done. Test Loss: {:0.6f}, Test Accuracy: {:0.3f} %, ' \
@@ -1046,7 +1049,8 @@ class networkClassifier(object):
         
         return testLoss, testAcc, testingTime
 
-#===============================================================================
+################################################################################
+################################################################################
 
     def batchInference(self, imgBatch):
         '''
@@ -1064,7 +1068,7 @@ class networkClassifier(object):
         x = tfl.placeholder(dtype=tfl.float32, name='xPlaceholder', \
                             shape=[None, inImgH, inImgW, 3])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -1084,7 +1088,7 @@ class networkClassifier(object):
                     listOfModelVars.append(v)
                     #print('Model: {}, Variable: {}'.format(modelName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -1112,7 +1116,7 @@ class networkClassifier(object):
         mean = np.array(infoDict['mean'])
         std = np.array(infoDict['std'])
 
-#-------------------------------------------------------------------------------
+################################################################################
 
 #        # Normalizing by mean and std as done in case of training.
 #        imgBatch = (imgBatch - mean) / std
@@ -1139,22 +1143,21 @@ class networkClassifier(object):
         # corresponding label element is considered as 1 else 0.
         inferPredLabel = np.asarray(inferPredProb > threshProb, dtype=np.int32)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         sess.close()
         tfl.reset_default_graph()    # Reset default graph, else it will be slow if rerun in loop.
 
         return inferLayerOut, inferPredLogits, inferPredProb, inferPredLabel, mean, std
     
-#===============================================================================
-#===============================================================================
-#===============================================================================
-#===============================================================================
-#===============================================================================
-#===============================================================================
-#===============================================================================
-#===============================================================================
-
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
 
 class networkDetector(object):
     '''
@@ -1195,7 +1198,8 @@ class networkDetector(object):
         # other layers which are common with the classifier.
         self.detectorLayerID = 'Detector'
         
-#===============================================================================
+################################################################################
+################################################################################
         
     def model(self, x):
         '''
@@ -1206,7 +1210,7 @@ class networkDetector(object):
         1 max               2 x 2 / 2   480 x 640 x 8      ->   240 x 320 x 8
         2 conv    16        3 x 3 / 1   240 x 320 x 8      ->   240 x 320 x 16
         3 max               2 x 2 / 2   240 x 320 x 16     ->   120 x 160 x 16
-        2a conv    32       3 x 3 / 1   120 x 160 x 16     ->   120 x 160 x 32
+        2a conv    32       3 x 3 / 1   120 x 160 x 32     ->   120 x 160 x 32
         3a max              2 x 2 / 2   120 x 160 x 32     ->   60 x 80 x 32
         4 conv    16        1 x 1 / 1   60 x 80 x 32       ->   60 x 80 x 16
         5 conv    128       3 x 3 / 1   60 x 80 x 16       ->   60 x 80 x 128
@@ -1253,7 +1257,7 @@ class networkDetector(object):
         
         # Output size 480 x 640 x 8 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 480 x 640 x 8 (H x W x D).
         layerIdx = '1'
@@ -1264,7 +1268,7 @@ class networkDetector(object):
         
         # Output size 240 x 320 x 8 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 240 x 320 x 8 (H x W x D).
         layerIdx = '2'
@@ -1286,7 +1290,7 @@ class networkDetector(object):
         
         # Output size 240 x 320 x 16 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 240 x 320 x 16 (H x W x D).
         layerIdx = '3'
@@ -1297,7 +1301,7 @@ class networkDetector(object):
         
         # Output size 120 x 160 x 16 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 120 x 160 x 16 (H x W x D).
         layerIdx = '2a'
@@ -1319,7 +1323,7 @@ class networkDetector(object):
         
         # Output size 120 x 160 x 32 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 120 x 160 x 32 (H x W x D).
         layerIdx = '3a'
@@ -1330,7 +1334,7 @@ class networkDetector(object):
         
         # Output size 60 x 80 x 32 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 60 x 80 x 32 (H x W x D).
         layerIdx = '4'
@@ -1352,7 +1356,7 @@ class networkDetector(object):
         
         # Output size 60 x 80 x 16 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 60 x 80 x 16 (H x W x D).
         layerIdx = '5'
@@ -1374,7 +1378,7 @@ class networkDetector(object):
         
         # Output size 60 x 80 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 60 x 80 x 128 (H x W x D).
         layerIdx = '8'
@@ -1385,7 +1389,7 @@ class networkDetector(object):
         
         # Output size 30 x 40 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 30 x 40 x 128 (H x W x D).
         layerIdx = '9'
@@ -1407,7 +1411,7 @@ class networkDetector(object):
         
         # Output size 30 x 40 x 32 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 30 x 40 x 32 (H x W x D).
         layerIdx = '10'
@@ -1429,7 +1433,7 @@ class networkDetector(object):
         
         # Output size 30 x 40 x 256 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 30 x 40 x 256 (H x W x D).
         layerIdx = '13'
@@ -1440,7 +1444,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 256 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 256 (H x W x D).
         layerIdx = '14'
@@ -1462,7 +1466,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 64 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 64 (H x W x D).
         layerIdx = '15'
@@ -1484,7 +1488,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 512 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Input size 15 x 20 x 512 (H x W x D).
         layerIdx = '18'
@@ -1506,7 +1510,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 15 x 20 x 128 (H x W x D).
         layerIdx = '21'
@@ -1528,7 +1532,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 15 x 20 x 128 (H x W x D).
         layerIdx = '22'
@@ -1550,7 +1554,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 15 x 20 x 128 (H x W x D).
         layerIdx = '23'
@@ -1572,7 +1576,7 @@ class networkDetector(object):
         
         # Output size 15 x 20 x 128 (H x W x D).
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Input size 15 x 20 x 128 (H x W x D).
         layerIdx = '24'
@@ -1601,7 +1605,8 @@ class networkDetector(object):
         
         return x
     
-#===============================================================================
+################################################################################
+################################################################################
 
     def loss(self, logits, labels):
         '''
@@ -1643,7 +1648,7 @@ class networkDetector(object):
         # Now only taking the corresponding regions of the logits.
         negMaskedLogits = tfl.boolean_mask(logits, tfl.logical_not(objectMask))
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Masked predictions of x, y, w and h offset.
         
@@ -1667,7 +1672,7 @@ class networkDetector(object):
         maskedLogitsOneHotVec = tfl.nn.softmax(maskedLogits[:, : nClasses])   # Shape: (?, 6)
         #print(maskedLabelsOneHotVec.get_shape())
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Masked labels of x, y, w and h offset.
         maskedLabelsXoffset = maskedLabels[:, -5]
@@ -1678,7 +1683,7 @@ class networkDetector(object):
         negMaskedLabelsConfidence = negMaskedLabels[:, -1]
         maskedLabelsOneHotVec = maskedLabels[:, : nClasses]
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Calculating the losses.
         
@@ -1702,7 +1707,7 @@ class networkDetector(object):
         lossOneHotVec = tfl.reduce_sum(tfl.square(maskedLabelsOneHotVec - \
                                                   maskedLogitsOneHotVec))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Combining the losses.
         totalLoss = lambdaCoord * (lossX + lossY + lossW + lossH) + lossConfidence + \
@@ -1715,7 +1720,8 @@ class networkDetector(object):
                     
         return totalLoss
 
-#===============================================================================
+################################################################################
+################################################################################
 
     def train(self, trainDir=None, validDir=None):
         '''
@@ -1736,7 +1742,7 @@ class networkDetector(object):
         y = tfl.placeholder(dtype=tfl.float32, name='yPlaceholder', \
                             shape=[None, finalLayerH, finalLayerW, nAnchors, (nClasses + 5)])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -1751,7 +1757,7 @@ class networkDetector(object):
             #for v in listOfModelVars:
                 #print('Model: {}, Variable: {}'.format(modelName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Modifying the predictions into proper formats.
 
@@ -1787,7 +1793,7 @@ class networkDetector(object):
                                       predLogitsYoffset, predLogitsWoffset, \
                                       predLogitsHoffset, predLogitsConfidence], axis=-1)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # CALCULATE LOSS.
         
@@ -1812,7 +1818,7 @@ class networkDetector(object):
         #for v in listOfOptimizerVars:
             #print('Optimizer: {}, Variable: {}'.format(self.optimizerName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # CREATE A LISTS TO HOLD LOSS VALUES.
         
@@ -1825,7 +1831,7 @@ class networkDetector(object):
         statisticsFormat = 'epoch, learningRate, batchSize, trainLoss, validLoss, ' \
                            'epochProcessTime'
                         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -1841,7 +1847,7 @@ class networkDetector(object):
                                                               training=self.isTraining)
         startEpoch = latestEpoch + 1    # Start from the next epoch.
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # LOAD PARAMETERS FROM CHECKPOINTS.
         
@@ -1861,7 +1867,7 @@ class networkDetector(object):
                 print('\nReloaded ALL variables from checkpoint: {}\n'.format(\
                                                             ckptPath))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             else:
                 # else load only weight and biases and skip optimizer 
@@ -1906,7 +1912,7 @@ class networkDetector(object):
             if batchSize != infoDict['batchSize']:
                 minValidLoss = infoDict['minValidLoss'] * batchSize / infoDict['batchSize']
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         else:
             # When there is no saved checkpoints then load the weights of the 
@@ -1934,7 +1940,7 @@ class networkDetector(object):
                        'So cannot initialize the layers of the detector. Aborting.\n')
                 sys.exit()
 
-#-------------------------------------------------------------------------------
+################################################################################
                 
             # Loading these variable weights from the classifier checkpoint using
             # a saver that is defined only for the classifier variables.
@@ -1970,7 +1976,7 @@ class networkDetector(object):
 
             minValidLoss = np.inf
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # TRAINING AND VALIDATION.
         
@@ -2008,7 +2014,7 @@ class networkDetector(object):
             # This is recorded as a string for better visibility in the json file.
             currentStatistics = '{}, {}, {}, '.format(epoch, learningRate, batchSize)
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # Scan entire training dataset.
             while len(listOfRemainingTrainImg) > 0:
@@ -2035,7 +2041,7 @@ class networkDetector(object):
                 
 #                print(trainPredLogits)
 
-#-------------------------------------------------------------------------------                
+################################################################################                
 
                 trainBatchIdx += 1
                 trainBatchProcessTime = time.time() - trainBatchProcessTime
@@ -2050,7 +2056,7 @@ class networkDetector(object):
             # Recording training loss and accuracy in current statistics string.
             currentStatistics += '{}, '.format(trainLoss)
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # VALIDATION PHASE.
             
@@ -2074,7 +2080,7 @@ class networkDetector(object):
             
             print('\n\nValidation phase for epoch {}.\n'.format(epoch))
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # Scan entire validation dataset.
             while len(listOfRemainingValidImg) > 0:
@@ -2100,7 +2106,7 @@ class networkDetector(object):
 
                 validLoss += (validBatchLoss / nValidBatches)
                                     
-#------------------------------------------------------------------------------- 
+################################################################################ 
 
                 validBatchIdx += 1
                 validBatchProcessTime = time.time() - validBatchProcessTime
@@ -2115,7 +2121,7 @@ class networkDetector(object):
             # Recording validation accuracy in current statistics string.
             currentStatistics += '{}, '.format(validLoss)
 
-#-------------------------------------------------------------------------------
+################################################################################
             
             # STATUS UPDATE.
                         
@@ -2162,7 +2168,7 @@ class networkDetector(object):
             elif validLoss < minValidLoss:
                 minValidLoss = validLoss
             
-#-------------------------------------------------------------------------------
+################################################################################
         
         self.isTraining = False   # Indicates the end of training.
         print('\nTraining completed with {} epochs.'.format(nEpochs))
@@ -2170,7 +2176,8 @@ class networkDetector(object):
         sess.close()        # Closing the session.
         tfl.reset_default_graph()    # Reset default graph, else it will be slow if rerun in loop.
 
-#===============================================================================
+################################################################################
+################################################################################
 
     def test(self, testDir=None):
         '''
@@ -2193,7 +2200,7 @@ class networkDetector(object):
         y = tfl.placeholder(dtype=tfl.float32, name='yPlaceholder', \
                             shape=[None, finalLayerH, finalLayerW, nAnchors, (nClasses + 5)])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -2212,7 +2219,7 @@ class networkDetector(object):
                     listOfModelVars.append(v)
                     #print('Model: {}, Variable: {}'.format(modelName, v))
                     
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Modifying the predictions into proper formats.
 
@@ -2248,13 +2255,13 @@ class networkDetector(object):
                                       predLogitsYoffset, predLogitsWoffset, \
                                       predLogitsHoffset, predLogitsConfidence], axis=-1)
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # CALCULATE LOSS.
         
         loss = self.loss(logits=predLogits, labels=y)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -2282,7 +2289,7 @@ class networkDetector(object):
         mean = np.array(infoDict['mean'])
         std = np.array(infoDict['std'])
 
-#-------------------------------------------------------------------------------
+################################################################################
                     
         print('\nStarted Testing...\n')
             
@@ -2306,7 +2313,7 @@ class networkDetector(object):
         testLoss, testAccClassification = 0.0, 0.0
         testBatchIdx = 0    # Counts the number of batches processed.
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # These lists will record the predicted and ground truth boxes for all
         # the images in the entire test dataset. These records will be used to 
@@ -2320,7 +2327,7 @@ class networkDetector(object):
         # detection accuracy.
         totalDetectedClsInstances = np.zeros(nClasses)
 
-#-------------------------------------------------------------------------------
+################################################################################
             
         # Scan entire validation dataset.
         while len(listOfRemainingTestImg) > 0:
@@ -2347,7 +2354,7 @@ class networkDetector(object):
             
             testLoss += (testBatchLoss / nTestBatches)
                                                             
-#------------------------------------------------------------------------------- 
+################################################################################ 
 
             # Evaluating the classification accuracy in this detection phase.
             # This is just to check if the classification accuracy is still 
@@ -2369,7 +2376,7 @@ class networkDetector(object):
                 
                 predLabelMultiHot[idx] = multiHotLabel
                 
-#------------------------------------------------------------------------------- 
+################################################################################ 
             
             matches = np.array(predLabelMultiHot == testLabelBatchMultiHot, dtype=np.int32)
             
@@ -2391,7 +2398,7 @@ class networkDetector(object):
 
             testAccClassification += (100*np.sum(matches1)) / nTestImgs
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # The testLabelBatchClassIdxAndBbox is a list of list of list.
             # Each of the element of this list is an entry for 1 image in the 
@@ -2408,7 +2415,7 @@ class networkDetector(object):
             # No need to convert the last one into list as it is already converted
             # into a list earlier after the function nonMaxSuppression was called.
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             testBatchIdx += 1
             testBatchProcessTime = time.time() - testBatchProcessTime
@@ -2420,7 +2427,7 @@ class networkDetector(object):
                        'batch: {}'.format(testBatchIdx, nTestBatches, testBatchLoss, \
                         printInterval, prettyTime(testBatchProcessTime*printInterval)))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Creating a list of images which have been misclassified.            
             if testBatchIdx == 1:
@@ -2430,7 +2437,7 @@ class networkDetector(object):
                 misclassificationList += [m for mdx, m in enumerate(\
                                            listOfSelectedTestImg) if matches1[mdx] == 0]
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Calculate the mean average precision.
         mAP, APlist = calculateMAP(allTestMultiHot, allTestClassIdxAndBbox, \
@@ -2440,7 +2447,7 @@ class networkDetector(object):
         # Calculate the individual class prediction accuracy.
         clsDetectionAcc = (totalDetectedClsInstances / nTestImgs) * 100
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Now calculating the total number of true and false positives for each 
         # class over the entire dataset.
@@ -2499,7 +2506,7 @@ class networkDetector(object):
         f1score = 2 * (precision * recall) / (precision + recall)
         meanErrorInCount = errorInCount / actualPos
         
-#-------------------------------------------------------------------------------
+################################################################################
                 
         # Printing the average precision and detection accuracy of individual classes
         # and also the recall (which gives an estimate of the error in count 
@@ -2515,7 +2522,7 @@ class networkDetector(object):
         
         print('\nMean Average Precision (mAP) over given dataset: {:0.3f} %'.format(mAP))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Save the misclassified examples list in a json file (use json.dumps 
         # not json.dump).
@@ -2524,7 +2531,7 @@ class networkDetector(object):
             infoDict = misclassificationList
             json.dump(misclassificationList, infoFile, indent=4, separators=(',', ':'))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         testingTime = time.time() - testingTime
         print('\n\nTesting done. Test Loss: {:0.6f}, ' \
@@ -2537,7 +2544,8 @@ class networkDetector(object):
         
         return testLoss, testingTime
 
-#===============================================================================
+################################################################################
+################################################################################
 
     def batchInference(self, imgBatch):
         '''
@@ -2555,7 +2563,7 @@ class networkDetector(object):
         x = tfl.placeholder(dtype=tfl.float32, name='xPlaceholder', \
                             shape=[None, inImgH, inImgW, 3])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -2574,7 +2582,7 @@ class networkDetector(object):
                     listOfModelVars.append(v)
                     #print('Model: {}, Variable: {}'.format(modelName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Modifying the predictions into proper formats.
 
@@ -2610,7 +2618,7 @@ class networkDetector(object):
                                       predLogitsYoffset, predLogitsWoffset, \
                                       predLogitsHoffset, predLogitsConfidence], axis=-1)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -2638,7 +2646,7 @@ class networkDetector(object):
         mean = np.array(infoDict['mean'])
         std = np.array(infoDict['std'])
 
-#-------------------------------------------------------------------------------
+################################################################################
 
 #        # Normalizing by mean and std as done in case of training.
 #        imgBatch = (imgBatch - mean) / std
@@ -2658,14 +2666,15 @@ class networkDetector(object):
         
         inferPredResult = sess.run(predResult, feed_dict=feedDict)
                                                                                         
-#-------------------------------------------------------------------------------
+################################################################################
         
         sess.close()
         tfl.reset_default_graph()    # Reset default graph, else it will be slow if rerun in loop.
         
         return inferLayerOut, inferPredLogits, inferPredResult, mean, std
     
-#===============================================================================
+################################################################################
+################################################################################
 
     def runInLoop(self, inferDir):
         '''
@@ -2681,7 +2690,7 @@ class networkDetector(object):
         x = tfl.placeholder(dtype=tfl.float32, name='xPlaceholder', \
                             shape=[None, inImgH, inImgW, 3])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -2700,7 +2709,7 @@ class networkDetector(object):
                     listOfModelVars.append(v)
                     #print('Model: {}, Variable: {}'.format(modelName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Modifying the predictions into proper formats.
 
@@ -2736,7 +2745,7 @@ class networkDetector(object):
                                       predLogitsYoffset, predLogitsWoffset, \
                                       predLogitsHoffset, predLogitsConfidence], axis=-1)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -2764,7 +2773,7 @@ class networkDetector(object):
         mean = np.array(infoDict['mean'])
         std = np.array(infoDict['std'])
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Running the loop now.
         listOfImgs = os.listdir(os.path.join(inferDir, 'images'))
@@ -2800,12 +2809,13 @@ class networkDetector(object):
                                          
         cv2.destroyAllWindows()
                                    
-#-------------------------------------------------------------------------------
+################################################################################
         
         sess.close()
         tfl.reset_default_graph()    # Reset default graph, else it will be slow if rerun in loop.
             
-#===============================================================================
+################################################################################
+################################################################################
 
     def calcRBCperformance(self, inferDir):
         '''
@@ -2826,7 +2836,7 @@ class networkDetector(object):
         x = tfl.placeholder(dtype=tfl.float32, name='xPlaceholder', \
                             shape=[None, inImgH, inImgW, 3])
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # EVALUATE MODEL OUTPUT.
         
@@ -2845,7 +2855,7 @@ class networkDetector(object):
                     listOfModelVars.append(v)
                     #print('Model: {}, Variable: {}'.format(modelName, v))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Modifying the predictions into proper formats.
 
@@ -2881,7 +2891,7 @@ class networkDetector(object):
                                       predLogitsYoffset, predLogitsWoffset, \
                                       predLogitsHoffset, predLogitsConfidence], axis=-1)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # START SESSION.
         
@@ -2909,7 +2919,7 @@ class networkDetector(object):
         mean = np.array(infoDict['mean'])
         std = np.array(infoDict['std'])
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Running the loop now.
         listOfImgs = os.listdir(os.path.join(inferDir, 'images'))
@@ -2958,7 +2968,7 @@ class networkDetector(object):
             detectedBatchClassNames = detectedBatchClassNames[0]
             detectedBatchBboxes = detectedBatchBboxes[0]
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Now we also explicitly calculate the precision and recall beteween
             # the infected and normal rbc classes, because that is what shows the
@@ -3005,7 +3015,7 @@ class networkDetector(object):
                 # Else a false positive or false negative.
                 else:   continue
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Counting the number of true rbc's in the image, to get a final 
             # count of how many of them were not detected.            
@@ -3014,7 +3024,7 @@ class networkDetector(object):
                 elif l['className'] == 'Infected':  nTotalInfectedRbc += 1
                 else:   continue                
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Counting the number of true positives and negatives in the images,
             # based on the presence and absence of infection.
@@ -3036,7 +3046,7 @@ class networkDetector(object):
 #            key = cv2.waitKey(1)
 #            if key & 0xFF == 27:    break
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         cv2.destroyAllWindows()
 
@@ -3047,7 +3057,7 @@ class networkDetector(object):
         rbcSpecificity = rbcTN / (rbcTN + rbcFP)
         rbcF1score = 2 * (rbcPrecision * rbcRecall) / (rbcPrecision + rbcRecall)
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Calculating the precision, recall (or sensitivity) and specificity of 
         # the images based on the presence and absence of the infection. 
@@ -3057,7 +3067,7 @@ class networkDetector(object):
         rbcImgSpecificity = rbcImgTN / (rbcImgTN + rbcImgFP)
         rbcImgF1score = 2 * (rbcImgPrecision * rbcImgRecall) / (rbcImgPrecision + rbcImgRecall)
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         print('\n\nTime Taken: {}, RBC Precision: {:0.3f}, RBC Recall: {:0.3f}, ' \
                'RBC Specificity: {:0.3f}, RBC F1score: {:0.3f}\n'.format(\
@@ -3077,7 +3087,7 @@ class networkDetector(object):
                       (rbcFP / nTotalNormalRbc * 100), (rbcTN / nTotalNormalRbc * 100), \
                       ((nTotalNormalRbc - rbcFP - rbcTN) / nTotalNormalRbc * 100)))
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         print('\n\nRBC Image Precision: {:0.3f}, RBC Image Recall: {:0.3f}, ' \
                'RBC Image Specificity: {:0.3f}, RBC Image F1score: {:0.3f}\n'.format(\
@@ -3097,12 +3107,14 @@ class networkDetector(object):
                       (rbcImgFP / nNormalRbcImg * 100), (rbcImgTN / nNormalRbcImg * 100), \
                       ((nNormalRbcImg - rbcImgFP - rbcImgTN) / nNormalRbcImg * 100)))
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         sess.close()
         tfl.reset_default_graph()    # Reset default graph, else it will be slow if rerun in loop.
             
-#===============================================================================
+################################################################################
+################################################################################
+
 
 
         

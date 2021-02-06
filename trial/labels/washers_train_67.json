@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "washers",
+        "bboxW": 115,
+        "classIdx": 2,
+        "posX": 502,
+        "posY": 179,
+        "samplePath": "color_images/washers/train/washers_55.png",
+        "tlY": 108,
+        "tlX": 444,
+        "bgPath": "background/train/ori_18.png",
+        "bboxH": 141
+    }
+}

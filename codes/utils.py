@@ -9,7 +9,8 @@ parameters used by all the other scripts.
 import cv2, numpy as np, os, time, datetime, copy, sys, json, random, shutil
 import matplotlib.pyplot as plt
 
-#===============================================================================
+################################################################################
+################################################################################
 
 # Global variables and parameters.
 
@@ -17,15 +18,13 @@ import matplotlib.pyplot as plt
 # callback function.
 cBix, cBiy = -1, -1
 
-#-------------------------------------------------------------------------------
+################################################################################
 
-classNameToIdx = {'nuts': 0, 'coins': 1, 'washers': 2, \
-                   'gears': 3, 'emptyBin': 4, 'crankArmW': 5, \
-                   'crankArmX': 6, 'crankShaft': 7}
+classNameToIdx = {'nuts': 0, 'washers': 1, 'gears': 2, 'emptyBin': 3, \
+                  'crankArmW': 4, 'crankShaft': 5}
 
-classIdxToName = {0: 'nuts', 1: 'coins', 2: 'washers', \
-                   3: 'gears', 4: 'emptyBin', 5: 'crankArmW', \
-                   6: 'crankArmX', 7: 'crankShaft'}
+classIdxToName = {0: 'nuts', 1: 'washers', 2: 'gears', 3: 'emptyBin', \
+                  4: 'crankArmW', 5: 'crankShaft'}
 
 savedImgFileExtn = '.png'
 nClasses = len(classIdxToName)
@@ -46,29 +45,27 @@ recordedStd = np.array([1.0, 1.0, 1.0])  # Std of train dataset.
 modelName = 'cnn_model'
 savedCkptName = modelName + '_ckpt'
 
-#-------------------------------------------------------------------------------
+################################################################################
 
 # Colors meant for segmentation label images (if created).
 
-classNameToColor = {'nuts':   [255,255,0],   'coins':   [128,128,0], \
-                     'washers':   [190,190,250], 'gears': [0,128,128], \
-                     'emptyBin':    [128,0,0],     'crankArmW': [255,0,0],   \
-                     'crankArmX': [0,225,255],   'crankShaft': [255,0,255]}  # BGR format.
+classNameToColor = {'nuts':   [255,255,0], 'washers':   [190,190,250], \
+                    'gears': [0,128,128], 'emptyBin':    [128,0,0], \
+                    'crankArmW': [255,0,0], 'crankShaft': [255,0,255]}  # BGR format.
 
-classIdxToColor = {0: [255,255,0], 1: [128,128,0], \
-                    2: [190,190,250],   3: [0,128,128], \
-                    4: [128,0,0],   5: [255,0,0],   \
-                    6: [0,225,255], 7: [255,0,255], \
-                    8: [0,0,255],   9: [0,255,0]}  # BGR format.
+partialOBJcolor = [128,128,128]     # 'grey' for partial object color.
 
-colorDict = {'red':   [0,0,255],    'green':   [0,255,0],     'yellow': [0,225,255],    \
-              'blue':  [255,0,0],     'orange': [48,130,245], 'purple':   [180,30,145],  \
-              'cyan':  [255,255,0],  'magenta': [255,0,255],   'lime':   [60,245,210],   \
-              'pink':  [190,190,250], 'teal':   [128,128,0],  'lavender': [255,190,230], \
-              'brown': [40,110,170], 'beige':   [200,250,255], 'maroon': [0,0,128],      \
-              'mint':  [195,255,170], 'olive':  [0,128,128],  'coral':    [180,215,255], \
-              'navy':  [128,0,0],    'grey':    [128,128,128], 'white':  [255,255,255],  \
-              'black': [0,0,0]}  # BGR format.
+classIdxToColor = {0: [255,255,0], 1: [190,190,250], 2: [0,128,128], \
+                   3: [128,0,0], 4: [255,0,0], 5: [255,0,255], 8: [0,0,255], \
+                   9: [0,255,0]}  # BGR format.
+
+colorDict = {'red':   [0,0,255],     'green':   [0,255,0],     'yellow':   [0,225,255],   \
+             'blue':  [255,0,0],     'orange':  [48,130,245],  'purple':   [180,30,145],  \
+             'cyan':  [255,255,0],   'magenta': [255,0,255],   'lime':     [60,245,210],  \
+             'pink':  [190,190,250], 'teal':    [128,128,0],   'lavender': [255,190,230], \
+             'brown': [40,110,170],  'beige':   [200,250,255], 'maroon':   [0,0,128],     \
+             'mint':  [195,255,170], 'olive':   [0,128,128],   'coral':    [180,215,255], \
+             'navy':  [128,0,0],     'white':   [255,255,255], 'black': [0,0,0]}  # BGR format.
 
 # This dictionary gives the weights to be assigned to the pixels of different 
 # colors, since the number of pixels of different colors is not the same which 
@@ -85,7 +82,7 @@ classIdxToAvgPixelsPerClassObj = {0: 4986.603, 1: 4994.226, 2: 4879.284, 3: 2744
                                    4: 6694.133, 5: 1982.704, 6: 243.549, 7: 613.506, \
                                    8: 1092.446, 9: 1040.280}
 
-#-------------------------------------------------------------------------------
+################################################################################
 
 # Variables for the detector.
 
@@ -93,8 +90,10 @@ classIdxToAvgPixelsPerClassObj = {0: 4986.603, 1: 4994.226, 2: 4879.284, 3: 2744
 # finalLayerH x finalLayerW sized image.
 #anchorList = [[3.1, 3.1], [6.125, 3.1], [3.1, 6.125], \
                #[6.125, 6.125], [5.32, 5.32], [2.7, 2.7]]
-anchorList = [[4.5, 4.5], [3.5, 5.5], [5.5, 3.5], \
-               [5.5, 10], [10, 5.5], [4.5, 6.5], [6.5, 4.5]]
+#anchorList = [[4.5, 4.5], [3.5, 5.5], [5.5, 3.5], \
+               #[5.5, 10], [10, 5.5], [4.5, 6.5], [6.5, 4.5]]
+anchorList = [[2.0, 2.0], [2.0, 4.0], [4.0, 2.0], [4.0, 4.0], [3.0, 3.0], \
+              [3.0, 10.0], [10.0, 3.0]]     # Obtained from height vs width bounding boxes plot.
 nAnchors = len(anchorList)
 
 ckptDirPathDetector = ckptDirPath + '_detector'
@@ -108,7 +107,78 @@ lambdaNoObj = 0.5
 lambdaClass = 2.5
 threshProbDetection = 0.2    # Beyond this threshold, a label element is 1 else 0.
 
-#===============================================================================
+################################################################################
+################################################################################
+
+def robustInput(inType='str', inLwRange=-np.inf, inUpRange=np.inf, specificVal=[], 
+                inputMsg='Enter input', errorMsg='Invalid input! Try Again.'):
+    '''
+    This function is used to take input from the user. When the parameters are 
+    defined properly, then this function makes sure that the user cannot enter 
+    invalid inputs. It is compatible with both python2 and python3. 
+    The input type is defined by 'inType', which can be 'int', 'float', 'str' or 
+    'bool'. However, it should be noted that 'int' and 'np.int' are different. 
+    And similarly 'float' and 'np.float' are different.
+    When input is int or float, the user can define ranges with inLwRange and 
+    inUpRange. This way the function will only accept an input if it is within 
+    the range inLwRange <= input < inUpRange. For example, if you have to ensure 
+    the input is a +ve non-zero integer < 100, then put inLwRange = 1 and 
+    inUpRange = 100. These parameters are not used if the input is an 'str. 
+    If However your input should be a specific value, of a specific set of values, 
+    then these are stored in the 'specificVal' list. E.g. if the input should only
+    be 2, then define specificVal = [2]. In that case the inLwRange and inUpRange
+    parameters will be ignored. The specificVal list can also be used for float 
+    or str inputs or for more that one specific value. E.g. if the input has to 
+    be one of the following: 2.2, 3.7, -4.5, 0.0, then define the 
+    specificVal = [2.2, 3.7, -4.5, 0.0]. Same thing can be used for different 
+    value of str and int inputs. Also, if you have a case where the input can be
+    of different data types like the following: 2, 3, -4.5, 'ijkl', then define 
+    specificVal = ['2', '3', '-4.5', 'ijkl']. I.e. put the valid values as strings
+    as that is the default format in which the function takes in the raw input 
+    from the user. Also, if your valid input is a string like 'hello', then set 
+    specificVal = ['hello']. And input the value hello from the terminal, not 
+    'hello'. I.e. dont use the quotes while inputing string inputs.
+    The input message and error message can be modified to provide the user a 
+    better hint of the type of input to be given.
+    Usage example:
+    a = robustInput(inType='int', inLwRange=0, inUpRange=250)
+    print(a)
+    '''
+    quitMsg = '(or press \'Ctrl + \\\' to quit)'
+    
+    while True:     # Taking user input for number of rows of M.
+        try:
+            if sys.version[0] == '2':     # Python 2 uses 'raw_input' function.
+                inp = raw_input('{} {}: '.format(inputMsg, quitMsg))
+            elif sys.version[0] == '3':     # Python 3 uses 'input' function.
+                inp = input('{} {}: '.format(inputMsg, quitMsg))
+            
+            # Analyzing the input.
+            if inp == 'q' or inp == 'Q':    # If you want to exit on pressing q or Q.
+                #exit(0)
+                pass
+            
+            if inType == 'int':         inp = int(inp)
+            elif inType == 'float':     inp = float(inp)
+            elif inType == 'bool':      inp = bool(inp)
+            elif inType == 'str':       inp = str(inp)
+
+            if inType != 'str' and len(specificVal) == 0:
+                if inp < inLwRange:     print('{} {}.'.format(errorMsg, quitMsg))
+                elif inp >= inUpRange:  print('{} {}.'.format(errorMsg, quitMsg))
+                else:                   break
+            else:   # When input is 'str' or there are values inside the specificVal.
+                if inp in specificVal:  break
+                else:       print('{} {}.'.format(errorMsg, quitMsg))
+                #else:       print(inp, specificVal[0], inp==specificVal[0])
+                
+        except ValueError:
+            print('{} {} 444.'.format(errorMsg, quitMsg))
+
+    return inp
+    
+################################################################################
+################################################################################
 
 def horiFlipSampleAndMask(sample=None, mask=None):
     '''
@@ -124,7 +194,8 @@ def horiFlipSampleAndMask(sample=None, mask=None):
 
     return newSample, newMask
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def vertFlipSampleAndMask(sample=None, mask=None):
     '''
@@ -140,7 +211,8 @@ def vertFlipSampleAndMask(sample=None, mask=None):
 
     return newSample, newMask
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def random90degFlipSampleAndMask(sample=None, mask=None):
     '''
@@ -174,7 +246,8 @@ def random90degFlipSampleAndMask(sample=None, mask=None):
 
     return newSample, newMask, w, h
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def randomRotationSampleAndMask(sample=None, mask=None):
     '''
@@ -231,7 +304,8 @@ def randomRotationSampleAndMask(sample=None, mask=None):
 
     return newSample, newMask, w, h
 
-#===============================================================================
+#################################################################################
+#################################################################################
 
 def fixSampleToBg(sample=None, mask=None, bg=None, tlX=None, tlY=None):
     '''
@@ -295,15 +369,256 @@ def fixSampleToBg(sample=None, mask=None, bg=None, tlX=None, tlY=None):
     
     return img, posX, posY, bboxW, bboxH
 
-#===============================================================================
+################################################################################
+################################################################################
+
+def createTightMasksAndSamples(imgDir=None, maskDir=None, replaceOriginal=False):
+    '''
+    Samples are affixed on the background images using masks. But sometimes, 
+    the masks have a thick black border around the white region where the object
+    is located. Hence in that case if the dimension of the mask image is taken 
+    as the dimension of the bounding box, then the bounding box is not very 
+    tight around the object. Hence to take care of these cases, the thick border 
+    around the white portion of the mask is removed along with the removal of 
+    the corresponding region on the sample image. This function does that.
+    If the replaceOriginal flag is True, then the function will save the new 
+    images and masks replacing the old ones. If this flag is false, then the 
+    function will create new folders and save the new images and masks there.
+    If original folder names were 'crankArmW' and 'crankArmW_masks' then the new 
+    folder name will be 'crankArmW_new' and 'crankArmW_masks_new'. There may be 
+    subfolders like 'train', 'test', 'valid' inside the original 'crankArmW' and 
+    'crankArmW_masks' folders. Hence identical folders 'train', 'test', 'valid' 
+    will be created inside the new folders as well with the same names for the 
+    subfolders.
+    '''
+    if imgDir is None or maskDir is None:
+           print('\nERROR: one or more input arguments missing ' \
+                  'in createTightMasksAndSamples. Aborting.\n')
+           sys.exit()
+           
+    imgList = os.listdir(imgDir)
+    nImgs = len(imgList)
+    
+    for idx, imgName in enumerate(imgList):
+        img = cv2.imread(os.path.join(imgDir, imgName))
+        imgH, imgW, _ = img.shape
+
+        # If name of sample is Eosinophil_1.png, the name of the 
+        # corresponding mask is Eosinophil_1_mask.png
+        maskName = imgName.split('.')[0] + '_mask.' + imgName.split('.')[1]
+        mask = cv2.imread(os.path.join(maskDir, maskName))
+        
+        # It may happen that the mask itself already tightly bounds the object.
+        # So, to make the method more generalized, a black border is appended to all 
+        # sides of the mask and then contours are extracted anyway to find the bounding 
+        # boxes. This way the cases of both tight masks and not-tight masks are dealt 
+        # with in the same manner.
+        
+        # Find the bounding box around the biggest contour in the mask image, 
+        # and return that as the bounding box of the object so that this box 
+        # tightly bounds the object and not include any black boundary around 
+        # the white portion of the object.
+        # But to include the cases where the mask is already tightly bounding the 
+        # object, black borders are appended to all sides of the mask before 
+        # finding the contours.
+        if len(mask.shape) == 3:    # If the mask has 3 channels.
+            appendedMask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)   # Convert to 1 channel.
+        else:
+            appendedMask = copy.deepcopy(appendedMask)
+        
+        borderThickness = 10
+        leftRightBorder = np.zeros((imgH, borderThickness), dtype=np.uint8)
+        appendedMask = np.hstack((leftRightBorder, appendedMask, leftRightBorder))
+        topBotBorder = np.zeros((borderThickness, imgW+borderThickness*2), dtype=np.uint8)
+        appendedMask = np.vstack((topBotBorder, appendedMask, topBotBorder))    
+        
+        returnedTuple = cv2.findContours(appendedMask, mode=cv2.RETR_TREE, \
+                                         method=cv2.CHAIN_APPROX_SIMPLE)
+        contours = returnedTuple[-2]
+        
+        biggestContour = contours[0]
+        for c in contours:      # Finding the biggest contour.
+            if cv2.contourArea(c) > cv2.contourArea(biggestContour):
+                biggestContour = c
+        
+        # Finding the bounding rectangle around the biggestContour.
+        bboxX, bboxY, bboxW, bboxH = cv2.boundingRect(biggestContour)
+    
+        # Now mapping the bboxX and bboxY to the dimension of the original mask.
+        # This is done by subtracting the borderThickness from the bboxX 
+        # and bboxY values.
+        bboxX, bboxY = bboxX - borderThickness, bboxY - borderThickness
+        
+        # Now crop out only the region inside the bounding box from the sample 
+        # and the mask save it as the new tight sample and tight mask.
+        newImg = img[bboxY : bboxY + bboxH, bboxX : bboxX + bboxW, :]
+        newMask = mask[bboxY : bboxY + bboxH, bboxX : bboxX + bboxW, :]
+        
+        if replaceOriginal:
+            imgSaveDir, maskSaveDir = imgDir, maskDir
+        else:
+            mainFolderName = '/'.join(imgDir.split('/')[:-1]) + '_new'
+            subFolderName = imgDir.split('/')[-1]
+            imgSaveDir = os.path.join(mainFolderName, subFolderName)
+        
+            mainFolderName = '/'.join(maskDir.split('/')[:-1]) + '_new'
+            subFolderName = maskDir.split('/')[-1]
+            maskSaveDir = os.path.join(mainFolderName, subFolderName)
+            
+            # Create the directories if not present.
+            if not os.path.exists(imgSaveDir):    os.makedirs(imgSaveDir)
+            if not os.path.exists(maskSaveDir):    os.makedirs(maskSaveDir)
+        
+        cv2.imwrite(os.path.join(imgSaveDir, imgName), newImg)
+        cv2.imwrite(os.path.join(maskSaveDir, maskName), newMask)
+        
+        print('[{}\{}] Saved image {}.'.format(idx+1, nImgs, imgName))
+
+################################################################################
+################################################################################
+
+def blankBackground(bgLoc=None, imgSaveLoc=None, labelSaveLoc=None, \
+                     nImgs=None, imgH=None, imgW=None,
+                     saveNameSuffix=None, createSegmentLabelImg=False, \
+                     segmentSaveLoc=None):
+    '''
+    This function creates images where there are no wbc cells. Only a background
+    image of rbc cells.
+    These images are created by taking backgrounds from bgLoc.
+    The backgrounds are selected randomly from the available collection. 
+    Total number of images created is nImgs. Images are saved in the imgSaveLoc.
+    The labels of the corresponding images are also created as json files in 
+    the labelSaveLoc.
+    imgH and imgW defines the size of the image to be created.
+    The saveNameSuffix is a string, that will be appended to the name of the 
+    image file while saving. This is important to identify the dataset from 
+    where the image has been synthesized.
+    The createSegmentLabelImg indicates if a semantic segmentation label image 
+    has to be created as well. The colors of the segments for different objects 
+    are mentioned in the global variables. Segment save location is also provided.
+    '''
+    
+    if bgLoc is None or imgSaveLoc is None or labelSaveLoc is None \
+       or nImgs is None or imgH is None or imgW is None or saveNameSuffix is None:
+           print('\nERROR: one or more input arguments missing ' \
+                  'in blankBackground. Aborting.\n')
+           sys.exit()
+    
+    if createSegmentLabelImg:
+        if segmentSaveLoc is None:
+            print('\nERROR: one or more input arguments missing ' \
+                   'in blankBackground for segments. Aborting.\n')
+            sys.exit()
+    
+################################################################################
+        
+    # Checking if there is any label file for the bg images present or not. 
+    # These files will include rbc annotations, if present.
+    imgFolderParentDir = '\\'.join(bgLoc.split('\\')[:-1])
+    imgFolderName = bgLoc.split('\\')[-1]
+    labelFolderName = imgFolderName + '_labels'
+    labelFolderLoc = os.path.join(imgFolderParentDir, labelFolderName)
+    
+    if createSegmentLabelImg:
+        bgSegmentFolderName = imgFolderName + '_segments'
+        bgSegmentFolderLoc = os.path.join(imgFolderParentDir, bgSegmentFolderName)
+
+################################################################################
+    
+    # Number of files already existing in the imgSaveLoc is calculated. This 
+    # will be used to assign the index to the file while saving.
+    nAlreadyExistingFiles = len(os.listdir(imgSaveLoc))
+    
+    bgList = []
+    
+    # Creating the images.    
+    for i in range(nImgs):
+        # Fill the lists if they are empty.
+        # As a sample and a bg is used for creating an image, they are deleted
+        # from this list. So if this list gets empty, then it is reinitialized.
+        if len(bgList) == 0:      bgList = os.listdir(bgLoc)
+        
+        # Select a background at random.
+        bgIdx = np.random.randint(len(bgList))
+        bgName = bgList[bgIdx]
+        bg = cv2.imread(os.path.join(bgLoc, bgName))
+        
+        # Remove the entry of this bg from the respective lists so 
+        # that they are not used again. It will only be used again if all the 
+        # existing bg images in the lists are used up and the lists become empty.
+        bgList.pop(bgIdx)
+
+################################################################################
+        
+        # Setting the background.
+        
+        # It may happen that the bg image is larger than size imgH x imgW.
+        # In that case, a imgH x imgW region is cropped out from the bg image.
+        bgH, bgW, _ = bg.shape
+        
+        # Determining the x and y of the top left corner of the region to be
+        # cropped out from the bg image.
+        bgTlY = np.random.randint(bgH - imgH) if bgH > imgH else 0
+        bgTlX = np.random.randint(bgW - imgW) if bgW > imgW else 0
+        
+        # IMPORTANT: The bg image must be larger or equal in size to imgH x imgW.
+        newBg = bg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
+        
+        newBgH, newBgW, _ = newBg.shape
+
+################################################################################
+
+        # Also doing the same processing for the segmented image label.
+        if createSegmentLabelImg:
+            bgSegName = 'seg_' + '_'.join(bgName.split('_')[1:])
+            bgSegImg = cv2.imread(os.path.join(bgSegmentFolderLoc, bgSegName))
+            
+            newBgSegImg = bgSegImg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
+            
+################################################################################
+
+        # Saving the image.
+        idx = nAlreadyExistingFiles + i    # This is the image index.
+        
+        imgSaveName = 'back' + '_' + \
+                      saveNameSuffix + '_' + str(idx) + savedImgFileExtn
+        # The file extension is explicitly specified here because, many of the 
+        # background images have .jpg or .png file extension as well. So to 
+        # make the saved file consistent, this is specified.
+                
+        cv2.imwrite(os.path.join(imgSaveLoc, imgSaveName), newBg)
+        
+        # Saving the segmented image label as well if createSegmentLabelImg is True.
+        if createSegmentLabelImg:
+            segImgSaveName = 'back' + '_seg' + '_' + \
+                             saveNameSuffix + '_' + str(idx) + savedImgFileExtn
+            cv2.imwrite(os.path.join(segmentSaveLoc, segImgSaveName), newBgSegImg)
+                
+        # Creating the label json file.
+        labelSaveName = 'back' + '_' + \
+                        saveNameSuffix + '_' + str(idx) + '.json'
+                
+        infoDict = {}
+        
+        with open(os.path.join(labelSaveLoc, labelSaveName), 'w') as infoFile:
+            json.dump(infoDict, infoFile, indent=4, separators=(',', ': '))
+
+################################################################################
+
+        #cv2.imshow('image', newBg)
+        # Show the segment label as well if the createSegmentLabelImg is True.
+        if createSegmentLabelImg:   cv2.imshow('segment label', newBgSegImg)
+        cv2.waitKey(30)
+
+################################################################################
+################################################################################
 
 def singleInstance(sampleLoc=None, maskLoc=None, \
                     bgLoc=None, imgSaveLoc=None, labelSaveLoc=None, \
                     nImgs=None, imgH=None, imgW=None,
                     saveNameSuffix=None, do90degFlips=False, \
                     doHoriFlip=False, doVertFlip=False, doRandomRot=False, \
-                    clipSample=False, createSegmentLabelImg=False, \
-                    segmentSaveLoc=None):
+                    createSegmentLabelImg=False, segmentSaveLoc=None):
     '''
     This function creates images where an object of a certain class appears 
     just one time.
@@ -327,8 +642,6 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
     by random angles, while getting affixed on the bg image.
     Flags doHoriFlip and doVertFlip indicates if the sample should be flipped 
     horizontally or vertically (randomly) before getting affixed on bg image.
-    The clipSample flag indicates if there will be any clipping of the sample
-    when it is affixed on the bg.
     The createSegmentLabelImg indicates if a semantic segmentation label image 
     has to be created as well. The colors of the segments for different objects 
     are mentioned in the global variables. Segment save location is also provided.
@@ -350,7 +663,7 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
     # Flag indicating mask present.
     maskPresent = False if maskLoc is None else True
     
-#-------------------------------------------------------------------------------
+################################################################################
         
     # Checking if there is any label file for the bg images present or not. 
     # These files will include rbc annotations, if present.
@@ -363,7 +676,7 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
         bgSegmentFolderName = imgFolderName + '_segments'
         bgSegmentFolderLoc = os.path.join(imgFolderParentDir, bgSegmentFolderName)
 
-#-------------------------------------------------------------------------------
+################################################################################
     
     # Number of files already existing in the imgSaveLoc is calculated. This 
     # will be used to assign the index to the file while saving.
@@ -412,7 +725,7 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
         sampleList.pop(sampleIdx)
         bgList.pop(bgIdx)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Setting the background.
         
@@ -430,7 +743,7 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
         
         newBgH, newBgW, _ = newBg.shape
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Also doing the same processing for the segmented image label.
         if createSegmentLabelImg:
@@ -438,224 +751,49 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
             bgSegImg = cv2.imread(os.path.join(bgSegmentFolderLoc, bgSegName))
             
             newBgSegImg = bgSegImg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
-            
-#-------------------------------------------------------------------------------
 
-        # Clip sample at the image boundary.
-
-        # If the clipSample flag is True, then the other data augmentation like
-        # flipping and rotation is ignored (even if their corresponding flags
-        # are True). As this does not make much of a difference.
-
-        if clipSample:
-            # All clipped samples will have the common name 'partialOBJ'.
-            className = 'partialOBJ'
-            
-            newSample, newMask = sample, mask
-
-            # Whether the clipping will happen at the side or the corner of the
-            # image, will be again selected randomly.
-            number2 = np.random.randint(100)
+################################################################################
                 
-            # The sample will be affixed in a location on the bg, such that 
-            # it gets clipped by half. The clipping is always done by half 
-            # because, what matters during this clipping is that, the sample 
-            # should only be visible by a variable amount inside the image.
-            # Now because of the variation of the size of the samples, they 
-            # will anyway be visible by variable amount inside the image 
-            # even if the percentage of clipping is kept constant. So to 
-            # keep things simple the clipping is always done by 50%.
-            # Because of the same reason as stated in the previous case, 
-            # the clipping at the corners is kept constant at 25% only. The 
-            # variability in size of the samples will take care of the rest.
-            
-            newSampleH, newSampleW, _ = newSample.shape
-
-            tlX = newBgW - int(newSampleW * 0.5)
-                
-            if number2 < 15:
-                # Clip at the left side of the image.
-                tlY = np.random.randint(newBgH - newSampleH)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-                
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    
-
-            elif number2 >= 15 and number2 < 30:
-                # Clip at the top side of the image (which is same as clip on 
-                # left + flip by 90 deg).
-                tlY = np.random.randint(newBgH - newSampleH)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-
-                image = cv2.transpose(cv2.flip(image, 1))
-                posX, posY, = posY, imgW - posX
-                bboxW, bboxH = bboxH, bboxW
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 1))
-                    
-
-            elif number2 >= 30 and number2 < 45:
-                # Clip at the right side of the image (which is same as clip on 
-                # left + flip by 180 deg).
-                tlY = np.random.randint(newBgH - newSampleH)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-
-                image = cv2.flip(image, -1)
-                posX, posY, = imgW - posX, imgH - posY
-            
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    segImg = cv2.flip(segImg, -1)
-                    
-
-            elif number2 >= 45 and number2 < 60:
-                # Clip at the bottom side of the image (which is same as clip on 
-                # left + flip by 270 deg).
-                tlY = np.random.randint(newBgH - newSampleH)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-
-                image = cv2.transpose(cv2.flip(image, 0))
-                posX, posY, = imgH - posY, posX
-                bboxW, bboxH = bboxH, bboxW
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 0))
-
-#-------------------------------------------------------------------------------
-
-            elif number2 >= 60 and number2 < 70:
-                # Clip at the bottom right corner.
-                tlY = newBgH - int(newSampleH * 0.5)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-                
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    
-
-            elif number2 >= 70 and number2 < 80:
-                # Clip at the top right corner (which is same as clip on the 
-                # bottom right corner + flip by 90 deg). 
-                tlY = newBgH - int(newSampleH * 0.5)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-
-                image = cv2.transpose(cv2.flip(image, 1))
-                posX, posY, = posY, imgW - posX
-                bboxW, bboxH = bboxH, bboxW
-                    
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 1))
-
-
-            elif number2 >= 80 and number2 < 90:
-                # Clip at the top left corner (which is same as clip on the 
-                # bottom right corner + flip by 180 deg). 
-                tlY = newBgH - int(newSampleH * 0.5)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-
-                image = cv2.flip(image, -1)
-                posX, posY, = imgW - posX, imgH - posY
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    segImg = cv2.flip(segImg, -1)
-
-
-            elif number2 >= 90 and number2 < 100:
-                # Clip at the bottom left corner (which is same as clip on the 
-                # bottom right corner + flip by 270 deg). 
-                tlY = newBgH - int(newSampleH * 0.5)
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-
-                image = cv2.transpose(cv2.flip(image, 0))
-                posX, posY, = imgH - posY, posX
-                bboxW, bboxH = bboxH, bboxW
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 0))
-
-#-------------------------------------------------------------------------------
-                
-        # If the clipSample is False, then the other augmentations like flipping
-        # and rotations are done.
-        
-        elif doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
+        if doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
 
             # Augmenting the samples before affixing onto the background.
             
-            # There are altogether 4 kinds of augmentation that this function 
-            # can do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
+            # There are altogether 4 kinds of augmentation that this function can 
+            # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
             # augmentation.
             # What kind of augmentation is to be done for this sample is chosen 
             # at random with a equal probability (20% for each type).
             # However, if the type of augmentation chosen doen not have it's 
             # corresponding flag True, then no augmentation is done.
-            
+    
             number = np.random.randint(100)
             
-            # Horizontal flip.
+            # Horizontal flip sample.
             
             if number < 20 and doHoriFlip:
                 newSample, newMask = horiFlipSampleAndMask(sample, mask)
                 bboxH, bboxW, _ = newSample.shape
 
-#-------------------------------------------------------------------------------
-
-            # Vertical flip.
+################################################################################
+    
+            # Vertical flip sample.
     
             elif number >= 20 and number < 40 and doVertFlip:
                 newSample, newMask = vertFlipSampleAndMask(sample, mask)
                 bboxH, bboxW, _ = newSample.shape
-                
-#-------------------------------------------------------------------------------
+
+################################################################################
     
-            # 90 deg flip.
+            # 90 deg flip sample.
     
             elif number >= 40 and number < 60 and do90degFlips:
                 # Now the selection of whether the flip should be by 90, 180 or 270
-                # deg, is done randomly (with equal probablity).
+                # deg, is done randomly (with equal probablity).                
                 newSample, newMask, bboxW, bboxH = random90degFlipSampleAndMask(sample, mask)
-                
-#-------------------------------------------------------------------------------
-
-            # Rotation by random angles.
+            
+################################################################################
+    
+            # Rotation by random angles sample.
     
             elif number >= 60 and number < 80 and doRandomRot:
                 # During rotation by arbitrary angles, the sample first needs to be
@@ -663,30 +801,30 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
                 # due to rotation.
                 newSample, newMask, bboxW, bboxH = randomRotationSampleAndMask(sample, mask)
                 
-#-------------------------------------------------------------------------------
+################################################################################
+                
+            # No augmentation sample.
             
-            # No augmentation.
-    
             else:
                 newSample, newMask = sample, mask
                 bboxH, bboxW, _ = newSample.shape
-            
+        
             # x, y of top left corner of the region where sample will be pasted.
             newSampleH, newSampleW, _ = newSample.shape
             tlY = np.random.randint(newBgH - newSampleH)
             tlX = np.random.randint(newBgW - newSampleW)
-                
+            
             # Fixing the sample onto the background.
             image, posX, posY, _, _ = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-            
+
             # Create the segmented label image as well if createSegmentLabelImg is True:
             if createSegmentLabelImg:
                 sampleColor = classNameToColor[className]
                 sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
                 segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-                
-#-------------------------------------------------------------------------------
-        
+                    
+################################################################################
+    
         # If both the clipSample and the other augmentation flags are False, 
         # then no augmentation is performed.
 
@@ -696,26 +834,26 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
             # x, y of top left corner of the region where sample will be pasted.
             newSampleH, newSampleW, _ = newSample.shape
             tlY = np.random.randint(newBgH - newSampleH)
-            tlX = np.random.randint(newBgW - newSampleW)
+            tlX = np.random.randint(newBgW - newSampleW) 
             # Fixing the sample onto the background.
             image, posX, posY, bboxW, bboxH = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
-            
+
             # Create the segmented label image as well if createSegmentLabelImg is True:
             if createSegmentLabelImg:
                 sampleColor = classNameToColor[className]
                 sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
                 segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
-
-##-------------------------------------------------------------------------------
+            
+#################################################################################
 #
 #        cv2.imshow('sample', sample)
 #        cv2.imshow('newSample', newSample)
 #        cv2.imshow('mask', mask)
 #        cv2.imshow('newMask', newMask)
-#        cv2.imshow('newBg', newBg)
+#        cv2.imshow('image', image)
 #        cv2.waitKey(0)
 #                     
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Saving the image.
         idx = nAlreadyExistingFiles + i    # This is the image index.
@@ -734,13 +872,18 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
         labelSaveName = className + '_' + \
                         saveNameSuffix + '_' + str(idx) + '.json'
         
-        classIdx = classNameToIdx[className]
+        if className in classNameToIdx:
+            classIdx = classNameToIdx[className]
+        # If the partialOBJ className is not included in the classNameToIdx 
+        # dictionary, then it is assigned a new classIdx value.
+        elif className == 'partialOBJ':
+            classIdx = nClasses
         
         infoDict = {}
         
         with open(os.path.join(labelSaveLoc, labelSaveName), 'w') as infoFile:
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Make sure the coordinates are inside the boundaries of the image.
             if posX >= imgW:      posX = imgW - 1
@@ -755,7 +898,7 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
             if brY >= imgH:      brY = imgH - 1
             bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             infoDict[0] = {
                             'className': className, 'classIdx': classIdx, \
@@ -768,7 +911,7 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
             
             json.dump(infoDict, infoFile, indent=4, separators=(',', ': '))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         for k, v in infoDict.items():
             cv2.circle(image, (v['posX'], v['posY']), 2, (0,255,0), 2)
@@ -778,1161 +921,16 @@ def singleInstance(sampleLoc=None, maskLoc=None, \
         #cv2.imshow('image', image)
         # Show the segment label as well if the createSegmentLabelImg is True.
         if createSegmentLabelImg:   cv2.imshow('segment label', segImg)
-        cv2.waitKey(30)
+        cv2.waitKey(0)
 
-#===============================================================================
-
-def tripleInstance(sampleLoc1=None, sampleLoc2=None, sampleLoc3=None, \
-                    maskLoc1=None, maskLoc2=None, maskLoc3=None, bgLoc=None, \
-                    imgSaveLoc=None, labelSaveLoc=None, nImgs=None, imgH=None, \
-                    imgW=None, saveNameSuffix=None, clipSample1=False, \
-                    clipSample2=False, clipSample3=False, includeRbc=False):
-    '''
-    This function creates images where an object from each of the folders 
-    sampleLoc1, sampleLoc2 and sampleLoc3 are randomly selected and pasted on a 
-    background seleced from the bgLoc folder. So there are two instances of wbc 
-    in the same image.
-    The maskLoc1, maskLoc2 and maskLoc3 holds the masks for the sample of 
-    sampleLoc1, sampleLoc2 and sampleLoc3 respectively, but these are optional. 
-    If there are no maskLoc1 or maskLoc2 or maskLoc3 provided, then the 
-    corresponding samples are just pasted as they are, otherwise the corresponding 
-    mask is used while pasting the sample.
-    The samples and backgrounds are selected randomly from the available 
-    collection in their respective locations. Total number of images created is 
-    nImgs. These images are saved in the imgSaveLoc.
-    The labels of the corresponding images are also created as json files in 
-    the labelSaveLoc.
-    imgH and imgW defines the size of the image to be created.
-    The saveNameSuffix is a string, that will be appended to the name of the 
-    image file while saving. This is important to identify the dataset from 
-    where the image has been synthesized.
-    The clipSample1 (or clipSample2 or clipSample3) flag indicates if there will 
-    be any clipping of the sample1 (or sample2 or sample3) when it is affixed on 
-    the bg.
-    The function also checks if there are already some rbc annotations present 
-    on the background or not. If so then it includes them in the labels.
-    '''
-    
-    if sampleLoc1 is None or sampleLoc2 is None or sampleLoc3 is None \
-       or bgLoc is None or imgSaveLoc is None or labelSaveLoc is None \
-       or nImgs is None or imgH is None or imgW is None or saveNameSuffix is None:
-           print('\nERROR: one or more input arguments missing ' \
-                  'in tripleInstance. Aborting.\n')
-           sys.exit()
-    
-    # Flag indicating mask present.
-    maskPresent1 = False if maskLoc1 is None else True
-    maskPresent2 = False if maskLoc2 is None else True
-    maskPresent3 = False if maskLoc3 is None else True
-    
-#-------------------------------------------------------------------------------
-        
-    # Checking if there is any label file for the bg images present or not. 
-    # These files will include rbc annotations, if present.
-    imgFolderParentDir = '\\'.join(bgLoc.split('\\')[:-1])
-    imgFolderName = bgLoc.split('\\')[-1]
-    labelFolderName = imgFolderName + '_labels'
-    labelFolderLoc = os.path.join(imgFolderParentDir, labelFolderName)
-
-#-------------------------------------------------------------------------------
-
-    # Number of files already existing in the imgSaveLoc is calculated. This 
-    # will be used to assign the index to the file while saving.
-    nAlreadyExistingFiles = len(os.listdir(imgSaveLoc))
-    
-    bgList, sampleList1, sampleList2, sampleList3 = [], [], [], []
-    
-    # Creating the images.    
-    for i in range(nImgs):
-        # Fill the lists if they are empty.
-        # As a sample and a bg is used for creating an image, they are deleted
-        # from this list. So if this list gets empty, then it is reinitialized.
-        if len(bgList) == 0:      bgList = os.listdir(bgLoc)
-        if len(sampleList1) == 0:      sampleList1 = os.listdir(sampleLoc1)
-        if len(sampleList2) == 0:      sampleList2 = os.listdir(sampleLoc2)
-        if len(sampleList3) == 0:      sampleList3 = os.listdir(sampleLoc3)
-        
-        # Select a sample1 at random.
-        sampleIdx1 = np.random.randint(len(sampleList1))
-        sampleIdx2 = np.random.randint(len(sampleList2))
-        sampleIdx3 = np.random.randint(len(sampleList3))
-        
-        sampleName1 = sampleList1[sampleIdx1]
-        sampleName2 = sampleList2[sampleIdx2]
-        sampleName3 = sampleList3[sampleIdx3]
-        sample1 = cv2.imread(os.path.join(sampleLoc1, sampleName1))
-        sample2 = cv2.imread(os.path.join(sampleLoc2, sampleName2))
-        sample3 = cv2.imread(os.path.join(sampleLoc3, sampleName3))
-        
-        className1 = sampleName1.split('_')[0]
-        className2 = sampleName2.split('_')[0]
-        className3 = sampleName3.split('_')[0]
-        
-        if maskPresent1:
-            # If name of sample is Eosinophil_1.png, the name of the 
-            # corresponding mask is Eosinophil_1_mask.png
-            maskName1 = sampleName1.split('.')[0] + '_mask.' + sampleName1.split('.')[1]
-            mask1 = cv2.imread(os.path.join(maskLoc1, maskName1))
-        else:
-            # If mask is not present then a dummy mask is created which is just
-            # a blank array of 255s, of the same type and shape as sample.
-            # This makes all future processing easier and also prevents the 
-            # check for maskPresent flag every time.
-            mask1 = np.ones(sample1.shape) * 255
-            mask1 = np.asarray(mask1, dtype=np.uint8)
-        
-        if maskPresent2:
-            # If name of sample is Eosinophil_1.png, the name of the 
-            # corresponding mask is Eosinophil_1_mask.png
-            maskName2 = sampleName2.split('.')[0] + '_mask.' + sampleName2.split('.')[1]
-            mask2 = cv2.imread(os.path.join(maskLoc2, maskName2))
-        else:
-            # If mask is not present then a dummy mask is created which is just
-            # a blank array of 255s, of the same type and shape as sample.
-            # This makes all future processing easier and also prevents the 
-            # check for maskPresent flag every time.
-            mask2 = np.ones(sample2.shape) * 255
-            mask2 = np.asarray(mask2, dtype=np.uint8)
-
-        if maskPresent3:
-            # If name of sample is Eosinophil_1.png, the name of the 
-            # corresponding mask is Eosinophil_1_mask.png
-            maskName3 = sampleName3.split('.')[0] + '_mask.' + sampleName3.split('.')[1]
-            mask3 = cv2.imread(os.path.join(maskLoc3, maskName3))
-        else:
-            # If mask is not present then a dummy mask is created which is just
-            # a blank array of 255s, of the same type and shape as sample.
-            # This makes all future processing easier and also prevents the 
-            # check for maskPresent flag every time.
-            mask3 = np.ones(sample3.shape) * 255
-            mask3 = np.asarray(mask3, dtype=np.uint8)
-
-        # The bg and sample idxs are determined separately because the number of
-        # available samples and bg may be different.
-        bgIdx = np.random.randint(len(bgList))
-        bgName = bgList[bgIdx]
-        bg = cv2.imread(os.path.join(bgLoc, bgName))
-        
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        sampleList1.pop(sampleIdx1)
-        sampleList2.pop(sampleIdx2)
-        sampleList3.pop(sampleIdx3)
-        bgList.pop(bgIdx)
-
-#-------------------------------------------------------------------------------
-        
-        # Setting the background.
-        
-        # It may happen that the bg image is larger than size imgH x imgW.
-        # In that case, a imgH x imgW region is cropped out from the bg image.
-        bgH, bgW, _ = bg.shape
-        
-        # Determining the x and y of the top left corner of the region to be
-        # cropped out from the bg image.
-        bgTlY = np.random.randint(bgH - imgH) if bgH > imgH else 0
-        bgTlX = np.random.randint(bgW - imgW) if bgW > imgW else 0
-        
-        # IMPORTANT: The bg image must be larger or equal in size to imgH x imgW.
-        newBg1 = bg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
-        
-        newBgH, newBgW, _ = newBg1.shape
-        
-#-------------------------------------------------------------------------------
-
-        # Including the rbc annotations in the label if there are label files 
-        # present for these background images.
-
-        # If however the argument includeRbc is false, this function will keep 
-        # this dictionary empty.
-        if includeRbc:
-            # Now those rbc which falls within the region which is cropped for 
-            # bg image, are included inside another dictionary.
-            # If there are no rbc annotations, then this dictionary will stay empty.
-            rbcOnCurrentBg = {}
-    
-            if os.path.exists(labelFolderLoc):
-                bgLabelName = bgName[:-4] + '.json'
-                bgLabelLoc = os.path.join(labelFolderLoc, bgLabelName)
-                
-                with open(bgLabelLoc, 'r') as infoFile:
-                    infoDict = json.load(infoFile)
-                
-                for k, v in infoDict.items():
-                    posX, posY = v['posX'], v['posY']
-                    if posX >= bgTlX and posX < bgTlX + imgW and \
-                       posY >= bgTlY and posY < bgTlY + imgH:
-                           rbcOnCurrentBg[k] = v
-                           rbcOnCurrentBg[k]['posX'] -= bgTlX
-                           rbcOnCurrentBg[k]['posY'] -= bgTlY
-                           rbcOnCurrentBg[k]['tlX'] -= bgTlX
-                           rbcOnCurrentBg[k]['tlY'] -= bgTlY
-                           
-        else:
-            rbcOnCurrentBg = {}
-                       
-#-------------------------------------------------------------------------------
-            
-        # Clip sample1 at the image boundary.
-
-        # If the clipSample flag is True, then the other data augmentation like
-        # flipping and rotation is ignored (even if their corresponding flags
-        # are True). As this does not make much of a difference.
-        
-        # All the samples are pasted in the bottom left quadrant and then the 
-        # resulting image is rotated to paste the next sample again in the new
-        # bottom left quadrant.
-
-        if clipSample1:
-            # All clipped samples will have the common name 'partialOBJ'.
-            className1 = 'partialOBJ'
-
-            newSample, newMask = sample1, mask1
-
-            # Whether the clipping will happen at the side or the corner of the
-            # image, will be again selected randomly.
-            number2 = np.random.randint(100)
-                
-            # The sample will be affixed in a location on the bg, such that 
-            # it gets clipped by half. The clipping is always done by half 
-            # because, what matters during this clipping is that, the sample 
-            # should only be visible by a variable amount inside the image.
-            # Now because of the variation of the size of the samples, they 
-            # will anyway be visible by variable amount inside the image 
-            # even if the percentage of clipping is kept constant. So to 
-            # keep things simple the clipping is always done by 50%.
-            # Because of the same reason as stated in the previous case, 
-            # the clipping at the corners is kept constant at 25% only. The 
-            # variability in size of the samples will take care of the rest.
-            
-            newSampleH, newSampleW, _ = newSample.shape
-
-            tlX = newBgW - int(newSampleW * 0.5)
-            
-            if number2 < 60:
-                # Clip at the left side of the image.
-                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH , 1)) \
-                                                + int(newBgH * 0.5) 
-
-#-------------------------------------------------------------------------------
-
-            else:    # Clip at the bottom right corner.
-                tlY = newBgH - int(newSampleH * 0.5)
-                
-            # Fixing the sample onto the background.
-            image, posX1, posY1, bboxW1, bboxH1 = fixSampleToBg(newSample, newMask, newBg1, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX1-v['posX']) > bboxW1/2 or abs(posY1-v['posY']) > bboxH1/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-#-------------------------------------------------------------------------------
-        
-        # If the clipSample1 flag is False, then no augmentation is performed.
-
-        else:
-            newSample, newMask = sample1, mask1
-        
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1)) \
-                                                + int(newBgH * 0.5) 
-            tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) \
-                                                + int(newBgW * 0.5) 
-            
-            # Fixing the sample onto the background.
-            image, posX1, posY1, bboxW1, bboxH1 = fixSampleToBg(newSample, newMask, newBg1, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX1-v['posX']) > bboxW1/2 or abs(posY1-v['posY']) > bboxH1/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-#-------------------------------------------------------------------------------    
-
-        # The new background for sample2 will be the image formed earlier where
-        # the sample1 was affixed onto the background.
-        newBg2 = image
-        newBgH, newBgW, _ = newBg2.shape
-        
-        # Flip by 90 deg (same as horizontal flip + transpose).
-        newBg2 = cv2.transpose(cv2.flip(newBg2, 1))
-        posX1, posY1 = posY1, imgW - posX1
-        bboxW1, bboxH1 = bboxH1, bboxW1
-        # Now modifying the rbc cell locations.
-        for k, v in rbcOnCurrentBg.items():
-            v['posX'], v['posY'] = v['posY'], imgW - v['posX']
-            v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-
-#-------------------------------------------------------------------------------
-        
-        if clipSample2:
-            # All clipped samples will have the common name 'partialOBJ'.
-            className2 = 'partialOBJ'
-
-            newSample, newMask = sample2, mask2
-
-            # Whether the clipping will happen at the side or the corner of the
-            # image, will be again selected randomly.
-            number2 = np.random.randint(100)
-                
-            # The sample will be affixed in a location on the bg, such that 
-            # it gets clipped by half. The clipping is always done by half 
-            # because, what matters during this clipping is that, the sample 
-            # should only be visible by a variable amount inside the image.
-            # Now because of the variation of the size of the samples, they 
-            # will anyway be visible by variable amount inside the image 
-            # even if the percentage of clipping is kept constant. So to 
-            # keep things simple the clipping is always done by 50%.
-            # Because of the same reason as stated in the previous case, 
-            # the clipping at the corners is kept constant at 25% only. The 
-            # variability in size of the samples will take care of the rest.
-            
-            newSampleH, newSampleW, _ = newSample.shape
-
-            tlX = newBgW - int(newSampleW * 0.5)
-            
-            if number2 < 60:
-                # Clip at the left side of the image.
-                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH , 1)) \
-                                                + int(newBgH * 0.5) 
-
-#-------------------------------------------------------------------------------
-
-            else:    # Clip at the bottom right corner.
-                tlY = newBgH - int(newSampleH * 0.5)
-                
-            # Fixing the sample onto the background.
-            image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-#-------------------------------------------------------------------------------
-        
-        # If the clipSample2 flag is False, then no augmentation is performed.
-
-        else:
-            newSample, newMask = sample2, mask2
-        
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1)) \
-                                                + int(newBgH * 0.5) 
-            tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) \
-                                                + int(newBgW * 0.5) 
-            
-            # Fixing the sample onto the background.
-            image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-#-------------------------------------------------------------------------------    
-
-        # The new background for sample3 will be the image formed earlier where
-        # the sample2 was affixed onto the background.
-        newBg3 = image
-        newBgH, newBgW, _ = newBg3.shape
-        
-        # Flip by 90 deg (same as horizontal flip + transpose).
-        newBg3 = cv2.transpose(cv2.flip(newBg3, 1))
-        posX2, posY2 = posY2, imgW - posX2
-        bboxW2, bboxH2 = bboxH2, bboxW2
-        posX1, posY1 = posY1, imgW - posX1
-        bboxW1, bboxH1 = bboxH1, bboxW1
-        # Now modifying the rbc cell locations.
-        for k, v in rbcOnCurrentBg.items():
-            v['posX'], v['posY'] = v['posY'], imgW - v['posX']
-            v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-
-#-------------------------------------------------------------------------------
-        
-        if clipSample3:
-            # All clipped samples will have the common name 'partialOBJ'.
-            className3 = 'partialOBJ'
-
-            newSample, newMask = sample3, mask3
-
-            # Whether the clipping will happen at the side or the corner of the
-            # image, will be again selected randomly.
-            number2 = np.random.randint(100)
-                
-            # The sample will be affixed in a location on the bg, such that 
-            # it gets clipped by half. The clipping is always done by half 
-            # because, what matters during this clipping is that, the sample 
-            # should only be visible by a variable amount inside the image.
-            # Now because of the variation of the size of the samples, they 
-            # will anyway be visible by variable amount inside the image 
-            # even if the percentage of clipping is kept constant. So to 
-            # keep things simple the clipping is always done by 50%.
-            # Because of the same reason as stated in the previous case, 
-            # the clipping at the corners is kept constant at 25% only. The 
-            # variability in size of the samples will take care of the rest.
-            
-            newSampleH, newSampleW, _ = newSample.shape
-
-            tlX = newBgW - int(newSampleW * 0.5)
-            
-            if number2 < 60:
-                # Clip at the left side of the image.
-                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH , 1)) \
-                                                + int(newBgH * 0.5) 
-
-#-------------------------------------------------------------------------------
-
-            else:    # Clip at the bottom right corner.
-                tlY = newBgH - int(newSampleH * 0.5)
-                
-            # Fixing the sample onto the background.
-            image, posX3, posY3, bboxW3, bboxH3 = fixSampleToBg(newSample, newMask, newBg3, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX3-v['posX']) > bboxW3/2 or abs(posY3-v['posY']) > bboxH3/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-#-------------------------------------------------------------------------------
-        
-        # If the clipSample3 flag is False, then no augmentation is performed.
-
-        else:
-            newSample, newMask = sample3, mask3
-        
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1)) \
-                                                + int(newBgH * 0.5) 
-            tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) \
-                                                + int(newBgW * 0.5) 
-            
-            # Fixing the sample onto the background.
-            image, posX3, posY3, bboxW3, bboxH3 = fixSampleToBg(newSample, newMask, newBg3, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX3-v['posX']) > bboxW3/2 or abs(posY3-v['posY']) > bboxH3/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-##-------------------------------------------------------------------------------
-#
-#        cv2.imshow('sample', sample)
-#        cv2.imshow('newSample', newSample)
-#        cv2.imshow('mask', mask)
-#        cv2.imshow('newMask', newMask)
-#        cv2.imshow('newBg', newBg)
-#        cv2.waitKey(0)
-#                     
-#-------------------------------------------------------------------------------
-
-        # Saving the image.
-        idx = nAlreadyExistingFiles + i    # This is the image index.
-    
-        imgSaveName = className1 + '_' + \
-                      className2 + '_' + \
-                      className3 + '_' + \
-                      saveNameSuffix + '_' + str(idx) + savedImgFileExtn
-                      
-        cv2.imwrite(os.path.join(imgSaveLoc, imgSaveName), image)
-        
-        # Creating the label json file.
-        labelSaveName = className1 + '_' + \
-                        className2 + '_' + \
-                        className3 + '_' + \
-                        saveNameSuffix + '_' + str(idx) + '.json'
-        
-        classIdx1 = classNameToIdx[className1]
-        classIdx2 = classNameToIdx[className2]
-        classIdx3 = classNameToIdx[className3]
-        
-        infoDict = {}
-        
-        with open(os.path.join(labelSaveLoc, labelSaveName), 'w') as infoFile:
-            
-#-------------------------------------------------------------------------------
-
-            posX, posY, bboxW, bboxH = posX1, posY1, bboxW1, bboxH1
-            className, classIdx = className1, classIdx1
-            sampleLoc, sampleName = sampleLoc1, sampleName1
-
-#-------------------------------------------------------------------------------
-
-            # Make sure the coordinates are inside the boundaries of the image.
-            if posX >= imgW:      posX = imgW - 1
-            if posX < 0:            posX = 0
-            if posY >= imgH:      posY = imgH - 1
-            if posY < 0:            posY = 0
-            tlX, tlY = posX-bboxW*0.5, posY-bboxH*0.5   # Top left corner.
-            brX, brY = posX+bboxW*0.5, posY+bboxH*0.5   # Bottom right corner.
-            if tlX < 0:            tlX = 0
-            if tlY < 0:            tlY = 0
-            if brX >= imgW:      brX = imgW - 1
-            if brY >= imgH:      brY = imgH - 1
-            bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
-            
-#-------------------------------------------------------------------------------
-
-            infoDict[0] = {
-                            'className': className, 'classIdx': classIdx, \
-                            'posX': int(posX), 'posY': int(posY), \
-                            'bboxW': bboxW, 'bboxH': bboxH, \
-                            'tlX': int(tlX), 'tlY': int(tlY), \
-                            'samplePath': os.path.join(sampleLoc, sampleName), \
-                            'bgPath': os.path.join(bgLoc, bgName) \
-                         }
-            
-#-------------------------------------------------------------------------------
-
-            posX, posY, bboxW, bboxH = posX2, posY2, bboxW2, bboxH2
-            className, classIdx = className2, classIdx2
-            sampleLoc, sampleName = sampleLoc2, sampleName2
-
-#-------------------------------------------------------------------------------
-
-            # Make sure the coordinates are inside the boundaries of the image.
-            if posX >= imgW:      posX = imgW - 1
-            if posX < 0:            posX = 0
-            if posY >= imgH:      posY = imgH - 1
-            if posY < 0:            posY = 0
-            tlX, tlY = posX-bboxW*0.5, posY-bboxH*0.5   # Top left corner.
-            brX, brY = posX+bboxW*0.5, posY+bboxH*0.5   # Bottom right corner.
-            if tlX < 0:            tlX = 0
-            if tlY < 0:            tlY = 0
-            if brX >= imgW:      brX = imgW - 1
-            if brY >= imgH:      brY = imgH - 1
-            bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
-            
-#-------------------------------------------------------------------------------
-
-            infoDict[1] = {
-                            'className': className, 'classIdx': classIdx, \
-                            'posX': int(posX), 'posY': int(posY), \
-                            'bboxW': bboxW, 'bboxH': bboxH, \
-                            'tlX': int(tlX), 'tlY': int(tlY), \
-                            'samplePath': os.path.join(sampleLoc, sampleName), \
-                            'bgPath': os.path.join(bgLoc, bgName) \
-                         }
-            
-#-------------------------------------------------------------------------------
-
-            posX, posY, bboxW, bboxH = posX3, posY3, bboxW3, bboxH3
-            className, classIdx = className3, classIdx3
-            sampleLoc, sampleName = sampleLoc3, sampleName3
-
-#-------------------------------------------------------------------------------
-
-            # Make sure the coordinates are inside the boundaries of the image.
-            if posX >= imgW:      posX = imgW - 1
-            if posX < 0:            posX = 0
-            if posY >= imgH:      posY = imgH - 1
-            if posY < 0:            posY = 0
-            tlX, tlY = posX-bboxW*0.5, posY-bboxH*0.5   # Top left corner.
-            brX, brY = posX+bboxW*0.5, posY+bboxH*0.5   # Bottom right corner.
-            if tlX < 0:            tlX = 0
-            if tlY < 0:            tlY = 0
-            if brX >= imgW:      brX = imgW - 1
-            if brY >= imgH:      brY = imgH - 1
-            bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
-            
-#-------------------------------------------------------------------------------
-
-            infoDict[2] = {
-                            'className': className, 'classIdx': classIdx, \
-                            'posX': int(posX), 'posY': int(posY), \
-                            'bboxW': bboxW, 'bboxH': bboxH, \
-                            'tlX': int(tlX), 'tlY': int(tlY), \
-                            'samplePath': os.path.join(sampleLoc, sampleName), \
-                            'bgPath': os.path.join(bgLoc, bgName) \
-                         }
-            
-#-------------------------------------------------------------------------------
-
-            # Now recording the rbc cells into the infoDict.
-            nWbc = len(infoDict)      # Number of wbc cell records in infoDict.
-            print(len(rbcOnCurrentBg))
-            
-            for r, (k, v) in enumerate(rbcOnCurrentBg.items()):
-                # Creating key for the rbc cell records. 
-                # This makes sure that they are different from the keys of the 
-                # wbc cell records, else they may overlap the wbc record.
-                index = r + nWbc
-                
-#-------------------------------------------------------------------------------
-
-                posX, posY, bboxW, bboxH = v['posX'], v['posY'], v['bboxW'], v['bboxH']
-                classNameRbc, classIdxRbc = v['className'], v['classIdx']
-                
-#-------------------------------------------------------------------------------
-
-                # Make sure the coordinates are inside the boundaries of the image.
-                if posX >= imgW:      posX = imgW - 1
-                if posX < 0:            posX = 0
-                if posY >= imgH:      posY = imgH - 1
-                if posY < 0:            posY = 0
-                tlX, tlY = posX-bboxW*0.5, posY-bboxH*0.5   # Top left corner.
-                brX, brY = posX+bboxW*0.5, posY+bboxH*0.5   # Bottom right corner.
-                if tlX < 0:            tlX = 0
-                if tlY < 0:            tlY = 0
-                if brX >= imgW:      brX = imgW - 1
-                if brY >= imgH:      brY = imgH - 1
-                bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
-            
-#-------------------------------------------------------------------------------
-
-                infoDict[index] = {
-                                        'className': classNameRbc, 'classIdx': classIdxRbc, \
-                                        'posX': int(posX), 'posY': int(posY), \
-                                        'bboxW': bboxW, 'bboxH': bboxH, \
-                                        'tlX': int(tlX), 'tlY': int(tlY), \
-                                        'samplePath': None, \
-                                        'bgPath': os.path.join(bgLoc, bgName) \
-                                   }
-                
-            json.dump(infoDict, infoFile, indent=4, separators=(',', ': '))
-
-#-------------------------------------------------------------------------------
-        
-        for k, v in infoDict.items():
-            cv2.circle(image, (v['posX'], v['posY']), 2, (0,255,0), 2)
-            if v['className'] != '_':
-                cv2.rectangle(image, (v['tlX'], v['tlY']), (v['tlX']+v['bboxW'], \
-                                       v['tlY']+v['bboxH']), (0,255,0), 2)
-        cv2.imshow('image', image)
-        cv2.waitKey(30)
-
-#===============================================================================
-
-def multiInstance(sampleLoc1=None, sampleLoc2=None, sampleLoc3=None, \
-                   sampleLoc4=None, sampleLoc5=None, \
-                   maskLoc1=None, maskLoc2=None, maskLoc3=None, \
-                   maskLoc4=None, maskLoc5=None, bgLoc=None, \
-                   imgSaveLoc=None, labelSaveLoc=None, nImgs=None, imgH=None, \
-                   imgW=None, saveNameSuffix=None, includeRbc=False):
-    '''
-    This function creates images where an object from each of the sampleLoc folders
-    are randomly selected and pasted on a background seleced from the bgLoc folder. 
-    The maskLoc folders holds the masks for the sample of sampleLoc folder, 
-    but these are optional. If there are no maskLoc provided, then the 
-    corresponding samples are just pasted as they are, otherwise the corresponding 
-    mask is used while pasting the sample.
-    The samples and backgrounds are selected randomly from the available 
-    collection in their respective locations. Total number of images created is 
-    nImgs. These images are saved in the imgSaveLoc.
-    The labels of the corresponding images are also created as json files in 
-    the labelSaveLoc.
-    imgH and imgW defines the size of the image to be created.
-    The saveNameSuffix is a string, that will be appended to the name of the 
-    image file while saving. This is important to identify the dataset from 
-    where the image has been synthesized.
-    IMPORTANT: The background images in this case has to be at least 600 x 400.
-    The function also checks if there are already some rbc annotations present 
-    on the background or not. If so then it includes them in the labels.
-    '''
-    
-    if sampleLoc1 is None or sampleLoc2 is None or sampleLoc3 is None \
-       or sampleLoc4 is None or sampleLoc5 is None or bgLoc is None \
-       or imgSaveLoc is None or labelSaveLoc is None or nImgs is None \
-       or imgH is None or imgW is None or saveNameSuffix is None:
-           print('\nERROR: one or more input arguments missing ' \
-                  'in multiInstance. Aborting.\n')
-           sys.exit()
-    
-    # Flag indicating mask present.
-    maskPresent1 = False if maskLoc1 is None else True
-    maskPresent2 = False if maskLoc2 is None else True
-    maskPresent3 = False if maskLoc3 is None else True
-    maskPresent4 = False if maskLoc4 is None else True
-    maskPresent5 = False if maskLoc5 is None else True
-    
-#-------------------------------------------------------------------------------
-        
-    # Checking if there is any label file for the bg images present or not. 
-    # These files will include rbc annotations, if present.
-    imgFolderParentDir = '\\'.join(bgLoc.split('\\')[:-1])
-    imgFolderName = bgLoc.split('\\')[-1]
-    labelFolderName = imgFolderName + '_labels'
-    labelFolderLoc = os.path.join(imgFolderParentDir, labelFolderName)
-
-#-------------------------------------------------------------------------------
-
-    # Number of files already existing in the imgSaveLoc is calculated. This 
-    # will be used to assign the index to the file while saving.
-    nAlreadyExistingFiles = len(os.listdir(imgSaveLoc))
-    
-    bgList, sampleList1, sampleList2, sampleList3, sampleList4, sampleList5 = \
-                                                    [], [], [], [], [], []
-    
-    # Creating the images.    
-    for i in range(nImgs):
-        # Fill the lists if they are empty.
-        # As a sample and a bg is used for creating an image, they are deleted
-        # from this list. So if this list gets empty, then it is reinitialized.
-        if len(bgList) == 0:      bgList = os.listdir(bgLoc)
-        if len(sampleList1) == 0:      sampleList1 = os.listdir(sampleLoc1)
-        if len(sampleList2) == 0:      sampleList2 = os.listdir(sampleLoc2)
-        if len(sampleList3) == 0:      sampleList3 = os.listdir(sampleLoc3)
-        if len(sampleList4) == 0:      sampleList4 = os.listdir(sampleLoc4)
-        if len(sampleList5) == 0:      sampleList5 = os.listdir(sampleLoc5)
-        
-        # Select a sample1 at random, either 1 or 2 samples will be selected.
-        # The number of samples (1 or 2) is also selected at random.
-        sampleIdxList1 = np.random.randint(len(sampleList1), size=np.random.randint(1,3))
-        sampleIdxList2 = np.random.randint(len(sampleList2), size=np.random.randint(1,3))
-        sampleIdxList3 = np.random.randint(len(sampleList3), size=np.random.randint(1,3))
-        sampleIdxList4 = np.random.randint(len(sampleList4), size=np.random.randint(1,3))
-        sampleIdxList5 = np.random.randint(len(sampleList5), size=np.random.randint(1,3))
-        
-        # These lists may have repeatation of indexes. So those duplicate indexes
-        # are removed by converting the lists into sets.
-        sampleIdxList1 = list(set(sampleIdxList1.tolist()))
-        sampleIdxList2 = list(set(sampleIdxList2.tolist()))
-        sampleIdxList3 = list(set(sampleIdxList3.tolist()))
-        sampleIdxList4 = list(set(sampleIdxList4.tolist()))
-        sampleIdxList5 = list(set(sampleIdxList5.tolist()))
-
-        # Now combining all the sample lists.
-        sampleList, maskList, classNameList = [], [], []
-        
-        sampleNameList1 = []
-        for s in sampleIdxList1:
-            sampleName = sampleList1[s]
-            className = sampleName.split('_')[0]
-            sample = cv2.imread(os.path.join(sampleLoc1, sampleName))
-            sampleNameList1.append(sampleName)
-            classNameList.append(className)
-            sampleList.append(sample)
-            
-            if maskPresent1:
-                # If name of sample is Eosinophil_1.png, the name of the 
-                # corresponding mask is Eosinophil_1_mask.png
-                maskName = sampleName.split('.')[0] + '_mask.' + sampleName.split('.')[1]
-                mask = cv2.imread(os.path.join(maskLoc1, maskName))
-            else:
-                # If mask is not present then a dummy mask is created which is just
-                # a blank array of 255s, of the same type and shape as sample.
-                # This makes all future processing easier and also prevents the 
-                # check for maskPresent flag every time.
-                mask = np.ones(sample.shape) * 255
-                mask = np.asarray(mask, dtype=np.uint8)
-            maskList.append(mask)
-            
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        for n in sampleNameList1:                sampleList1.remove(n)
-
-        sampleNameList2 = []
-        for s in sampleIdxList2:
-            sampleName = sampleList2[s]
-            className = sampleName.split('_')[0]
-            sample = cv2.imread(os.path.join(sampleLoc2, sampleName))
-            sampleNameList2.append(sampleName)
-            classNameList.append(className)
-            sampleList.append(sample)
-            
-            if maskPresent2:
-                # If name of sample is Eosinophil_1.png, the name of the 
-                # corresponding mask is Eosinophil_1_mask.png
-                maskName = sampleName.split('.')[0] + '_mask.' + sampleName.split('.')[1]
-                mask = cv2.imread(os.path.join(maskLoc2, maskName))
-            else:
-                # If mask is not present then a dummy mask is created which is just
-                # a blank array of 255s, of the same type and shape as sample.
-                # This makes all future processing easier and also prevents the 
-                # check for maskPresent flag every time.
-                mask = np.ones(sample.shape) * 255
-                mask = np.asarray(mask, dtype=np.uint8)
-            maskList.append(mask)
-            
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        for n in sampleNameList2:                sampleList2.remove(n)
-        
-        sampleNameList3 = []
-        for s in sampleIdxList3:
-            sampleName = sampleList3[s]
-            className = sampleName.split('_')[0]
-            sample = cv2.imread(os.path.join(sampleLoc3, sampleName))
-            sampleNameList3.append(sampleName)
-            classNameList.append(className)
-            sampleList.append(sample)
-        
-            if maskPresent3:
-                # If name of sample is Eosinophil_1.png, the name of the 
-                # corresponding mask is Eosinophil_1_mask.png
-                maskName = sampleName.split('.')[0] + '_mask.' + sampleName.split('.')[1]
-                mask = cv2.imread(os.path.join(maskLoc3, maskName))
-            else:
-                # If mask is not present then a dummy mask is created which is just
-                # a blank array of 255s, of the same type and shape as sample.
-                # This makes all future processing easier and also prevents the 
-                # check for maskPresent flag every time.
-                mask = np.ones(sample.shape) * 255
-                mask = np.asarray(mask, dtype=np.uint8)
-            maskList.append(mask)
-
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        for n in sampleNameList3:                sampleList3.remove(n)
-        
-        sampleNameList4 = []
-        for s in sampleIdxList4:
-            sampleName = sampleList4[s]
-            className = sampleName.split('_')[0]
-            sample = cv2.imread(os.path.join(sampleLoc4, sampleName))
-            sampleNameList4.append(sampleName)
-            classNameList.append(className)
-            sampleList.append(sample)
-
-            if maskPresent4:
-                # If name of sample is Eosinophil_1.png, the name of the 
-                # corresponding mask is Eosinophil_1_mask.png
-                maskName = sampleName.split('.')[0] + '_mask.' + sampleName.split('.')[1]
-                mask = cv2.imread(os.path.join(maskLoc4, maskName))
-            else:
-                # If mask is not present then a dummy mask is created which is just
-                # a blank array of 255s, of the same type and shape as sample.
-                # This makes all future processing easier and also prevents the 
-                # check for maskPresent flag every time.
-                mask = np.ones(sample.shape) * 255
-                mask = np.asarray(mask, dtype=np.uint8)
-            maskList.append(mask)
-            
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        for n in sampleNameList4:                sampleList4.remove(n)
-        
-        sampleNameList5 = []
-        for s in sampleIdxList5:
-            sampleName = sampleList5[s]
-            className = sampleName.split('_')[0]
-            sample = cv2.imread(os.path.join(sampleLoc5, sampleName))
-            sampleNameList5.append(sampleName)
-            classNameList.append(className)
-            sampleList.append(sample)
-
-            if maskPresent5:
-                # If name of sample is Eosinophil_1.png, the name of the 
-                # corresponding mask is Eosinophil_1_mask.png
-                maskName = sampleName.split('.')[0] + '_mask.' + sampleName.split('.')[1]
-                mask = cv2.imread(os.path.join(maskLoc5, maskName))
-            else:
-                # If mask is not present then a dummy mask is created which is just
-                # a blank array of 255s, of the same type and shape as sample.
-                # This makes all future processing easier and also prevents the 
-                # check for maskPresent flag every time.
-                mask = np.ones(sample.shape) * 255
-                mask = np.asarray(mask, dtype=np.uint8)
-            maskList.append(mask)
-            
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        for n in sampleNameList5:                sampleList5.remove(n)
-        
-        # The bg and sample idxs are determined separately because the number of
-        # available samples and bg may be different.
-        bgIdx = np.random.randint(len(bgList))
-        bgName = bgList[bgIdx]
-        bg = cv2.imread(os.path.join(bgLoc, bgName))
-        
-        # Remove the entry of these samples and bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing samples in the lists are used up and the lists become empty.
-        bgList.pop(bgIdx)
-        
-        sampleNameList = sampleNameList1 + sampleNameList2 + sampleNameList3 \
-                                         + sampleNameList4 + sampleNameList5
-                                         
-        infoDict = {}       # Empty dictionary to store the label information.
-
-#-------------------------------------------------------------------------------
-        
-        # Setting the background.
-        
-        # The whole bg is divided into a 2 row, 3 col grid.
-        bgH, bgW, _ = bg.shape
-        
-        bg1 = bg[0 : int(bgH/2), 0 : int(bgW/3), :]
-        bg2 = bg[0 : int(bgH/2), int(bgW/3) : int(2*bgW/3), :]
-        bg3 = bg[0 : int(bgH/2), int(2*bgW/3) : bgW, :]
-        bg4 = bg[int(bgH/2) : bgH, 0 : int(bgW/3), :]
-        bg5 = bg[int(bgH/2) : bgH, int(bgW/3) : int(2*bgW/3), :]
-        bg6 = bg[int(bgH/2) : bgH, int(2*bgW/3) : bgW, :]
-        
-        # The offset lists will be used to calculate the true location of the 
-        # samples in the complete final image.
-        tlXoffsetList = [0, int(bgW/3), int(2*bgW/3), 0, int(bgW/3), int(2*bgW/3)]
-        tlYoffsetList = [0, 0, 0, int(bgH/2), int(bgH/2), int(bgH/2)]
-        
-        gridCellList = [bg1, bg2, bg3, bg4, bg5, bg6]
-        nGridCells = len(gridCellList)
-        gcIdList = list(range(nGridCells))    # Will be used to store 
-        # the image in proper location in the imageList.
-        
-        sampleLabelIdx = 0
-        
-        # Now picking any bg from gridCellList at random and pasting the sample 
-        # in that. The resulting images are saved in another list called imageList.
-        # This imageList is initialized to the gridCellList before anything is
-        # pasted.
-        imageList = copy.deepcopy(gridCellList)
-        
-#-------------------------------------------------------------------------------
-        
-        for b in range(nGridCells):
-            # As a sample and a bg is used for creating an image, they are deleted
-            # from their lists. So the number of remaining bg grid cells and 
-            # samples need to be updated.
-            nRemainingGridCells = len(gridCellList)
-            nRemainingSamples = len(sampleList)
-
-            if nRemainingSamples <= nRemainingGridCells and nRemainingSamples > 0:
-                # If we have more or equal number of grid cells and samples left, 
-                # then one sample is pasted in every grid cell. Some grid cells
-                # are kept blank if the number of samples remaining is less
-                # than the number of grid cells.
-                gcIdx = np.random.randint(nRemainingGridCells)
-                newBg = gridCellList[gcIdx]
-                newBgId = gcIdList[gcIdx]
-                sampleIdx = np.random.randint(nRemainingSamples)
-                sample = sampleList[sampleIdx]
-                className = classNameList[sampleIdx]
-                sampleName = sampleNameList[sampleIdx]
-                mask = maskList[sampleIdx]
-        
-                # x, y of top left corner of the region where sample will be pasted.
-                sampleH, sampleW, _ = sample.shape
-                newBgH, newBgW, _ = newBg.shape
-                tlY = np.random.randint(newBgH - sampleH)
-                tlX = np.random.randint(newBgW - sampleW)
-        
-                # Fixing the sample onto the background.
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(sample, mask, \
-                                                                 newBg, tlX, tlY)
-
-#-------------------------------------------------------------------------------
-
-                # Save the information for the labels in a dictionary.
-                imgH, imgW, _ = image.shape
-                tlXoffset = tlXoffsetList[newBgId]    # x offset for this bg.
-                tlYoffset = tlYoffsetList[newBgId]    # y offset for this bg.
-
-                infoDict[sampleLabelIdx] = \
-                             {
-                                'className': className, \
-                                'classIdx': classNameToIdx[className], \
-                                'posX': int(posX) + tlXoffset, \
-                                'posY': int(posY) + tlYoffset, \
-                                'bboxW': bboxW, 'bboxH': bboxH, \
-                                'tlX': int(posX-bboxW*0.5) + tlXoffset, \
-                                'tlY': int(posY-bboxH*0.5) + tlYoffset, \
-                                'samplePath': sampleName, \
-                                'bgPath': os.path.join(bgLoc, bgName) \
-                             }
-                sampleLabelIdx += 1
-                
-#-------------------------------------------------------------------------------
-
-                # Store the image.
-                imageList[newBgId] = image
-                
-                # Remove the sample and bg that is used, from their lists.
-                gridCellList.pop(gcIdx)
-                gcIdList.pop(gcIdx)
-                sampleList.pop(sampleIdx)
-                classNameList.pop(sampleIdx)
-                sampleNameList.pop(sampleIdx)
-                maskList.pop(sampleIdx)
-                
-#-------------------------------------------------------------------------------
-
-            elif nRemainingSamples > nRemainingGridCells:
-                # If we have more number of samples than number of grid cells left, 
-                # then two samples are pasted in every grid cell. This is done
-                # until the remaining number of samples becomes less than or 
-                # equal to the number of samples remaining.
-                gcIdx = np.random.randint(nRemainingGridCells)
-                newBg = gridCellList[gcIdx]
-                newBgId = gcIdList[gcIdx]
-                
-                sampleIdx = np.random.randint(nRemainingSamples)
-                sample = sampleList[sampleIdx]
-                className = classNameList[sampleIdx]
-                sampleName = sampleNameList[sampleIdx]
-                mask = maskList[sampleIdx]
-        
-                # x, y of top left corner of the region where sample will be pasted.
-                sampleH, sampleW, _ = sample.shape
-                newBgH, newBgW, _ = newBg.shape
-                
-                # Fixing the sample onto the background.
-                # The first sample is always pasted in the top left quadrant.
-                tlX = np.random.randint(max(newBgW * 0.5 - sampleW , 1))
-                tlY = np.random.randint(max(newBgH * 0.5 - sampleH , 1))
-                image, posX, posY, bboxW, bboxH = fixSampleToBg(sample, mask, \
-                                                                 newBg, tlX, tlY)
-
-#-------------------------------------------------------------------------------
-
-                # Save the information for the labels in a dictionary.
-                imgH, imgW, _ = image.shape
-                tlXoffset = tlXoffsetList[newBgId]    # x offset for this bg.
-                tlYoffset = tlYoffsetList[newBgId]    # y offset for this bg.
-                infoDict[sampleLabelIdx] = \
-                             {
-                                'className': className, \
-                                'classIdx': classNameToIdx[className], \
-                                'posX': int(posX) + tlXoffset, \
-                                'posY': int(posY) + tlYoffset, \
-                                'bboxW': bboxW, 'bboxH': bboxH, \
-                                'tlX': int(posX-bboxW*0.5) + tlXoffset, \
-                                'tlY': int(posY-bboxH*0.5) + tlYoffset, \
-                                'samplePath': sampleName, \
-                                'bgPath': os.path.join(bgLoc, bgName) \
-                             }
-                sampleLabelIdx += 1
-                
-#-------------------------------------------------------------------------------
-
-                # Remove the sample from the lists.
-                sampleList.pop(sampleIdx)
-                classNameList.pop(sampleIdx)
-                sampleNameList.pop(sampleIdx)
-                maskList.pop(sampleIdx)
-
-#-------------------------------------------------------------------------------
-
-                # The image from the last operation will be the background of the
-                # second sample.
-                newBg = copy.deepcopy(image)                
-
-                nRemainingSamples = len(sampleList)
-                sampleIdx = np.random.randint(nRemainingSamples)
-                sample = sampleList[sampleIdx]
-                className = classNameList[sampleIdx]
-                sampleName = sampleNameList[sampleIdx]
-                mask = maskList[sampleIdx]
-
-                # The quadrant of bg where the second sample will be pasted is 
-                # decided at random with equal probability.
-                number = np.random.randint(100)
-                if number < 33:     # Top right quadrant.
-                    tlX = np.random.randint(max(newBgW * 0.5 - sampleW , 1)) \
-                                                    + int(newBgW * 0.5)
-                    tlY = np.random.randint(max(newBgH * 0.5 - sampleH , 1))
-                    # Fixing the sample onto the background.
-                    image, posX, posY, bboxW, bboxH = fixSampleToBg(sample, mask, \
-                                                                     newBg, tlX, tlY)
-                elif number >= 33 and number < 66:     # Bottom left quadrant.
-                    tlX = np.random.randint(max(newBgW * 0.5 - sampleW , 1))
-                    tlY = np.random.randint(max(newBgH * 0.5 - sampleH , 1)) \
-                                                    + int(newBgH * 0.5)
-                    # Fixing the sample onto the background.
-                    image, posX, posY, bboxW, bboxH = fixSampleToBg(sample, mask, \
-                                                                     newBg, tlX, tlY)
-                elif number >= 66:     # Bottom right quadrant.
-                    tlX = np.random.randint(max(newBgW * 0.5 - sampleW , 1)) \
-                                                    + int(newBgW * 0.5)
-                    tlY = np.random.randint(max(newBgH * 0.5 - sampleH , 1)) \
-                                                    + int(newBgH * 0.5)
-                    # Fixing the sample onto the background.
-                    image, posX, posY, bboxW, bboxH = fixSampleToBg(sample, mask, \
-                                                                     newBg, tlX, tlY)                
-
-#-------------------------------------------------------------------------------
-
-                # Save the information for the labels in a dictionary.
-                imgH, imgW, _ = image.shape
-                tlXoffset = tlXoffsetList[newBgId]    # x offset for this bg.
-                tlYoffset = tlYoffsetList[newBgId]    # y offset for this bg.
-                infoDict[sampleLabelIdx] = \
-                             {
-                                'className': className, \
-                                'classIdx': classNameToIdx[className], \
-                                'posX': int(posX) + tlXoffset, \
-                                'posY': int(posY) + tlYoffset, \
-                                'bboxW': bboxW, 'bboxH': bboxH, \
-                                'tlX': int(posX-bboxW*0.5) + tlXoffset, \
-                                'tlY': int(posY-bboxH*0.5) + tlYoffset, \
-                                'samplePath': sampleName, \
-                                'bgPath': os.path.join(bgLoc, bgName) \
-                             }
-                sampleLabelIdx += 1
-                
-#-------------------------------------------------------------------------------
-
-                # Store the image.
-                imageList[newBgId] = image
-
-                # Remove the sample from the lists.
-                sampleList.pop(sampleIdx)
-                classNameList.pop(sampleIdx)
-                sampleNameList.pop(sampleIdx)
-                maskList.pop(sampleIdx)
-
-                # Remove the bg that is used, from the lists.
-                gridCellList.pop(gcIdx)
-                gcIdList.pop(gcIdx)
-
-#-------------------------------------------------------------------------------    
-
-        # Stitching the images back together.
-        image1 = np.hstack((imageList[0], imageList[1], imageList[2]))
-        image2 = np.hstack((imageList[3], imageList[4], imageList[5]))
-        image = np.vstack((image1, image2))        
-
-#-------------------------------------------------------------------------------
-
-        # Saving the image.
-        idx = nAlreadyExistingFiles + i    # This is the image index.
-    
-        imgSaveName = 'multi_sample' + '_' + str(idx) + savedImgFileExtn
-                      
-        cv2.imwrite(os.path.join(imgSaveLoc, imgSaveName), image)
-        
-        # Creating the label json file.
-        labelSaveName = 'multi_sample' + '_' + str(idx) + '.json'
-        
-        with open(os.path.join(labelSaveLoc, labelSaveName), 'w') as infoFile:
-            json.dump(infoDict, infoFile, indent=4, separators=(',', ': '))
-
-#-------------------------------------------------------------------------------
-            
-        imgH, imgW, _ = image.shape
-        for k, v in infoDict.items():
-            posX, posY, bboxW, bboxH = v['posX'], v['posY'], v['bboxW'], v['bboxH']
-            className, tlX, tlY = v['className'], v['tlX'], v['tlY']
-            cx, cy = int(posX), int(posY)
-#            cv2.circle(image, (int(posX), int(posY)), 2, (0,255,255), 2)
-#            cv2.rectangle(image, (int(posX-bboxW*0.5), int(posY-bboxH*0.5)), \
-#                                  (int(posX+bboxW*0.5), int(posY+bboxH*0.5)), \
-#                                  (0,255,255), 2)
-            ly = tlY-10 if tlY-20 > 0 else tlY+bboxH + 20
-            lx = tlX-10 if tlX-20 > 0 else tlX+bboxW + 20
-            cv2.putText(image, className.split('_')[0].upper(), (lx, ly), \
-                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,0,0), 2, cv2.LINE_AA)
-            cv2.arrowedLine(image, (lx+5, ly+5), (cx, cy), (0,0,0), 2)
-
-        if not os.path.exists(os.path.join(imgSaveLoc, 'images_with_names')):
-            os.makedirs(os.path.join(imgSaveLoc, 'images_with_names'))
-            
-        cv2.imwrite(os.path.join(imgSaveLoc, 'images_with_names', imgSaveName), image)
-
-        cv2.imshow('image', image)
-        cv2.waitKey(30)
-
-#===============================================================================
+################################################################################
+################################################################################
         
 def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
                     maskLoc2=None, bgLoc=None, imgSaveLoc=None, labelSaveLoc=None, \
                     nImgs=None, imgH=None, imgW=None,
                     saveNameSuffix=None, do90degFlips=False, \
                     doHoriFlip=False, doVertFlip=False, doRandomRot=False, \
-                    clipSample1=False, clipSample2=False, includeRbc=False, \
                     createSegmentLabelImg=False, segmentSaveLoc=None):
     '''
     This function creates images where an object from each of the folders 
@@ -1959,10 +957,6 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
     by random angles, while getting affixed on the bg image.
     Flags doHoriFlip and doVertFlip indicates if the sample should be flipped 
     horizontally or vertically (randomly) before getting affixed on bg image.
-    The clipSample1 (or clipSample2) flag indicates if there will be any 
-    clipping of the sample1 (or sample2) when it is affixed on the bg.
-    The function also checks if there are already some rbc annotations present 
-    on the background or not. If so then it includes them in the labels.
     The createSegmentLabelImg indicates if a semantic segmentation label image 
     has to be created as well. The colors of the segments for different objects 
     are mentioned in the global variables. Segment save location is also provided.
@@ -1985,7 +979,7 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
     maskPresent1 = False if maskLoc1 is None else True
     maskPresent2 = False if maskLoc2 is None else True
 
-#-------------------------------------------------------------------------------
+################################################################################
         
     # Checking if there is any label file for the bg images present or not. 
     # These files will include rbc annotations, if present.
@@ -1998,7 +992,7 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
         bgSegmentFolderName = imgFolderName + '_segments'
         bgSegmentFolderLoc = os.path.join(imgFolderParentDir, bgSegmentFolderName)
 
-#-------------------------------------------------------------------------------
+################################################################################
 
     # Number of files already existing in the imgSaveLoc is calculated. This 
     # will be used to assign the index to the file while saving.
@@ -2066,7 +1060,7 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
         sampleList2.pop(sampleIdx2)
         bgList.pop(bgIdx)
 
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Setting the background.
         
@@ -2080,649 +1074,442 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
         bgTlX = np.random.randint(bgW - imgW) if bgW > imgW else 0
         
         # IMPORTANT: The bg image must be larger or equal in size to imgH x imgW.
-        newBg1 = bg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
+        newBg = bg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
         
-        newBgH, newBgW, _ = newBg1.shape
+        newBgH, newBgW, _ = newBg.shape
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Also doing the same processing for the segmented image label.
         if createSegmentLabelImg:
             bgSegName = 'seg_' + '_'.join(bgName.split('_')[1:])
             bgSegImg = cv2.imread(os.path.join(bgSegmentFolderLoc, bgSegName))
             
-            newBgSegImg1 = bgSegImg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
+            newBgSegImg = bgSegImg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
             
-#-------------------------------------------------------------------------------
+################################################################################
 
-        # Including the rbc annotations in the label if there are label files 
-        # present for these background images.
-
-        # If however the argument includeRbc is false, this function will keep 
-        # this dictionary empty.
-        if includeRbc:
-            # Now those rbc which falls within the region which is cropped for 
-            # bg image, are included inside another dictionary.
-            # If there are no rbc annotations, then this dictionary will stay empty.
-            rbcOnCurrentBg = {}
-    
-            if os.path.exists(labelFolderLoc):
-                bgLabelName = bgName[:-4] + '.json'
-                bgLabelLoc = os.path.join(labelFolderLoc, bgLabelName)
-                
-                with open(bgLabelLoc, 'r') as infoFile:
-                    infoDict = json.load(infoFile)
-                
-                for k, v in infoDict.items():
-                    posX, posY = v['posX'], v['posY']
-                    if posX >= bgTlX and posX < bgTlX + imgW and \
-                       posY >= bgTlY and posY < bgTlY + imgH:
-                           rbcOnCurrentBg[k] = v
-                           rbcOnCurrentBg[k]['posX'] -= bgTlX
-                           rbcOnCurrentBg[k]['posY'] -= bgTlY
-                           rbcOnCurrentBg[k]['tlX'] -= bgTlX
-                           rbcOnCurrentBg[k]['tlY'] -= bgTlY
-                           
+        # Since two samples will be pasted here, so there are two ways that can 
+        # be done. The background image can be divided into a top and bottom 
+        # half and one sample can be pasted in each half. Or the background 
+        # image can be divided into a left and right half and one sample can be 
+        # pasted in each half. The method to be chosen is done randomly.
+        number1 = np.random.randint(100)
+        if number1 < 50:   # Choose top and bottom half.
+            topBotHalf, leftRightHalf = True, False
         else:
-            rbcOnCurrentBg = {}
-                       
-#-------------------------------------------------------------------------------
+            topBotHalf, leftRightHalf = False, True
 
-        # Clip sample1 at the image boundary.
+################################################################################
 
-        # If the clipSample flag is True, then the other data augmentation like
-        # flipping and rotation is ignored (even if their corresponding flags
-        # are True). As this does not make much of a difference.
-
-        if clipSample1:
-            # All clipped samples will have the common name 'partialOBJ'.
-            className1 = 'partialOBJ'
-
-            newSample, newMask = sample1, mask1
-
-            # Whether the clipping will happen at the side or the corner of the
-            # image, will be again selected randomly.
-            number2 = np.random.randint(100)
-                
-            # The sample will be affixed in a location on the bg, such that 
-            # it gets clipped by half. The clipping is always done by half 
-            # because, what matters during this clipping is that, the sample 
-            # should only be visible by a variable amount inside the image.
-            # Now because of the variation of the size of the samples, they 
-            # will anyway be visible by variable amount inside the image 
-            # even if the percentage of clipping is kept constant. So to 
-            # keep things simple the clipping is always done by 50%.
-            # Because of the same reason as stated in the previous case, 
-            # the clipping at the corners is kept constant at 25% only. The 
-            # variability in size of the samples will take care of the rest.
+        if topBotHalf:
             
-            # Here the clipping is only done in the left margin and in the 
-            # bottom left corner. After the sample2 is pasted, the final image
-            # will be rotated randomly. That will result in having a clipping 
-            # effect on all the margins and corners.
+            # Pasting sample1 on the top half.
 
-            newSampleH, newSampleW, _ = newSample.shape
+            if doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
 
-            tlX = newBgW - int(newSampleW * 0.5)
+                # Augmenting the samples before affixing onto the background.
+                
+                # There are altogether 4 kinds of augmentation that this function can 
+                # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
+                # augmentation.
+                # What kind of augmentation is to be done for this sample is chosen 
+                # at random with a equal probability (20% for each type).
+                # However, if the type of augmentation chosen doen not have it's 
+                # corresponding flag True, then no augmentation is done.
+        
+                number = np.random.randint(100)
+                
+                # Horizontal flip sample1.
+                
+                if number < 20 and doHoriFlip:
+                    newSample, newMask = horiFlipSampleAndMask(sample1, mask1)
+                    bboxH1, bboxW1, _ = newSample.shape
+
+################################################################################
+    
+                # Vertical flip sample1.
+        
+                elif number >= 20 and number < 40 and doVertFlip:
+                    newSample, newMask = vertFlipSampleAndMask(sample1, mask1)
+                    bboxH1, bboxW1, _ = newSample.shape
+
+################################################################################
+    
+                # 90 deg flip sample1.
+        
+                elif number >= 40 and number < 60 and do90degFlips:
+                    # Now the selection of whether the flip should be by 90, 180 or 270
+                    # deg, is done randomly (with equal probablity).                
+                    newSample, newMask, bboxW1, bboxH1 = random90degFlipSampleAndMask(sample1, mask1)
+                
+################################################################################
+    
+                # Rotation by random angles sample1.
+        
+                elif number >= 60 and number < 80 and doRandomRot:
+                    # During rotation by arbitrary angles, the sample first needs to be
+                    # pasted on a bigger blank array, otherwise it will get cropped 
+                    # due to rotation.
+                    newSample, newMask, bboxW1, bboxH1 = randomRotationSampleAndMask(sample1, mask1)
+                
+################################################################################
+                
+                # No augmentation sample1.
+                
+                else:
+                    newSample, newMask = sample1, mask1
+                    bboxH1, bboxW1, _ = newSample.shape
             
-            if number2 < 60:
-                # Clip at the left side of the image.
-                tlY = np.random.randint(newBgH - newSampleH)
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1))
+                tlX = np.random.randint(newBgW - newSampleW)
+                
+                # Fixing the sample onto the background.
+                image, posX1, posY1, _, _ = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
 
-#-------------------------------------------------------------------------------
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className1]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
+                        
+################################################################################
+        
+            # If both the clipSample1 and the other augmentation flags are False, 
+            # then no augmentation is performed.
 
-            else:    # Clip at the bottom right corner.
-                tlY = newBgH - int(newSampleH * 0.5)
-                
-            # Fixing the sample onto the background.
-            image, posX1, posY1, bboxW1, bboxH1 = fixSampleToBg(newSample, newMask, newBg1, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX1-v['posX']) > bboxW1/2 or abs(posY1-v['posY']) > bboxH1/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-            
-            # Create the segmented label image as well if createSegmentLabelImg is True:
-            if createSegmentLabelImg:
-                sampleColor = classNameToColor[className1]
-                sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                segImg1, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg1, tlX, tlY)
-                
-#-------------------------------------------------------------------------------
-                
-        # If the clipSample is False, then the other augmentations like flipping
-        # and rotations are done.
-
-        elif doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
-
-            # Augmenting the samples before affixing onto the background.
-            
-            # There are altogether 4 kinds of augmentation that this function can 
-            # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
-            # augmentation.
-            # What kind of augmentation is to be done for this sample is chosen 
-            # at random with a equal probability (20% for each type).
-            # However, if the type of augmentation chosen doen not have it's 
-            # corresponding flag True, then no augmentation is done.
-    
-            number = np.random.randint(100)
-            
-            # Horizontal flip sample1.
-            
-            if number < 20 and doHoriFlip:
-#                print(sample1.shape, mask1.shape)##################
-                
-                newSample, newMask = horiFlipSampleAndMask(sample1, mask1)
-                bboxH1, bboxW1, _ = newSample.shape
-
-#-------------------------------------------------------------------------------
-    
-            # Vertical flip sample1.
-    
-            elif number >= 20 and number < 40 and doVertFlip:
-#                print(sample1.shape, mask1.shape)##################
-                
-                newSample, newMask = vertFlipSampleAndMask(sample1, mask1)
-                bboxH1, bboxW1, _ = newSample.shape
-
-#-------------------------------------------------------------------------------
-    
-            # 90 deg flip sample1.
-    
-            elif number >= 40 and number < 60 and do90degFlips:
-                # Now the selection of whether the flip should be by 90, 180 or 270
-                # deg, is done randomly (with equal probablity).                
-#                print(sample1.shape, mask1.shape)##################
-                
-                newSample, newMask, bboxW1, bboxH1 = random90degFlipSampleAndMask(sample1, mask1)
-                
-#-------------------------------------------------------------------------------
-    
-            # Rotation by random angles sample1.
-    
-            elif number >= 60 and number < 80 and doRandomRot:
-                # During rotation by arbitrary angles, the sample first needs to be
-                # pasted on a bigger blank array, otherwise it will get cropped 
-                # due to rotation.
-#                print(sample1.shape, mask1.shape)##################
-                
-                newSample, newMask, bboxW1, bboxH1 = randomRotationSampleAndMask(sample1, mask1)
-                
-#-------------------------------------------------------------------------------
-                
-            # No augmentation sample1.
-            
             else:
                 newSample, newMask = sample1, mask1
-                bboxH1, bboxW1, _ = newSample.shape
             
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(newBgH - newSampleH)
-            tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) \
-                                                + int(newBgW * 0.5) 
-            
-            # Fixing the sample onto the background.
-            image, posX1, posY1, _, _ = fixSampleToBg(newSample, newMask, newBg1, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX1-v['posX']) > bboxW1/2 or abs(posY1-v['posY']) > bboxH1/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1))
+                tlX = np.random.randint(newBgW - newSampleW) 
+                # Fixing the sample onto the background.
+                image, posX1, posY1, bboxW1, bboxH1 = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
 
-            # Create the segmented label image as well if createSegmentLabelImg is True:
-            if createSegmentLabelImg:
-                sampleColor = classNameToColor[className1]
-                sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                segImg1, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg1, tlX, tlY)
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className1]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
+                
+################################################################################
+
+            # The new background for sample2 will be the image formed earlier where
+            # the sample1 was affixed onto the background.
+            newBg = image
+            newBgH, newBgW, _ = newBg.shape
+            
+            if createSegmentLabelImg:   newBgSegImg = segImg
+
+################################################################################
+            
+            # Pasting sample2 on the bottom half.
+            
+            if doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
+
+                # Augmenting the samples before affixing onto the background.
+                
+                # There are altogether 4 kinds of augmentation that this function can 
+                # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
+                # augmentation.
+                # What kind of augmentation is to be done for this sample is chosen 
+                # at random with a equal probability (20% for each type).
+                # However, if the type of augmentation chosen doen not have it's 
+                # corresponding flag True, then no augmentation is done.
+        
+                number = np.random.randint(100)
+                
+                # Horizontal flip sample2.
+                
+                if number < 20 and doHoriFlip:
+                    newSample, newMask = horiFlipSampleAndMask(sample2, mask2)
+                    bboxH2, bboxW2, _ = newSample.shape
+
+################################################################################
+    
+                # Vertical flip sample2.
+        
+                elif number >= 20 and number < 40 and doVertFlip:
+                    newSample, newMask = vertFlipSampleAndMask(sample2, mask2)
+                    bboxH2, bboxW2, _ = newSample.shape
+
+################################################################################
+    
+                # 90 deg flip sample2.
+        
+                elif number >= 40 and number < 60 and do90degFlips:
+                    # Now the selection of whether the flip should be by 90, 180 or 270
+                    # deg, is done randomly (with equal probablity).                
+                    newSample, newMask, bboxW2, bboxH2 = random90degFlipSampleAndMask(sample2, mask2)
+                
+################################################################################
+    
+                # Rotation by random angles sample2.
+        
+                elif number >= 60 and number < 80 and doRandomRot:
+                    # During rotation by arbitrary angles, the sample first needs to be
+                    # pasted on a bigger blank array, otherwise it will get cropped 
+                    # due to rotation.
+                    newSample, newMask, bboxW2, bboxH2 = randomRotationSampleAndMask(sample2, mask2)
+                
+################################################################################
+                
+                # No augmentation sample2.
+                
+                else:
+                    newSample, newMask = sample2, mask2
+                    bboxH2, bboxW2, _ = newSample.shape
+            
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1)) + int(newBgH * 0.5)
+                tlX = np.random.randint(newBgW - newSampleW)
+                
+                # Fixing the sample onto the background.
+                image, posX2, posY2, _, _ = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
+
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className2]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
                         
-#-------------------------------------------------------------------------------
+################################################################################
         
-        # If both the clipSample1 and the other augmentation flags are False, 
-        # then no augmentation is performed.
+            # If both the clipSample1 and the other augmentation flags are False, 
+            # then no augmentation is performed.
 
-        else:
-            newSample, newMask = sample1, mask1
-        
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(newBgH - newSampleH)
-            tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) \
-                                                + int(newBgW * 0.5) 
-            # Fixing the sample onto the background.
-            image, posX1, posY1, bboxW1, bboxH1 = fixSampleToBg(newSample, newMask, newBg1, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX1-v['posX']) > bboxW1/2 or abs(posY1-v['posY']) > bboxH1/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-
-            # Create the segmented label image as well if createSegmentLabelImg is True:
-            if createSegmentLabelImg:
-                sampleColor = classNameToColor[className1]
-                sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                segImg1, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg1, tlX, tlY)
-                
-#-------------------------------------------------------------------------------
-
-        # The new background for sample2 will be the image formed earlier where
-        # the sample1 was affixed onto the background.
-        newBg2 = image
-        newBgH, newBgW, _ = newBg2.shape
-        
-        if createSegmentLabelImg:   newBgSegImg2 = segImg1
-        
-        # Now, to have a variation in the position between sample1 and sample2,
-        # the current image (which is the same as the newBg2) is rotated by 
-        # multiples of 90 deg. And along with that the location where sample1 
-        # has been pasted (given by the current values of tlX, tlY) has to be 
-        # considered, so that the sample2 does not overlap with sample1.
-        # The rotations will be done randomly, and the tlX and tlY values will
-        # thereby, change to different values in each case. All these should be
-        # taken into account.
-        
-        # Now the selection of whether the flip should be by 90, 180 or 270
-        # deg, is done randomly (with equal probablity).
-        number1 = np.random.randint(100)
-
-        if number1 < 33:
-            # Flip by 90 deg (same as horizontal flip + transpose).
-            newBg2 = cv2.transpose(cv2.flip(newBg2, 1))
-            posX1, posY1 = posY1, imgW - posX1
-            bboxW1, bboxH1 = bboxH1, bboxW1
-            hLimit, hOffset = tlX, newBgW - tlX
-            wLimit, wOffset = newBgW, 0
-            # Now modifying the rbc cell locations.
-            for k, v in rbcOnCurrentBg.items():
-                v['posX'], v['posY'] = v['posY'], imgW - v['posX']
-                v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-                
-            if createSegmentLabelImg:
-                newBgSegImg2 = cv2.transpose(cv2.flip(newBgSegImg2, 1))
-
-            
-        elif number1 >= 33 and number1 < 66:
-            # Flip by 180 deg (same as horizontal flip + vertical flip).
-            newBg2 = cv2.flip(newBg2, -1)
-            posX1, posY1 = imgW - posX1, imgH - posY1
-            hLimit, hOffset = newBgH, 0
-            wLimit, wOffset = tlX, newBgW - tlX
-            # Now modifying the rbc cell locations.
-            for k, v in rbcOnCurrentBg.items():
-                v['posX'], v['posY'] = imgW - v['posX'], imgH - v['posY']
-
-            if createSegmentLabelImg:
-                newBgSegImg2 = cv2.flip(newBgSegImg2, -1)
-
-                        
-        else:   # Flip by 270 deg (same as vertical flip + transpose).
-            newBg2 = cv2.transpose(cv2.flip(newBg2, 0))
-            posX1, posY1 = imgH - posY1, posX1
-            bboxW1, bboxH1 = bboxH1, bboxW1
-            hLimit, hOffset = tlX, 0
-            wLimit, wOffset = newBgW, 0
-            # Now modifying the rbc cell locations.
-            for k, v in rbcOnCurrentBg.items():
-                v['posX'], v['posY'] = imgH - v['posY'], v['posX']
-                v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-                
-            if createSegmentLabelImg:
-                newBgSegImg2 = cv2.transpose(cv2.flip(newBgSegImg2, 0))
-
-#-------------------------------------------------------------------------------
-
-        # Clip sample2 at the image boundary.
-
-        # If the clipSample flag is True, then the other data augmentation like
-        # flipping and rotation is ignored (even if their corresponding flags
-        # are True). As this does not make much of a difference.
-
-        if clipSample2:
-            # All clipped samples will have the common name 'partialOBJ'.
-            className2 = 'partialOBJ'
-
-            newSample, newMask = sample2, mask2
-
-            # Whether the clipping will happen at the side or the corner of the
-            # image, will be again selected randomly.
-            number2 = np.random.randint(100)
-                
-            # The sample will be affixed in a location on the bg, such that 
-            # it gets clipped by half. The clipping is always done by half 
-            # because, what matters during this clipping is that, the sample 
-            # should only be visible by a variable amount inside the image.
-            # Now because of the variation of the size of the samples, they 
-            # will anyway be visible by variable amount inside the image 
-            # even if the percentage of clipping is kept constant. So to 
-            # keep things simple the clipping is always done by 50%.
-            # Because of the same reason as stated in the previous case, 
-            # the clipping at the corners is kept constant at 25% only. The 
-            # variability in size of the samples will take care of the rest.
-            
-            newSampleH, newSampleW, _ = newSample.shape
-
-            tlX = newBgW - int(newSampleW * 0.5)
-
-            if number2 < 15:
-                # Clip at the left side of the image.
-                tlY = np.random.randint(max(hLimit - newSampleH, 1)) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                
-
-            elif number2 >= 15 and number2 < 30:
-                # Clip at the top side of the image (which is same as clip on 
-                # left + flip by 90 deg).
-                tlY = np.random.randint(max(hLimit - newSampleH, 1)) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                image = cv2.transpose(cv2.flip(image, 1))
-                posX2, posY2 = posY2, imgW - posX2
-                bboxW2, bboxH2 = bboxH2, bboxW2
-                posX1, posY1 = posY1, imgW - posX1
-                bboxW1, bboxH1 = bboxH1, bboxW1
-                # Now modifying the rbc cell locations.
-                for k, v in rbcOnCurrentBg.items():
-                    v['posX'], v['posY'] = v['posY'], imgW - v['posX']
-                    v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 1))
-                
-            
-            elif number2 >= 30 and number2 < 45:
-                # Clip at the right side of the image (which is same as clip on 
-                # left + flip by 180 deg).
-                tlY = np.random.randint(max(hLimit - newSampleH, 1)) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                image = cv2.flip(image, -1)
-                posX2, posY2 = imgW - posX2, imgH - posY2
-                posX1, posY1 = imgW - posX1, imgH - posY1
-                # Now modifying the rbc cell locations.
-                for k, v in rbcOnCurrentBg.items():
-                    v['posX'], v['posY'] = imgW - v['posX'], imgH - v['posY']
-            
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    segImg = cv2.flip(segImg, -1)
-                    
-            
-            elif number2 >= 45 and number2 < 60:
-                # Clip at the bottom side of the image (which is same as clip on 
-                # left + flip by 270 deg).
-                tlY = np.random.randint(max(hLimit - newSampleH, 1)) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                image = cv2.transpose(cv2.flip(image, 0))
-                posX2, posY2 = imgH - posY2, posX2
-                bboxW2, bboxH2 = bboxH2, bboxW2
-                posX1, posY1 = imgH - posY1, posX1
-                bboxW1, bboxH1 = bboxH1, bboxW1
-                # Now modifying the rbc cell locations.
-                for k, v in rbcOnCurrentBg.items():
-                    v['posX'], v['posY'] = imgH - v['posY'], v['posX']
-                    v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 0))
-                
-#-------------------------------------------------------------------------------
-
-            elif number2 >= 60 and number2 < 70:
-                # Clip at the bottom right corner.
-                tlY = hLimit - int(newSampleH * 0.5) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-                
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    
-
-            elif number2 >= 70 and number2 < 80:
-                # Clip at the top right corner (which is same as clip on the 
-                # bottom right corner + flip by 90 deg). 
-                tlY = hLimit - int(newSampleH * 0.5) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                image = cv2.transpose(cv2.flip(image, 1))
-                posX2, posY2 = posY2, imgW - posX2
-                bboxW2, bboxH2 = bboxH2, bboxW2            
-                posX1, posY1 = posY1, imgW - posX1
-                bboxW1, bboxH1 = bboxH1, bboxW1
-                # Now modifying the rbc cell locations.
-                for k, v in rbcOnCurrentBg.items():
-                    v['posX'], v['posY'] = v['posY'], imgW - v['posX']
-                    v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-                
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 1))
-                            
-
-            elif number2 >= 80 and number2 < 90:
-                # Clip at the top left corner (which is same as clip on the 
-                # bottom right corner + flip by 180 deg). 
-                tlY = hLimit - int(newSampleH * 0.5) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                image = cv2.flip(image, -1)
-                posX2, posY2 = imgW - posX2, imgH - posY2
-                posX1, posY1 = imgW - posX1, imgH - posY1
-                # Now modifying the rbc cell locations.
-                for k, v in rbcOnCurrentBg.items():
-                    v['posX'], v['posY'] = imgW - v['posX'], imgH - v['posY']
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    segImg = cv2.flip(segImg, -1)
-                            
-
-            elif number2 >= 90 and number2 < 100:
-                # Clip at the bottom left corner (which is same as clip on the 
-                # bottom right corner + flip by 270 deg). 
-                tlY = hLimit - int(newSampleH * 0.5) + hOffset
-                # Fixing the sample onto the background.
-                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-                # Now remove the rbc cells which are overlapped by this wbc cell.
-                newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                      if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-                rbcOnCurrentBg = newRbcOnCurrentBg
-
-                image = cv2.transpose(cv2.flip(image, 0))
-                posX2, posY2 = imgH - posY2, posX2
-                bboxW2, bboxH2 = bboxH2, bboxW2
-                posX1, posY1 = imgH - posY1, posX1
-                bboxW1, bboxH1 = bboxH1, bboxW1
-                # Now modifying the rbc cell locations.
-                for k, v in rbcOnCurrentBg.items():
-                    v['posX'], v['posY'] = imgH - v['posY'], v['posX']
-                    v['bboxW'], v['bboxH'] = v['bboxH'], v['bboxW']
-
-                # Create the segmented label image as well if createSegmentLabelImg is True:
-                if createSegmentLabelImg:
-                    sampleColor = classNameToColor[className2]
-                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-                    segImg = cv2.transpose(cv2.flip(segImg, 0))
-
-#-------------------------------------------------------------------------------
-                
-        # If the clipSample is False, then the other augmentations like flipping
-        # and rotations are done.
-
-        elif doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
-            
-            # Augmenting the samples before affixing onto the background.
-            
-            # There are altogether 4 kinds of augmentation that this function can 
-            # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
-            # augmentation.
-            # What kind of augmentation is to be done for this sample is chosen 
-            # at random with a equal probability (20% for each type).
-            # However, if the type of augmentation chosen doen not have it's 
-            # corresponding flag True, then no augmentation is done.
-
-            number = np.random.randint(100)
-            
-            # Horizontal flip sample2.
-            
-            if number < 20 and doHoriFlip:
-#                print(2, sample2.shape, mask2.shape)##################
-                
-                newSample, newMask = horiFlipSampleAndMask(sample2, mask2)
-                bboxH2, bboxW2, _ = newSample.shape
-
-#-------------------------------------------------------------------------------
-    
-            # Vertical flip sample2.
-    
-            elif number >= 20 and number < 40 and doVertFlip:
-#                print(2, sample2.shape, mask2.shape)##################
-
-                newSample, newMask = vertFlipSampleAndMask(sample2, mask2)
-                bboxH2, bboxW2, _ = newSample.shape
-
-#-------------------------------------------------------------------------------
-    
-            # 90 deg flip sample2.
-    
-            elif number >= 40 and number < 60 and do90degFlips:
-                # Now the selection of whether the flip should be by 90, 180 or 270
-                # deg, is done randomly (with equal probablity).                
-#                print(2, sample2.shape, mask2.shape)##################
-
-                newSample, newMask, bboxW2, bboxH2 = random90degFlipSampleAndMask(sample2, mask2)
-                
-#-------------------------------------------------------------------------------
-    
-            # Rotation by random angles sample2.
-    
-            elif number >= 60 and number < 80 and doRandomRot:
-                # During rotation by arbitrary angles, the sample first needs to be
-                # pasted on a bigger blank array, otherwise it will get cropped 
-                # due to rotation.
-#                print(2, sample2.shape, mask2.shape)##################
-
-                newSample, newMask, bboxW2, bboxH2 = randomRotationSampleAndMask(sample2, mask2)
-           
-#-------------------------------------------------------------------------------
-                
-            # No augmentation sample2.
-            
             else:
                 newSample, newMask = sample2, mask2
-                bboxH2, bboxW2, _ = newSample.shape
             
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(max(hLimit - newSampleH, 1)) + hOffset
-            tlX = np.random.randint(max(wLimit - newSampleW, 1)) + wOffset 
-                
-            # Fixing the sample onto the background.
-            image, posX2, posY2, _, _ = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-            
-            # Create the segmented label image as well if createSegmentLabelImg is True:
-            if createSegmentLabelImg:
-                sampleColor = classNameToColor[className2]
-                sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
-            
-#-------------------------------------------------------------------------------
-        
-        # If both the clipSample2 and the other augmentation flags are False, 
-        # then no augmentation is performed.
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(max(newBgH * 0.5 - newSampleH, 1)) + int(newBgH * 0.5)
+                tlX = np.random.randint(newBgW - newSampleW)
+                # Fixing the sample onto the background.
+                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
 
-        else:
-            newSample, newMask = sample2, mask2
-        
-            # x, y of top left corner of the region where sample will be pasted.
-            newSampleH, newSampleW, _ = newSample.shape
-            tlY = np.random.randint(max(hLimit - newSampleH, 1)) + hOffset
-            tlX = np.random.randint(max(wLimit - newSampleW, 1)) + wOffset 
-            # Fixing the sample onto the background.
-            image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg2, tlX, tlY)
-            # Now remove the rbc cells which are overlapped by this wbc cell.
-            newRbcOnCurrentBg = {k : v for k, v in rbcOnCurrentBg.items() \
-                                  if abs(posX2-v['posX']) > bboxW2/2 or abs(posY2-v['posY']) > bboxH2/2}
-            rbcOnCurrentBg = newRbcOnCurrentBg
-            
-            # Create the segmented label image as well if createSegmentLabelImg is True:
-            if createSegmentLabelImg:
-                sampleColor = classNameToColor[className2]
-                sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
-                segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg2, tlX, tlY)
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className2]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
                 
-##-------------------------------------------------------------------------------
+################################################################################
+
+        if leftRightHalf:
+            
+            # Pasting sample1 on the left half.
+
+            if doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
+
+                # Augmenting the samples before affixing onto the background.
+                
+                # There are altogether 4 kinds of augmentation that this function can 
+                # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
+                # augmentation.
+                # What kind of augmentation is to be done for this sample is chosen 
+                # at random with a equal probability (20% for each type).
+                # However, if the type of augmentation chosen doen not have it's 
+                # corresponding flag True, then no augmentation is done.
+        
+                number = np.random.randint(100)
+                
+                # Horizontal flip sample1.
+                
+                if number < 20 and doHoriFlip:
+                    newSample, newMask = horiFlipSampleAndMask(sample1, mask1)
+                    bboxH1, bboxW1, _ = newSample.shape
+
+################################################################################
+    
+                # Vertical flip sample1.
+        
+                elif number >= 20 and number < 40 and doVertFlip:
+                    newSample, newMask = vertFlipSampleAndMask(sample1, mask1)
+                    bboxH1, bboxW1, _ = newSample.shape
+
+################################################################################
+    
+                # 90 deg flip sample1.
+        
+                elif number >= 40 and number < 60 and do90degFlips:
+                    # Now the selection of whether the flip should be by 90, 180 or 270
+                    # deg, is done randomly (with equal probablity).                
+                    newSample, newMask, bboxW1, bboxH1 = random90degFlipSampleAndMask(sample1, mask1)
+                
+################################################################################
+    
+                # Rotation by random angles sample1.
+        
+                elif number >= 60 and number < 80 and doRandomRot:
+                    # During rotation by arbitrary angles, the sample first needs to be
+                    # pasted on a bigger blank array, otherwise it will get cropped 
+                    # due to rotation.
+                    newSample, newMask, bboxW1, bboxH1 = randomRotationSampleAndMask(sample1, mask1)
+                
+################################################################################
+                
+                # No augmentation sample1.
+                
+                else:
+                    newSample, newMask = sample1, mask1
+                    bboxH1, bboxW1, _ = newSample.shape
+            
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(newBgH - newSampleH)
+                tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1))
+                
+                # Fixing the sample onto the background.
+                image, posX1, posY1, _, _ = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
+
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className1]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
+                        
+################################################################################
+        
+            # If both the clipSample1 and the other augmentation flags are False, 
+            # then no augmentation is performed.
+
+            else:
+                newSample, newMask = sample1, mask1
+            
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(newBgH - newSampleH)
+                tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1))
+
+                # Fixing the sample onto the background.
+                image, posX1, posY1, bboxW1, bboxH1 = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
+
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className1]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
+                
+################################################################################
+
+            # The new background for sample2 will be the image formed earlier where
+            # the sample1 was affixed onto the background.
+            newBg = image
+            newBgH, newBgW, _ = newBg.shape
+            
+            if createSegmentLabelImg:   newBgSegImg = segImg
+
+################################################################################
+            
+            # Pasting sample2 on the right half.
+            
+            if doHoriFlip or doVertFlip or do90degFlips or doRandomRot:
+
+                # Augmenting the samples before affixing onto the background.
+                
+                # There are altogether 4 kinds of augmentation that this function can 
+                # do, doRandomRot, doHoriFlip, doVertFlip, do90degFlips and no 
+                # augmentation.
+                # What kind of augmentation is to be done for this sample is chosen 
+                # at random with a equal probability (20% for each type).
+                # However, if the type of augmentation chosen doen not have it's 
+                # corresponding flag True, then no augmentation is done.
+        
+                number = np.random.randint(100)
+                
+                # Horizontal flip sample2.
+                
+                if number < 20 and doHoriFlip:
+                    newSample, newMask = horiFlipSampleAndMask(sample2, mask2)
+                    bboxH2, bboxW2, _ = newSample.shape
+
+################################################################################
+    
+                # Vertical flip sample2.
+        
+                elif number >= 20 and number < 40 and doVertFlip:
+                    newSample, newMask = vertFlipSampleAndMask(sample2, mask2)
+                    bboxH2, bboxW2, _ = newSample.shape
+
+################################################################################
+    
+                # 90 deg flip sample2.
+        
+                elif number >= 40 and number < 60 and do90degFlips:
+                    # Now the selection of whether the flip should be by 90, 180 or 270
+                    # deg, is done randomly (with equal probablity).                
+                    newSample, newMask, bboxW2, bboxH2 = random90degFlipSampleAndMask(sample2, mask2)
+                
+################################################################################
+    
+                # Rotation by random angles sample2.
+        
+                elif number >= 60 and number < 80 and doRandomRot:
+                    # During rotation by arbitrary angles, the sample first needs to be
+                    # pasted on a bigger blank array, otherwise it will get cropped 
+                    # due to rotation.
+                    newSample, newMask, bboxW2, bboxH2 = randomRotationSampleAndMask(sample2, mask2)
+                
+################################################################################
+                
+                # No augmentation sample2.
+                
+                else:
+                    newSample, newMask = sample2, mask2
+                    bboxH2, bboxW2, _ = newSample.shape
+            
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(newBgH - newSampleH)
+                tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) + int(newBgW * 0.5)
+                
+                # Fixing the sample onto the background.
+                image, posX2, posY2, _, _ = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
+
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className2]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
+                        
+################################################################################
+        
+            # If both the clipSample1 and the other augmentation flags are False, 
+            # then no augmentation is performed.
+
+            else:
+                newSample, newMask = sample2, mask2
+            
+                # x, y of top left corner of the region where sample will be pasted.
+                newSampleH, newSampleW, _ = newSample.shape
+                tlY = np.random.randint(newBgH - newSampleH)
+                tlX = np.random.randint(max(newBgW * 0.5 - newSampleW, 1)) + int(newBgW * 0.5)
+
+                # Fixing the sample onto the background.
+                image, posX2, posY2, bboxW2, bboxH2 = fixSampleToBg(newSample, newMask, newBg, tlX, tlY)
+
+                # Create the segmented label image as well if createSegmentLabelImg is True:
+                if createSegmentLabelImg:
+                    sampleColor = classNameToColor[className2]
+                    sampleSegImg = cv2.bitwise_and(np.array(sampleColor), newMask)
+                    segImg, _, _, _, _ = fixSampleToBg(sampleSegImg, newMask, newBgSegImg, tlX, tlY)
+                
+#################################################################################
 #
 #        cv2.imshow('sample', sample)
 #        cv2.imshow('newSample', newSample)
 #        cv2.imshow('mask', mask)
 #        cv2.imshow('newMask', newMask)
-#        cv2.imshow('newBg', newBg)
+#        cv2.imshow('image', image)
 #        cv2.waitKey(0)
 #                     
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Saving the image.
         idx = nAlreadyExistingFiles + i    # This is the image index.
@@ -2745,20 +1532,31 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
                         className2 + '_' + \
                         saveNameSuffix + '_' + str(idx) + '.json'
         
-        classIdx1 = classNameToIdx[className1]
-        classIdx2 = classNameToIdx[className2]
+        if className1 in classNameToIdx:
+            classIdx1 = classNameToIdx[className1]
+        # If the partialOBJ className is not included in the classNameToIdx 
+        # dictionary, then it is assigned a new classIdx value.
+        elif className1 == 'partialOBJ':
+            classIdx1 = nClasses
+        
+        if className2 in classNameToIdx:
+            classIdx2 = classNameToIdx[className2]
+        # If the partialOBJ className is not included in the classNameToIdx 
+        # dictionary, then it is assigned a new classIdx value.
+        elif className2 == 'partialOBJ':
+            classIdx2 = nClasses
         
         infoDict = {}
         
         with open(os.path.join(labelSaveLoc, labelSaveName), 'w') as infoFile:
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             posX, posY, bboxW, bboxH = posX1, posY1, bboxW1, bboxH1
             className, classIdx = className1, classIdx1
             sampleLoc, sampleName = sampleLoc1, sampleName1
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Make sure the coordinates are inside the boundaries of the image.
             if posX >= imgW:      posX = imgW - 1
@@ -2773,7 +1571,7 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
             if brY >= imgH:      brY = imgH - 1
             bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             infoDict[0] = {
                             'className': className, 'classIdx': classIdx, \
@@ -2784,13 +1582,13 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
                             'bgPath': os.path.join(bgLoc, bgName) \
                          }
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             posX, posY, bboxW, bboxH = posX2, posY2, bboxW2, bboxH2
             className, classIdx = className2, classIdx2
             sampleLoc, sampleName = sampleLoc2, sampleName2
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Make sure the coordinates are inside the boundaries of the image.
             if posX >= imgW:      posX = imgW - 1
@@ -2805,7 +1603,7 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
             if brY >= imgH:      brY = imgH - 1
             bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             infoDict[1] = {
                             'className': className, 'classIdx': classIdx, \
@@ -2815,200 +1613,23 @@ def doubleInstance(sampleLoc1=None, sampleLoc2=None, maskLoc1=None, \
                             'samplePath': os.path.join(sampleLoc, sampleName), \
                             'bgPath': os.path.join(bgLoc, bgName) \
                          }
-            
-#-------------------------------------------------------------------------------
-
-            # Now recording the rbc cells into the infoDict.
-            nWbc = len(infoDict)      # Number of wbc cell records in infoDict.
-#            print(len(rbcOnCurrentBg))
-            
-            for r, (k, v) in enumerate(rbcOnCurrentBg.items()):
-                # Creating key for the rbc cell records. 
-                # This makes sure that they are different from the keys of the 
-                # wbc cell records, else they may overlap the wbc record.
-                index = r + nWbc
-                
-#-------------------------------------------------------------------------------
-
-                posX, posY, bboxW, bboxH = v['posX'], v['posY'], v['bboxW'], v['bboxH']
-                classNameRbc, classIdxRbc = v['className'], v['classIdx']
-                
-#-------------------------------------------------------------------------------
-
-                # Make sure the coordinates are inside the boundaries of the image.
-                if posX >= imgW:      posX = imgW - 1
-                if posX < 0:            posX = 0
-                if posY >= imgH:      posY = imgH - 1
-                if posY < 0:            posY = 0
-                tlX, tlY = posX-bboxW*0.5, posY-bboxH*0.5   # Top left corner.
-                brX, brY = posX+bboxW*0.5, posY+bboxH*0.5   # Bottom right corner.
-                if tlX < 0:            tlX = 0
-                if tlY < 0:            tlY = 0
-                if brX >= imgW:      brX = imgW - 1
-                if brY >= imgH:      brY = imgH - 1
-                bboxW, bboxH = int(brX - tlX), int(brY - tlY)   # Update box size.
-            
-#-------------------------------------------------------------------------------
-
-                infoDict[index] = {
-                                        'className': classNameRbc, 'classIdx': classIdxRbc, \
-                                        'posX': int(posX), 'posY': int(posY), \
-                                        'bboxW': bboxW, 'bboxH': bboxH, \
-                                        'tlX': int(tlX), 'tlY': int(tlY), \
-                                        'samplePath': None, \
-                                        'bgPath': os.path.join(bgLoc, bgName) \
-                                   }
-                
+                            
             json.dump(infoDict, infoFile, indent=4, separators=(',', ': '))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         for k, v in infoDict.items():
             cv2.circle(image, (v['posX'], v['posY']), 2, (0,255,0), 2)
             if v['className'] != '_':
                 cv2.rectangle(image, (v['tlX'], v['tlY']), (v['tlX']+v['bboxW'], \
                                        v['tlY']+v['bboxH']), (0,255,0), 2)
-        cv2.imshow('image', image)
+        #cv2.imshow('image', image)
         # Show the segment label as well if the createSegmentLabelImg is True.
         if createSegmentLabelImg:   cv2.imshow('segment label', segImg)
-        cv2.waitKey(30)
+        cv2.waitKey(0)
 
-#===============================================================================
-
-def blankBackground(bgLoc=None, imgSaveLoc=None, labelSaveLoc=None, \
-                     nImgs=None, imgH=None, imgW=None,
-                     saveNameSuffix=None, createSegmentLabelImg=False, \
-                     segmentSaveLoc=None):
-    '''
-    This function creates images where there are no wbc cells. Only a background
-    image of rbc cells.
-    These images are created by taking backgrounds from bgLoc.
-    The backgrounds are selected randomly from the available collection. 
-    Total number of images created is nImgs. Images are saved in the imgSaveLoc.
-    The labels of the corresponding images are also created as json files in 
-    the labelSaveLoc.
-    imgH and imgW defines the size of the image to be created.
-    The saveNameSuffix is a string, that will be appended to the name of the 
-    image file while saving. This is important to identify the dataset from 
-    where the image has been synthesized.
-    The createSegmentLabelImg indicates if a semantic segmentation label image 
-    has to be created as well. The colors of the segments for different objects 
-    are mentioned in the global variables. Segment save location is also provided.
-    '''
-    
-    if bgLoc is None or imgSaveLoc is None or labelSaveLoc is None \
-       or nImgs is None or imgH is None or imgW is None or saveNameSuffix is None:
-           print('\nERROR: one or more input arguments missing ' \
-                  'in blankBackground. Aborting.\n')
-           sys.exit()
-    
-    if createSegmentLabelImg:
-        if segmentSaveLoc is None:
-            print('\nERROR: one or more input arguments missing ' \
-                   'in blankBackground for segments. Aborting.\n')
-            sys.exit()
-    
-#-------------------------------------------------------------------------------
-        
-    # Checking if there is any label file for the bg images present or not. 
-    # These files will include rbc annotations, if present.
-    imgFolderParentDir = '\\'.join(bgLoc.split('\\')[:-1])
-    imgFolderName = bgLoc.split('\\')[-1]
-    labelFolderName = imgFolderName + '_labels'
-    labelFolderLoc = os.path.join(imgFolderParentDir, labelFolderName)
-    
-    if createSegmentLabelImg:
-        bgSegmentFolderName = imgFolderName + '_segments'
-        bgSegmentFolderLoc = os.path.join(imgFolderParentDir, bgSegmentFolderName)
-
-#-------------------------------------------------------------------------------
-    
-    # Number of files already existing in the imgSaveLoc is calculated. This 
-    # will be used to assign the index to the file while saving.
-    nAlreadyExistingFiles = len(os.listdir(imgSaveLoc))
-    
-    bgList = []
-    
-    # Creating the images.    
-    for i in range(nImgs):
-        # Fill the lists if they are empty.
-        # As a sample and a bg is used for creating an image, they are deleted
-        # from this list. So if this list gets empty, then it is reinitialized.
-        if len(bgList) == 0:      bgList = os.listdir(bgLoc)
-        
-        # Select a background at random.
-        bgIdx = np.random.randint(len(bgList))
-        bgName = bgList[bgIdx]
-        bg = cv2.imread(os.path.join(bgLoc, bgName))
-        
-        # Remove the entry of this bg from the respective lists so 
-        # that they are not used again. It will only be used again if all the 
-        # existing bg images in the lists are used up and the lists become empty.
-        bgList.pop(bgIdx)
-
-#-------------------------------------------------------------------------------
-        
-        # Setting the background.
-        
-        # It may happen that the bg image is larger than size imgH x imgW.
-        # In that case, a imgH x imgW region is cropped out from the bg image.
-        bgH, bgW, _ = bg.shape
-        
-        # Determining the x and y of the top left corner of the region to be
-        # cropped out from the bg image.
-        bgTlY = np.random.randint(bgH - imgH) if bgH > imgH else 0
-        bgTlX = np.random.randint(bgW - imgW) if bgW > imgW else 0
-        
-        # IMPORTANT: The bg image must be larger or equal in size to imgH x imgW.
-        newBg = bg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
-        
-        newBgH, newBgW, _ = newBg.shape
-
-#-------------------------------------------------------------------------------
-
-        # Also doing the same processing for the segmented image label.
-        if createSegmentLabelImg:
-            bgSegName = 'seg_' + '_'.join(bgName.split('_')[1:])
-            bgSegImg = cv2.imread(os.path.join(bgSegmentFolderLoc, bgSegName))
-            
-            newBgSegImg = bgSegImg[bgTlY : bgTlY + imgH, bgTlX : bgTlX + imgW]
-            
-#-------------------------------------------------------------------------------
-
-        # Saving the image.
-        idx = nAlreadyExistingFiles + i    # This is the image index.
-        
-        imgSaveName = 'back' + '_' + \
-                      saveNameSuffix + '_' + str(idx) + savedImgFileExtn
-        # The file extension is explicitly specified here because, many of the 
-        # background images have .jpg or .png file extension as well. So to 
-        # make the saved file consistent, this is specified.
-                
-        cv2.imwrite(os.path.join(imgSaveLoc, imgSaveName), newBg)
-        
-        # Saving the segmented image label as well if createSegmentLabelImg is True.
-        if createSegmentLabelImg:
-            segImgSaveName = 'back' + '_seg' + '_' + \
-                             saveNameSuffix + '_' + str(idx) + savedImgFileExtn
-            cv2.imwrite(os.path.join(segmentSaveLoc, segImgSaveName), newBgSegImg)
-                
-        # Creating the label json file.
-        labelSaveName = 'back' + '_' + \
-                        saveNameSuffix + '_' + str(idx) + '.json'
-                
-        infoDict = {}
-        
-        with open(os.path.join(labelSaveLoc, labelSaveName), 'w') as infoFile:
-            json.dump(infoDict, infoFile, indent=4, separators=(',', ': '))
-
-#-------------------------------------------------------------------------------
-
-        #cv2.imshow('image', newBg)
-        # Show the segment label as well if the createSegmentLabelImg is True.
-        if createSegmentLabelImg:   cv2.imshow('segment label', newBgSegImg)
-        cv2.waitKey(30)
-
-#===============================================================================
+################################################################################
+################################################################################
 
 def markPoints(event, x, y, flags, params):
     '''
@@ -3018,7 +1639,8 @@ def markPoints(event, x, y, flags, params):
     if event == cv2.EVENT_LBUTTONDOWN:
         cBix, cBiy = x, y
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def selectPts(filePath=None):
     '''
@@ -3051,7 +1673,7 @@ def selectPts(filePath=None):
     cv2.setMouseCallback('Image', markPoints)  # Function to detect mouseclick
     key = ord('`')
 
-#-------------------------------------------------------------------------------
+################################################################################
     
     listOfPts = []      # List to collect the selected points.
     
@@ -3087,7 +1709,7 @@ def selectPts(filePath=None):
         # Delete point by pressing 'd'.
         elif key == ord('d'):   cBix, cBiy = -1, -1
         
-#-------------------------------------------------------------------------------
+################################################################################
 
     # Map the selected points back to the size of original image using the 
     # wRatio and hRatio (if they we resized earlier).
@@ -3095,7 +1717,8 @@ def selectPts(filePath=None):
                                                         for p in listOfPts]
     return listOfPts
 
-#===============================================================================
+################################################################################
+################################################################################
         
 def timeStamp():
     '''
@@ -3104,11 +1727,41 @@ def timeStamp():
     '''
     return datetime.datetime.now().strftime('_%m_%d_%Y_%H_%M_%S')
 
-#===============================================================================
+################################################################################
+################################################################################
 
 prettyTime = lambda x: str(datetime.timedelta(seconds=x))
 
-#===============================================================================
+################################################################################
+################################################################################
+
+def nCx(n, x):
+    '''
+    Calculates combination: i.e. n!/(m! * (n-m)!).
+    '''
+    if x > n or x < 0 or n < 0 or type(n) != int or type(x) != int:
+        print('\nERROR: n should be > x and n and x should be non-negative ' \
+              'integers. Aborting.\n')
+        sys.exit()
+        
+    return np.math.factorial(n) / (np.math.factorial(m) * np.math.factorial(n-m))
+
+################################################################################
+################################################################################
+
+def nPx(n, x):
+    '''
+    Calculates permutation: i.e. n!/(n-m)!.
+    '''
+    if x > n or x < 0 or n < 0 or type(n) != int or type(x) != int:
+        print('\nERROR: n should be > x and n and x should be non-negative ' \
+              'integers. Aborting.\n')
+        sys.exit()
+        
+    return np.math.factorial(n) / np.math.factorial(n-m)
+
+################################################################################
+################################################################################
 
 def findOneContourIntPt(contourPtArr=None):
     '''
@@ -3139,7 +1792,8 @@ def findOneContourIntPt(contourPtArr=None):
                 
         return [x, y]
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def findLatestCkpt(checkpointDirPath=None, training=True):
     '''
@@ -3165,7 +1819,7 @@ def findLatestCkpt(checkpointDirPath=None, training=True):
                'in findLatestCkpt. Aborting.\n'.format(checkpointDirPath))
         sys.exit()
 
-#-------------------------------------------------------------------------------
+################################################################################
 
     # Create a folder to store the model checkpoints.
     if not os.path.exists(checkpointDirPath):  # If no previous model is saved.
@@ -3189,7 +1843,7 @@ def findLatestCkpt(checkpointDirPath=None, training=True):
            extension != 'data-00000-of-00001' and extension != 'checkpoint':
                os.remove(os.path.join(checkpointDirPath, i))
     
-#-------------------------------------------------------------------------------
+################################################################################
 
     # Name of checkpoint to be loaded (in general the latest one).
     # Sometimes due to keyboard interrupts or due to error in saving
@@ -3255,7 +1909,7 @@ def findLatestCkpt(checkpointDirPath=None, training=True):
 
         #print(len(listOfFiles))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
     # At this stage we do not have any incomplete checkpoints in the
     # checkpointDirPath. So now we find the latest checkpoint.
@@ -3278,7 +1932,7 @@ def findLatestCkpt(checkpointDirPath=None, training=True):
     # filename. So for extracting the epoch the -1 is done.
     latestEpoch = latestCkptIdx if latestCkptIdx > 0 else 0
     
-##-------------------------------------------------------------------------------
+#################################################################################
 
     ##latestCkptPath = tf.train.latest_checkpoint(checkpointDirPath)
     # We do not use the tf.train.latest_checkpoint(checkpointDirPath) 
@@ -3290,7 +1944,7 @@ def findLatestCkpt(checkpointDirPath=None, training=True):
 
     #ckptPath = os.path.join(checkpointDirPath, 'tiny_yolo.ckpt-0')
 
-#-------------------------------------------------------------------------------
+################################################################################
 
     if latestCkptPath != None:
         # This will happen when only the 'checkpoint' file remains.
@@ -3304,7 +1958,50 @@ def findLatestCkpt(checkpointDirPath=None, training=True):
         # remains, then None is returned.
         return None, None, 0
 
-#===============================================================================
+################################################################################
+################################################################################
+
+def plotBboxDimensions(dataDir=None, showFig=True, saveFig=True, figSaveLoc='.'):
+    '''
+    This function goes through all the labels of the images in the given 
+    dataset and notes down the bounding box dimensions of all the objects in the 
+    image and plots them in a 2D graph so that the user can see the clusters 
+    formed in the graph. That way the user can then define the number and 
+    dimension of the anchor boxes to be used in the network. It also saves and 
+    shows the final plot if the saveFig and showFig flags are True.
+    '''
+    labelDir = os.path.join(dataDir, 'labels')
+    listOfLabel = os.listdir(labelDir)
+    nLabel = len(listOfLabel)
+    
+    # Plotting the bboxH and bboxW of all the objects in all the label files of 
+    # the given dataset.
+    for i, fileName in enumerate(listOfLabel):
+        jsonFileLoc = os.path.join(labelDir, fileName)      # Get the filename.
+
+        with open(jsonFileLoc, 'r') as infoFile:    # Open file and read dict.
+            infoDict = json.load(infoFile)
+
+        # Plot the bboxH and bboxW of each of the objects in this dict.
+        for k, v in infoDict.items():
+            bboxW, bboxH = v['bboxW'], v['bboxH']
+            plt.plot(bboxW, bboxH, '.b')
+            
+        print('[{}/{}] Scanned file: {}'.format(i+1, nLabel, fileName))
+    
+    plt.title('Height and Widths of bounding boxes')
+    plt.xlabel('Width of bounding boxes')
+    plt.ylabel('Height of bounding boxes')
+    plt.grid()
+    
+    if saveFig:
+        savedFigName = 'bounding_box_dimensions_{}.png'.format(dataDir)
+        plt.savefig(os.path.join(figSaveLoc, savedFigName))
+    
+    if showFig:    plt.show()
+    
+################################################################################
+################################################################################
 
 def datasetMeanStd(dataDir=None):
     '''
@@ -3341,7 +2038,8 @@ def datasetMeanStd(dataDir=None):
     
     return meanOfImg, std
 
-#===============================================================================
+################################################################################
+################################################################################
         
 def getImgLabelClassification(curLoc, imgName):
     '''
@@ -3378,7 +2076,8 @@ def getImgLabelClassification(curLoc, imgName):
     
     return labelDictList, multiHotLabel
 
-#===============================================================================
+################################################################################
+################################################################################
         
 def getImgLabelDetection(curLoc, imgName):
     '''
@@ -3444,7 +2143,7 @@ def getImgLabelDetection(curLoc, imgName):
         gridXoffset, gridYoffset = gridX - int(gridX), gridY - int(gridY)
         gridX, gridY = int(gridX), int(gridY)
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Finding the best anchor boxes which will have good iou score with the
         # bbox of the current object and also findin the scales by which these 
@@ -3485,7 +2184,7 @@ def getImgLabelDetection(curLoc, imgName):
             # Also keep a record of the best anchor box found.
             if iou > maxIou:    maxIou, maxIouIdx = iou, adx
             
-#-------------------------------------------------------------------------------
+################################################################################
 
         # If it happens that none of the anchor boxes have a good enough iou 
         # score (all the scores are less than iouThresh), then just store the 
@@ -3504,13 +2203,14 @@ def getImgLabelDetection(curLoc, imgName):
                                                        np.log(anchorHoffset), 1.0]
             # The 1.0 is the confidence score that an object is present.
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         labelDictList.append(labelDict)
     
     return labelDictList, regionLabel, multiHotLabel, listOfClassIdxAndBbox
 
-#===============================================================================
+################################################################################
+################################################################################
         
 def getImgLabelSegmentation(curLoc, imgName):
     '''
@@ -3576,7 +2276,8 @@ def getImgLabelSegmentation(curLoc, imgName):
     
     return labelDictList, segmentLabel, segWeightMap
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def calculateSegMapWeights(dataDir=None):
     '''
@@ -3617,7 +2318,7 @@ def calculateSegMapWeights(dataDir=None):
         # Adding to the total object count.
         nClassObjs += nObjInCurrentImg
         
-#-------------------------------------------------------------------------------
+################################################################################
 
         segLabelName = listOfSegLabel[i]
         segLabelLoc = os.path.join(labelLoc, segLabelName)
@@ -3646,7 +2347,7 @@ def calculateSegMapWeights(dataDir=None):
         print('[{}/{}] Total pixels in {}: {}'.format(i+1, nSegLabels, segLabelName, \
                                             np.sum(currentSegLabelPixels)))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
     #print(segLabelPixels)
     nTotalPixels = np.sum(segLabelPixels)
@@ -3660,7 +2361,7 @@ def calculateSegMapWeights(dataDir=None):
     print('Average number of pixels per object:\n{}\n'.format(avgPixelsPerClassObj))
     #print(nClassObjs, np.sum(nClassObjs))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
     #for i in range(nSegLabels):
         #segLabelName = listOfSegLabel[i]
@@ -3688,7 +2389,8 @@ def calculateSegMapWeights(dataDir=None):
         #cv2.imshow('original', segLabel1)
         #cv2.waitKey(0)
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def createBatchForClassification(dataDir=None, listOfImg=None, batchSize=None, \
                                   shuffle=False, mean=0.0, std=1.0):
@@ -3742,7 +2444,8 @@ def createBatchForClassification(dataDir=None, listOfImg=None, batchSize=None, \
 
     return np.array(imgBatch), np.array(labelBatch), listOfImg, listOfBatchImg
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def createBatchForDetection(dataDir=None, listOfImg=None, batchSize=None, \
                                   shuffle=False, mean=0.0, std=1.0):
@@ -3807,7 +2510,8 @@ def createBatchForDetection(dataDir=None, listOfImg=None, batchSize=None, \
     return np.array(imgBatch), np.array(labelBatch), np.array(labelBatchMultiHot), \
                             labelBatchClassIdxAndBbox, listOfImg, listOfBatchImg
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def createBatchForSegmentation(dataDir=None, listOfImg=None, batchSize=None, \
                                   shuffle=False, mean=0.0, std=1.0):
@@ -3867,7 +2571,8 @@ def createBatchForSegmentation(dataDir=None, listOfImg=None, batchSize=None, \
     return np.array(imgBatch), np.array(labelBatch), np.array(weightBatch), \
                             listOfImg, listOfBatchImg
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def findIOU(boxA, boxB):
     '''
@@ -3887,14 +2592,15 @@ def findIOU(boxA, boxB):
     boxBArea = boxB[2] * boxB[3]
 
     # Compute the intersection over union by taking the intersection area and 
-    # dividing it by the sum of areas of the rectangles - interesection area.
+    # dividing it by the sum of areas of the rectangles - intersection area.
     union = boxAArea + boxBArea - intersection
     iou = intersection / float(union + 0.000001)
 
     # return the intersection over union value, intersection value and union value.
     return iou, intersection, union
 
-#===============================================================================
+################################################################################
+################################################################################
     
 def scanWholeImage(img):
     '''
@@ -3945,7 +2651,7 @@ def scanWholeImage(img):
             imgBatch.append(cell)
             locList.append([imgW - inImgW, imgH - inImgH])
             
-##-------------------------------------------------------------------------------
+#################################################################################
 #    
 #    # Displaying the corners of the grid cells.        
 #    for i in range(len(locList)):
@@ -3957,11 +2663,12 @@ def scanWholeImage(img):
 #    for i in imgBatch:
 #        print(i.shape)
 #
-#-------------------------------------------------------------------------------
+################################################################################
 
     return np.array(imgBatch), locList
 
-#===============================================================================
+################################################################################
+################################################################################
     
 def filterAndAddRect(rectList=None, rectangle=None):
     '''
@@ -4008,7 +2715,8 @@ def filterAndAddRect(rectList=None, rectangle=None):
         
     return rectList
 
-#===============================================================================
+################################################################################
+################################################################################
 
 def localizeWeakly(gapLayer, inferPredLabelList, img=None):
     '''
@@ -4054,7 +2762,7 @@ def localizeWeakly(gapLayer, inferPredLabelList, img=None):
         layerImg = normalizedChan if c == 0 else \
                                 np.hstack((layerImg, normalizedChan))
                 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # WEAK LOCALIZATION
         
@@ -4097,7 +2805,7 @@ def localizeWeakly(gapLayer, inferPredLabelList, img=None):
                 x, y, w, h = rectangle
                 classAndLocList.append([c, int(x+w/2), int(y+h/2), x, y, w, h])
 
-##-------------------------------------------------------------------------------
+#################################################################################
 #
 #            if img is None:     continue
 #        
@@ -4120,11 +2828,12 @@ def localizeWeakly(gapLayer, inferPredLabelList, img=None):
 #        cv2.imshow('Gap layer', layerImg)
 #        cv2.waitKey(0)                        
 #                                    
-#-------------------------------------------------------------------------------
+################################################################################
 
     return classAndLocList
         
-#===============================================================================
+################################################################################
+################################################################################
 
 def nonMaxSuppression(predResult):
     '''
@@ -4167,7 +2876,7 @@ def nonMaxSuppression(predResult):
                     bboxes.append([int(tlX), int(tlY), int(w), int(h)])
                     classes.append(classProb)
                     
-#-------------------------------------------------------------------------------
+################################################################################
                     
         # Converting the classes list into array.
         classes = np.array(classes)
@@ -4203,7 +2912,7 @@ def nonMaxSuppression(predResult):
             classProbSorted, bboxesSorted, indexes = list(classProbSorted), \
                                                      list(bboxesSorted), list(indexes)
             
-#-------------------------------------------------------------------------------
+################################################################################
             
             # Now we are comparing all the boxes for the current class c for 
             # removing redundant ones.
@@ -4237,14 +2946,14 @@ def nonMaxSuppression(predResult):
             classProbUnsorted, indexes = zip(*sorted(zip(classProbSorted, \
                                                        indexes), key=lambda x: x[1]))
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # The classProbSorted and bboxesSorted are returned as tuples.
             # Converting them to lists.
             classProbUnsorted, indexes = list(classProbUnsorted), list(indexes)
             classes[c] = classProbUnsorted
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Scanning the cols (each col has class probabilities of an anchor box).
         detectedIdxes, detectedScores, detectedObjs, detectedBboxes = [], [], [], []
@@ -4262,7 +2971,7 @@ def nonMaxSuppression(predResult):
         detectedBatchClassNames.append(detectedObjs)
         detectedBatchBboxes.append(detectedBboxes)
 
-#-------------------------------------------------------------------------------
+################################################################################
     
     detectedBatchClassScores = np.array(detectedBatchClassScores)
     detectedBatchClassIdxes = np.array(detectedBatchClassIdxes)
@@ -4272,7 +2981,8 @@ def nonMaxSuppression(predResult):
     return detectedBatchClassScores, detectedBatchClassIdxes, \
                                 detectedBatchClassNames, detectedBatchBboxes
     
-#===============================================================================
+################################################################################
+################################################################################
 
 def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
                   allDetectedClassIdxes=None, allDetectedClassScores=None, \
@@ -4297,7 +3007,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
     mAP = 0
     APlist = []
     
-#-------------------------------------------------------------------------------
+################################################################################
     
     # Calculating the average precision of each class and then adding them to 
     # find the mAP
@@ -4322,7 +3032,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
             detectedClassScores = allDetectedClassScores[i]
             detectedBboxes = allDetectedBboxes[i]
             
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Scanning all the predictions for this image i.
             
@@ -4335,7 +3045,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
             scoreList = [detectedClassScores[kdx] for kdx, k in \
                                      enumerate(detectedClassIdxes) if k == c]
 
-#-------------------------------------------------------------------------------
+################################################################################
 
             # Now scan through all the records of this image.
             for j in range(len(trueClassIdxAndBbox)):
@@ -4349,7 +3059,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
                 bestIOU = iouThreshForMAPcalculation
                 bestPdx = -1    # This will become the index of the box with best iou.
                 
-#-------------------------------------------------------------------------------
+################################################################################
 
                 # Now taking only the boxes which are recorded in the indexes list
                 # (as only those boxes are detecting the object of class c).
@@ -4365,7 +3075,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
                     # which has the highest iou score as the best one.
                     if iou > bestIOU:   bestIOU, bestPdx = iou, pdx
                     
-#-------------------------------------------------------------------------------
+################################################################################
                     
                 # Now make this box corresponding to the bestIOU as a true positive.
                 # If however the bestPdx is still -1, then it implies that there
@@ -4375,7 +3085,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
             # Now make all the other remaining boxes as false positive.
             FPlist = [0 if m == 1 else 1 for m in TPlist]
             
-#-------------------------------------------------------------------------------
+################################################################################
              
             # Combining the true and false positive and the score lists into the
             # bigger list.
@@ -4383,7 +3093,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
             fullFPlist += FPlist
             fullScoreList += scoreList
         
-#-------------------------------------------------------------------------------
+################################################################################
         
         # Now sort the lists as per the score values.
         sortedScoreList, sortedTPlist, sortedFPlist = zip(*sorted(zip(fullScoreList, \
@@ -4404,7 +3114,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
         # Converting the precision and recall from arrays to list.
         precision, recall = precision.tolist(), recall.tolist()
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Calculating the average precision of this class c.
         
@@ -4431,7 +3141,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
         # Appending a 0 to the recallSet.
         recallSet = [0.0] + recallSet
     
-#-------------------------------------------------------------------------------
+################################################################################
 
         totalArea, previousStep = 0.0, 0
         for r in range(1, len(recallSet)):
@@ -4448,7 +3158,7 @@ def calculateMAP(allTestMultiHot=None, allTestClassIdxAndBbox=None, \
         APlist.append(AP)
         mAP += (AP / nClasses)
     
-#-------------------------------------------------------------------------------
+################################################################################
 
     return mAP, APlist
 

@@ -68,8 +68,8 @@ comment out the 'wait' arguments like the following.
 self.scene.addSolidPrimitive(obj.name,
                              obj.primitives[0],
                              obj.primitive_poses[0])
-#                                ,                                      # Ari's edits.
-#                                 wait = False)                         # Ari's edits.
+#                                ,                                      # Arindam's edits.
+#                                 wait = False)                         # Arindam's edits.
 
 ================================================================================
 
@@ -96,6 +96,9 @@ The python script for teleop_twist_keyboard.py is given in this link 'https://gi
 To program the robot yourself in python you can take help of the 'demo.py' script inside the fetch_gazebo_demo package.
 The fetch_gazebo_demo package can be located by the command:
 rospack find fetch_gazebo_demo
+
+But this is not there on the fetch or freight robots, this is for a gazebo simulation, 
+so it will be there on your laptop.
 
 Which gives the location /opt/ros/kinetic/share/fetch_gazebo_demo
 
@@ -257,155 +260,221 @@ List of topics for roslaunch fetch_gazebo simulation.launch:
 /torso_controller/follow_joint_trajectory/result
 /torso_controller/follow_joint_trajectory/status
 
+================================================================================
 
+List of topics for roslaunch fetch_bringup fetch.launch and roslaunch freight_bringup freight.launch:
+(The topics belonging to the specifc robots are signified using their respective namespaces)
+-----------------------------------------------------------------------------------------------------
 
-
-
-
-
-ari@ari-pc:~$ rostopic list
+/arm_controller/cartesian_twist/command
 /base_scan_no_self_filter
 /base_scan_tagged
 /cmd_vel
+/diagnostics
 /diagnostics_agg
 /diagnostics_toplevel_state
+/dock/cancel
+/dock/feedback
+/dock/goal
+/dock/result
+/dock/status
 /enable_software_runstop
-
-/fetch1067/arm_controller/cartesian_twist/command
-/fetch1067/arm_controller/follow_joint_trajectory/cancel
-/fetch1067/arm_controller/follow_joint_trajectory/feedback
-/fetch1067/arm_controller/follow_joint_trajectory/goal
-/fetch1067/arm_controller/follow_joint_trajectory/result
-/fetch1067/arm_controller/follow_joint_trajectory/status
-/fetch1067/arm_with_torso_controller/follow_joint_trajectory/cancel
-/fetch1067/arm_with_torso_controller/follow_joint_trajectory/feedback
-/fetch1067/arm_with_torso_controller/follow_joint_trajectory/goal
-/fetch1067/arm_with_torso_controller/follow_joint_trajectory/result
-/fetch1067/arm_with_torso_controller/follow_joint_trajectory/status
-/fetch1067/base_controller/command
-/fetch1067/base_scan
-/fetch1067/base_scan_raw
-/fetch1067/battery_state
-/fetch1067/charge_lockout/cancel
-/fetch1067/charge_lockout/feedback
-/fetch1067/charge_lockout/goal
-/fetch1067/charge_lockout/result
-/fetch1067/charge_lockout/status
-/fetch1067/cmd_vel
-/fetch1067/cmd_vel_mux/selected
-/fetch1067/diagnostics
-/fetch1067/dock/cancel
-/fetch1067/dock/feedback
-/fetch1067/dock/goal
-/fetch1067/dock/result
-/fetch1067/dock/status
-/fetch1067/graft/state
-/fetch1067/gripper_controller/gripper_action/cancel
-/fetch1067/gripper_controller/gripper_action/feedback
-/fetch1067/gripper_controller/gripper_action/goal
-/fetch1067/gripper_controller/gripper_action/result
-/fetch1067/gripper_controller/gripper_action/status
-/fetch1067/gripper_controller/led_action/cancel
-/fetch1067/gripper_controller/led_action/feedback
-/fetch1067/gripper_controller/led_action/goal
-/fetch1067/gripper_controller/led_action/result
-/fetch1067/gripper_controller/led_action/status
-/fetch1067/gripper_state
-/fetch1067/head_camera/depth/camera_info
-/fetch1067/head_camera/depth/image
-/fetch1067/head_camera/depth/image_raw
-/fetch1067/head_camera/depth/image_rect
-/fetch1067/head_camera/depth/image_rect_raw
-/fetch1067/head_camera/depth/points
-/fetch1067/head_camera/depth_rectify_depth/parameter_descriptions
-/fetch1067/head_camera/depth_rectify_depth/parameter_updates
-/fetch1067/head_camera/depth_registered/camera_info
-/fetch1067/head_camera/depth_registered/hw_registered/image_rect
-/fetch1067/head_camera/depth_registered/hw_registered/image_rect_raw
-/fetch1067/head_camera/depth_registered/image
-/fetch1067/head_camera/depth_registered/image_raw
-/fetch1067/head_camera/depth_registered/points
-/fetch1067/head_camera/depth_registered_rectify_depth/parameter_descriptions
-/fetch1067/head_camera/depth_registered_rectify_depth/parameter_updates
-/fetch1067/head_camera/driver/parameter_descriptions
-/fetch1067/head_camera/driver/parameter_updates
-/fetch1067/head_camera/ir/camera_info
-/fetch1067/head_camera/ir/image
-/fetch1067/head_camera/projector/camera_info
-/fetch1067/head_camera/rgb/camera_info
-/fetch1067/head_camera/rgb/image_raw
-/fetch1067/head_camera/rgb/image_rect_color
-/fetch1067/head_camera/rgb_rectify_color/parameter_descriptions
-/fetch1067/head_camera/rgb_rectify_color/parameter_updates
-/fetch1067/head_controller/follow_joint_trajectory/cancel
-/fetch1067/head_controller/follow_joint_trajectory/feedback
-/fetch1067/head_controller/follow_joint_trajectory/goal
-/fetch1067/head_controller/follow_joint_trajectory/result
-/fetch1067/head_controller/follow_joint_trajectory/status
-/fetch1067/head_controller/point_head/cancel
-/fetch1067/head_controller/point_head/feedback
-/fetch1067/head_controller/point_head/goal
-/fetch1067/head_controller/point_head/result
-/fetch1067/head_controller/point_head/status
-/fetch1067/imu
-/fetch1067/imu1/gyro_offset
-/fetch1067/imu1/gyro_offset_age
-/fetch1067/imu1/gyro_offset_samples
-/fetch1067/imu1/gyro_temperature
-/fetch1067/imu1/imu
-/fetch1067/imu1/imu_raw
-/fetch1067/imu2/gyro_offset
-/fetch1067/imu2/gyro_offset_age
-/fetch1067/imu2/gyro_offset_samples
-/fetch1067/imu2/gyro_temperature
-/fetch1067/imu2/imu
-/fetch1067/imu2/imu_raw
-/fetch1067/joint_states
-/fetch1067/joy
-/fetch1067/joy/set_feedback
-/fetch1067/joy_orig
-/fetch1067/odom
-/fetch1067/odom_combined
-/fetch1067/path
-/fetch1067/robot_state
-/fetch1067/sick_tim551_2050001/parameter_descriptions
-/fetch1067/sick_tim551_2050001/parameter_updates
-/fetch1067/torso_controller/follow_joint_trajectory/cancel
-/fetch1067/torso_controller/follow_joint_trajectory/feedback
-/fetch1067/torso_controller/follow_joint_trajectory/goal
-/fetch1067/torso_controller/follow_joint_trajectory/result
-/fetch1067/torso_controller/follow_joint_trajectory/status
-/fetch1067/undock/cancel
-/fetch1067/undock/feedback
-/fetch1067/undock/goal
-/fetch1067/undock/result
-/fetch1067/undock/status
-
+/fetch/arm_controller/cartesian_twist/command
+/fetch/arm_controller/follow_joint_trajectory/cancel
+/fetch/arm_controller/follow_joint_trajectory/feedback
+/fetch/arm_controller/follow_joint_trajectory/goal
+/fetch/arm_controller/follow_joint_trajectory/result
+/fetch/arm_controller/follow_joint_trajectory/status
+/fetch/arm_with_torso_controller/follow_joint_trajectory/cancel
+/fetch/arm_with_torso_controller/follow_joint_trajectory/feedback
+/fetch/arm_with_torso_controller/follow_joint_trajectory/goal
+/fetch/arm_with_torso_controller/follow_joint_trajectory/result
+/fetch/arm_with_torso_controller/follow_joint_trajectory/status
+/fetch/base_controller/command
+/fetch/base_scan
+/fetch/base_scan_raw
+/fetch/battery_state
+/fetch/charge_lockout/cancel
+/fetch/charge_lockout/feedback
+/fetch/charge_lockout/goal
+/fetch/charge_lockout/result
+/fetch/charge_lockout/status
+/fetch/cmd_vel
+/fetch/cmd_vel_mux/selected
+/fetch/diagnostics
+/fetch/dock/cancel
+/fetch/dock/feedback
+/fetch/dock/goal
+/fetch/dock/result
+/fetch/dock/status
+/fetch/graft/state
+/fetch/gripper_controller/gripper_action/cancel
+/fetch/gripper_controller/gripper_action/feedback
+/fetch/gripper_controller/gripper_action/goal
+/fetch/gripper_controller/gripper_action/result
+/fetch/gripper_controller/gripper_action/status
+/fetch/gripper_controller/led_action/cancel
+/fetch/gripper_controller/led_action/feedback
+/fetch/gripper_controller/led_action/goal
+/fetch/gripper_controller/led_action/result
+/fetch/gripper_controller/led_action/status
+/fetch/gripper_state
+/fetch/head_camera/depth/camera_info
+/fetch/head_camera/depth/image
+/fetch/head_camera/depth/image_raw
+/fetch/head_camera/depth/image_rect
+/fetch/head_camera/depth/image_rect_raw
+/fetch/head_camera/depth/points
+/fetch/head_camera/depth_rectify_depth/parameter_descriptions
+/fetch/head_camera/depth_rectify_depth/parameter_updates
+/fetch/head_camera/depth_registered/camera_info
+/fetch/head_camera/depth_registered/hw_registered/image_rect
+/fetch/head_camera/depth_registered/hw_registered/image_rect_raw
+/fetch/head_camera/depth_registered/image
+/fetch/head_camera/depth_registered/image_raw
+/fetch/head_camera/depth_registered/points
+/fetch/head_camera/depth_registered_rectify_depth/parameter_descriptions
+/fetch/head_camera/depth_registered_rectify_depth/parameter_updates
+/fetch/head_camera/driver/parameter_descriptions
+/fetch/head_camera/driver/parameter_updates
+/fetch/head_camera/ir/camera_info
+/fetch/head_camera/ir/image
+/fetch/head_camera/projector/camera_info
+/fetch/head_camera/rgb/camera_info
+/fetch/head_camera/rgb/image_raw
+/fetch/head_camera/rgb/image_rect_color
+/fetch/head_camera/rgb_rectify_color/parameter_descriptions
+/fetch/head_camera/rgb_rectify_color/parameter_updates
+/fetch/head_controller/follow_joint_trajectory/cancel
+/fetch/head_controller/follow_joint_trajectory/feedback
+/fetch/head_controller/follow_joint_trajectory/goal
+/fetch/head_controller/follow_joint_trajectory/result
+/fetch/head_controller/follow_joint_trajectory/status
+/fetch/head_controller/point_head/cancel
+/fetch/head_controller/point_head/feedback
+/fetch/head_controller/point_head/goal
+/fetch/head_controller/point_head/result
+/fetch/head_controller/point_head/status
+/fetch/imu
+/fetch/imu1/gyro_offset
+/fetch/imu1/gyro_offset_age
+/fetch/imu1/gyro_offset_samples
+/fetch/imu1/gyro_temperature
+/fetch/imu1/imu
+/fetch/imu1/imu_raw
+/fetch/imu2/gyro_offset
+/fetch/imu2/gyro_offset_age
+/fetch/imu2/gyro_offset_samples
+/fetch/imu2/gyro_temperature
+/fetch/imu2/imu
+/fetch/imu2/imu_raw
+/fetch/joint_states
+/fetch/joy
+/fetch/joy/set_feedback
+/fetch/joy_orig
+/fetch/odom
+/fetch/odom_combined
+/fetch/path
+/fetch/robot_state
+/fetch/sick_tim551_2050001/parameter_descriptions
+/fetch/sick_tim551_2050001/parameter_updates
+/fetch/torso_controller/follow_joint_trajectory/cancel
+/fetch/torso_controller/follow_joint_trajectory/feedback
+/fetch/torso_controller/follow_joint_trajectory/goal
+/fetch/torso_controller/follow_joint_trajectory/result
+/fetch/torso_controller/follow_joint_trajectory/status
+/fetch/undock/cancel
+/fetch/undock/feedback
+/fetch/undock/goal
+/fetch/undock/result
+/fetch/undock/status
+/fetchcore/connected
+/freight/base_controller/command
+/freight/base_scan
+/freight/base_scan_raw
+/freight/battery_state
+/freight/charge_lockout/cancel
+/freight/charge_lockout/feedback
+/freight/charge_lockout/goal
+/freight/charge_lockout/result
+/freight/charge_lockout/status
+/freight/cmd_vel
+/freight/cmd_vel_mux/selected
+/freight/diagnostics
+/freight/dock/cancel
+/freight/dock/feedback
+/freight/dock/goal
+/freight/dock/result
+/freight/dock/status
+/freight/graft/state
+/freight/imu
+/freight/imu1/gyro_offset
+/freight/imu1/gyro_offset_age
+/freight/imu1/gyro_offset_samples
+/freight/imu1/gyro_temperature
+/freight/imu1/imu
+/freight/imu1/imu_raw
+/freight/imu2/gyro_offset
+/freight/imu2/gyro_offset_age
+/freight/imu2/gyro_offset_samples
+/freight/imu2/gyro_temperature
+/freight/imu2/imu
+/freight/imu2/imu_raw
+/freight/joint_states
+/freight/joy
+/freight/joy/set_feedback
+/freight/joy_orig
+/freight/odom
+/freight/odom_combined
+/freight/path
+/freight/robot_state
+/freight/sick_tim551_2050001/parameter_descriptions
+/freight/sick_tim551_2050001/parameter_updates
+/freight/undock/cancel
+/freight/undock/feedback
+/freight/undock/goal
+/freight/undock/result
+/freight/undock/status
 /gripper/gyro_offset
 /gripper/gyro_offset_age
 /gripper/gyro_offset_samples
 /gripper/gyro_temperature
 /gripper/imu
 /gripper/imu_raw
+/gripper_controller/gripper_action/cancel
+/gripper_controller/gripper_action/feedback
+/gripper_controller/gripper_action/goal
+/gripper_controller/gripper_action/result
+/gripper_controller/gripper_action/status
+/imu
 /in
+/joint_states
+/joy
 /laser_self_filter/cancel
 /laser_self_filter/feedback
 /laser_self_filter/goal
 /laser_self_filter/result
 /laser_self_filter/status
+/odom
 /out
 /query_controller_states/cancel
 /query_controller_states/feedback
 /query_controller_states/goal
 /query_controller_states/result
 /query_controller_states/status
+/robot_state
 /rosout
 /rosout_agg
 /software_runstop_enabled
 /teleop/cmd_vel
 /tf
 /tf_static
-ari@ari-pc:~$ 
+/undock/cancel
+/undock/feedback
+/undock/goal
+/undock/result
+/undock/status
+/wifi/connected
 
 ================================================================================
 
@@ -507,7 +576,7 @@ Use the following command:
 
 roslaunch fetch_bringup fetch.launch 
 
-You can also modifiy this file to include other launch files to launch other packages like moveit, or AR tag reader etc., by including those launch files in this launch file.
+You can also modify this file to include other launch files to launch other packages like moveit, or AR tag reader etc., by including those launch files in this launch file.
 
 There is another way of putting in the namespace. 
 
@@ -1199,6 +1268,25 @@ rospy.Subscriber( '/joint_states', JointState, self.callback_function )
 
 ================================================================================
 
+You can use the position of the gripper fingers to figure out if the fetch has been able to grip something or not.
+The different value of the l_gripper_finger_joint and r_gripper_finger_joint are given below:
+
+Trial 1:
+
+fully open:     left: 0.04985940828919411       right: 0.04985940828919411
+
+fully closed:   left: 0.00021492777159437537    right: 0.00021492777159437537)
+
+Trial 2:
+
+fully closed:   left: 0.0002335362514713779     right: 0.0002335362514713779)
+
+fully open:     left: 0.050102610141038895      right: 0.050102610141038895)
+
+with bin gripped from the side:   left: 0.0009871595539152622     right: 0.0009871595539152622)
+
+================================================================================
+
 The fetch has 4 frames for the camera.
 
 'head_camera_rgb_optical_frame'
@@ -1275,6 +1363,8 @@ from the above link and then write it directly into your c++ script to get it wo
 Some more help functions:
 https://stackoverflow.com/questions/41960911/how-can-i-get-the-pointindices-of-a-given-pointcloud   ---> how to convert a vector of indices into pointcloud indices.
 https://answers.ros.org/question/238083/how-to-get-yaw-from-quaternion-values/      ---> how to get roll, pitch, yaw from quaternion.
+
+There is a python-pcl package as well:  https://python-pcl-fork.readthedocs.io/en/rc_patches4/index.html
 
 ================================================================================
 
@@ -1690,4 +1780,152 @@ rosrun perception publish_saved_cloud ~/catkin_ws/src/packageDir/data/tags.bag
 And the point cloud will be visible in front of the robot in rviz.
 
 ================================================================================
+
+For navigation you have to make a map of the environment by following the instructions 
+as given in the fetch robot tutorial website.
+
+Now to navigate the fetch robot, you have to run the following command on the fetch robot computer itself:
+Make sure the fetch is its own ROS_MASTER in this case.
+
+roslaunch fetch_navigation fetch_nav.launch
+
+This launch file is located in /opt/ros/melodic/share/fetch_navigation/launch folder.
+And to run the rviz visualization you have to run the command 
+
+rviz -d /opt/ros/melodic/share/fetch_navigation/config/navigation.rviz
+
+If you have 'ssh -x' to the fetch computer, then you can see the visualization on your laptop.
+
+This rviz file is located in /opt/ros/melodic/share/fetch_navigation/config folder.
+
+Now to navigate the freight robot, you have to run the following command on the freight robot computer itself:
+Make sure the freight is its own ROS_MASTER in this case, and it is not saying the fetch is its master.
+The two robots should be their own individual ROS_MASTERs in this case and they should be independent. 
+I know that multiple ROS_MASTERs are not possible over the same network, but fetch and freight somehow still works by default like that.
+
+roslaunch fetch_navigation freight_nav.launch
+
+This launch file is located in /opt/ros/melodic/share/fetch_navigation/launch folder.
+And to run the rviz visualization you have to run the command 
+
+rviz -d /opt/ros/melodic/share/fetch_navigation/config/navigation.rviz
+
+If you have 'ssh -x' to the freight computer, then you can see the visualization on your laptop.
+
+This rviz file is located in /opt/ros/melodic/share/fetch_navigation/config folder.
+
+You can run both the navigations on the individual robots simultaneously and have them traverse the same map, 
+but we were not able to find a way to visualize both robots travelling in the same rviz map together.
+
+Somehow, if you have to visualize them together, you have to have a common ROS_MASTER and when that happens only the robot which is the ROS_MASTER navigates.
+That is, when you are using the fetch robot as ROS_MASTER, no matter if you launch fetch_nav.launch or freight_nav.launch the rviz map will show the fetch robot (on which the ROS_MASTER is running),
+and you will be only able to control the fetch with python program of navigation.
+
+Similarly, when you are using the freight robot as ROS_MASTER, no matter if you launch fetch_nav.launch or freight_nav.launch the rviz map will show the freight robot (on which the ROS_MASTER is running),
+and you will be only able to control the freight with python program of navigation.
+
+Now by default fetch and freight will navigate in a default map, so you have to change the map or change the link to the map in the fetch_nav.launch and freight_nav.launch files.
+
+The default map is stored in the folder /opt/ros/melodic/share/fetch_maps/maps
+
+You have to either rename your map files (lets call them map_1.yaml and map_1.pgm) to the name of the default map files and replace the default map in this folder (not recommended),
+OR
+You can copy your map files (both the map_1.yaml and the map_1.pgm files) into this map folder and then in the fetch_nav.launch and freight_nav.launch files, 
+change the reference to your map file (recommended).
+
+This can be done as follows:
+
+Inside the fetch_nav.launch and freight_nav.launch files you will find the following lines, 
+
+  <!-- Navigation requires at least one map.
+       In addition, it is sometimes desirable to have a "keepout" map
+       which is used for costmaps, but not localization -->
+  <arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" />
+  <arg name="map_keepout_file" default="$(find fetch_maps)/maps/3_1_16_keepout.yaml" />
+  <arg name="use_keepout" default="false" />
+
+  ....
+  
+Change these to the following:
+
+  <!-- Navigation requires at least one map.
+       In addition, it is sometimes desirable to have a "keepout" map
+       which is used for costmaps, but not localization -->
+  <!-- arg name="map_file" default="$(find fetch_maps)/maps/map_1.yaml" / -->
+  <arg name="map_file" default="$(find fetch_maps)/maps/map_1.yaml" />
+  <!-- arg name="map_keepout_file" default="$(find fetch_maps)/maps/3_1_16_keepout.yaml" / -->
+  <arg name="use_keepout" default="false" />
+
+  ....
+
+You need not use the keepout_map, but you have to keep the line 'use_keepout = False' and keep this as 'false' otherwise it will look for a keepout map as well.
+
+Knowing the robot pose inside the map:
+--------------------------------------------------------------------------------
+
+When you are using navigation, the /amcl_pose topic provides the pose of the robot relative to the map.
+But this is an estimate of the pose and is not always accurate.
+You can also transform the map coordinate frame into the base_link frame and that will also give you the robot pose wrt the map.
+This can be done by the command:
+rosrun tf tf_echo /map /base_link
+
+The robot first starts itself by default on the map 0,0,0. This is the location from where the mapping began when the map was created.
+But the robot first has to be moved around in the map a bit so that its lidar scan (shown in red) coincides with the map boundaries. 
+After that you can assign waypoints and the robot can navigate properly.
+
+However, if the robot is in some corner location or something, then it will find it hard to coincide the lidar scans with the map boundaries.
+So yo have to position it near some empty open space in the map so that the lidar scan syncs up with the map boundaries.
+For best results try to position the robot at the map 0,0,0 (which is the location from where the mapping began when the map was created) and 
+move the robot around to sync the lidar scan with the map boundaries. This is usually the fastest way to sync it.
+
+If you stop the fetch_navigation package and then relaunch it (without rebooting the robot) then the initial robot position in this fetch_navigation session 
+will start at the position where the robot was in the end of the last fetch_navigation session.
+
+
+Position and orientation of waypoints that the fetch needs to follow to get to the table [x,y,z] and [x,y,z,w]:
+---------------------------------------------------------------------------------------------------------------
+point where the fetch will be parked near the wall:                 [-1.33, 7.34, 0.0]      [0.0, 0.0, -0.77522, 0.6317]
+in between point 1:                                                 [0.58, 5.94, 0.0]       [0.0, 0.0, -0.77522, 0.6317]
+in between point 2:                                                 [-1.1, 2.26, 0.0]       [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+point from where the fetch will turn towards the table:             [-1.64, 0.684, 0.0]     [0.0, 0.0, -0.13775, 0.9905]
+point near the table where fetch will stand:                        [-0.772, 0.106, 0.0]    [0.0, 0.0, -0.13775, 0.9905]    orientation along the straight path stays the same.
+
+point where the fetch will move to after the task is done:          [-5.35, 6.126, 0.0]     [0.0, 0.0, 0.92455, 0.38107]
+
+point from where freight will turn away from table in return path:  [-1.87, -0.221, 0.0]    [0.0, 0.0, -0.77522, 0.6317]
+point 1 in the return path of freight:                              [-2.79, -1.97, 0.0]     [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+point 2 in the return path of freight:                              [-3.39, -3.51, 0.0]     [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+
+point where the freight will be parked near the wall:               [2.88, 5.2, 0.0]        [0.0, 0.0, 0.98201, 0.18885]
+point from where freight will turn to move along the straight line: [0.58, 5.94, 0.0]       [0.0, 0.0, -0.77522, 0.6317]
+in between point 1:                                                 [-0.106, 4.28, 0.0]     [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+in between point 2:                                                 [-1.04, 1.74, 0.0]      [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+point from where the freight will turn towards the table:           [-1.87, -0.221, 0.0]    [0.0, 0.0, -0.13775, 0.9905]
+point near the table where freight will stand beside the fetch:     [-0.222, -1.05, 0.0]    [0.0, 0.0, -0.13775, 0.9905]    orientation along the straight path stays the same.
+
+point from where freight will turn away from table in return path:  [-1.87, -0.221, 0.0]    [0.0, 0.0, -0.77522, 0.6317]
+point 1 in the return path of freight:                              [-2.79, -1.97, 0.0]     [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+point 2 in the return path of freight:                              [-3.39, -3.51, 0.0]     [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+point 3 in the return path of freight:                              [-3.12, -5.01, 0.0]     [0.0, 0.0, -0.77522, 0.6317]    orientation along the straight path stays the same.
+
+point where the freight will move to after the task is done:        [-2.896, -4.706, 0.0]   [0.0, 0.0, -0.80634, 0.5914]
+
+Content inside map_1.yaml file:
+-------------------------------
+
+image: /home/fetch/map/map_1.pgm
+resolution: 0.050000
+origin: [-14.553237, -11.853483, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+
+
+
+
+
+
+
+
+
 

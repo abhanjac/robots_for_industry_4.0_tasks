@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "gears",
+        "bboxW": 134,
+        "classIdx": 3,
+        "posX": 91,
+        "posY": 412,
+        "samplePath": "color_images/gears/train/gears_21.png",
+        "tlY": 349,
+        "tlX": 24,
+        "bgPath": "background/train/ori_22.png",
+        "bboxH": 125
+    }
+}

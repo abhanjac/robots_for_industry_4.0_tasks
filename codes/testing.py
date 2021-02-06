@@ -5,24 +5,27 @@ Created on Thu Jan 31 14:28:52 2019
 @author: abhanjac
 """
 
+import tensorflow as tf
+
 from utils import *
 from network import *
 
-#===============================================================================
+################################################################################
+################################################################################
 
 if __name__ == '__main__':
     
-    trainDir = 'train2'
-    validDir = 'valid2'
-    testDir = 'test2'
-    trialDir = 'trial2'
+    trainDir = 'train'
+    validDir = 'valid'
+    testDir = 'test'
+    trialDir = 'trial'
 
     #detector = networkDetector()
     #detector.test(testDir=testDir)
     #detector = networkDetector()
     #detector.test(testDir=validDir)
 
-#-------------------------------------------------------------------------------
+################################################################################
    
     inferDir = trialDir
     key = '`'
@@ -32,7 +35,7 @@ if __name__ == '__main__':
 
     detector = networkDetector()
     
-#-------------------------------------------------------------------------------
+################################################################################
 
     for idx, i in enumerate(listOfImg[:20]):
         startTime = time.time()
@@ -61,7 +64,7 @@ if __name__ == '__main__':
         detectedBatchClassNames = detectedBatchClassNames[0]
         detectedBatchBboxes = detectedBatchBboxes[0]
                 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Draw the ground truth results now.
         for l in labelDictList:
@@ -74,7 +77,7 @@ if __name__ == '__main__':
             cv2.putText(img1, trueName, (posX, posY), \
                          cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2, cv2.LINE_AA)
 
-#-------------------------------------------------------------------------------
+################################################################################
 
         # Draw the detected results now.
         for pdx, p in enumerate(detectedBatchClassNames):
@@ -88,17 +91,17 @@ if __name__ == '__main__':
             score = detectedBatchClassScores[pdx]
             #print(p, score)
 
-#-------------------------------------------------------------------------------
+################################################################################
                 
         print('\nTime taken: {}'.format(prettyTime(time.time() - startTime)))
         cv2.imwrite(os.path.join(inferDir, 'saved', 'prediction_' + i), img1)
 
         cv2.imshow('Image', img1)
-        cv2.imshow('Original Image', img)
+        cv2.imshow('Original Image', img2)
         print('[{}/{}]\tImage name: {}'.format(idx+1, nImgs, i))
         key = cv2.waitKey(2000)
         if key & 0xFF == 27:    break    # break with esc key.
     
     cv2.destroyAllWindows()
 
-#-------------------------------------------------------------------------------
+################################################################################

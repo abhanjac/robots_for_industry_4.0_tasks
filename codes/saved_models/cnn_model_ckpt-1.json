@@ -1,0 +1,21 @@
+{
+    "epoch": 1,
+    "batchSize": 100,
+    "learningRate": 0.001,
+    "mean": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "std": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "maxValidAcc": 67.87142857142857,
+    "minValidLoss": 0.12697809285351205,
+    "statisticsFormat": "epoch, learningRate, batchSize, trainLoss, trainAcc (%), validLoss, validAcc (%), epochProcessTime",
+    "statistics": [
+        "1, 0.001, 100, 0.33238547115453676, 33.38999999999998, 0.12697809285351205, 67.87142857142857, 0:46:58.578452"
+    ]
+}

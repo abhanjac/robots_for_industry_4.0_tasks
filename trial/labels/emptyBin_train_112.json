@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "emptyBin",
+        "bboxW": 201,
+        "classIdx": 4,
+        "posX": 131,
+        "posY": 203,
+        "samplePath": "color_images/emptyBin/train/emptyBin_65.png",
+        "tlY": 99,
+        "tlX": 30,
+        "bgPath": "background/train/ori_19.png",
+        "bboxH": 207
+    }
+}

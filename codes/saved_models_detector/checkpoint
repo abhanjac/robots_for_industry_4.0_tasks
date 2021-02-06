@@ -1,0 +1,6 @@
+model_checkpoint_path: "cnn_model_detector_ckpt-9"
+all_model_checkpoint_paths: "cnn_model_detector_ckpt-4"
+all_model_checkpoint_paths: "cnn_model_detector_ckpt-5"
+all_model_checkpoint_paths: "cnn_model_detector_ckpt-7"
+all_model_checkpoint_paths: "cnn_model_detector_ckpt-8"
+all_model_checkpoint_paths: "cnn_model_detector_ckpt-9"

@@ -1,0 +1,14 @@
+{
+    "0": {
+        "className": "coins",
+        "bboxW": 128,
+        "classIdx": 1,
+        "posX": 101,
+        "posY": 136,
+        "samplePath": "color_images/coins/train/coins_46.png",
+        "tlY": 49,
+        "tlX": 37,
+        "bgPath": "background/train/ori_15.png",
+        "bboxH": 173
+    }
+}

@@ -1,0 +1,49 @@
+testDir:
+
+Started Testing...
+
+Batch: 23/70,	Batch loss: 155.092865,	Process time for 23 batch: 0:04:07.858721
+Batch: 46/70,	Batch loss: 159.572311,	Process time for 23 batch: 0:04:06.029443
+Batch: 69/70,	Batch loss: 163.874542,	Process time for 23 batch: 0:04:08.455619
+
+Average Precision (AP) for class nuts: 94.222 % ; Detection Accuracy: 98.871 % ; 
+Ncorrect / Ntotal (Recall): 0.942 ; Ncorrect / Npredicted (Precision): 1.000 ; F1score: 0.970 ; Mean Error in Count: 0.058
+Average Precision (AP) for class washers: 99.833 % ; Detection Accuracy: 99.957 % ; 
+Ncorrect / Ntotal (Recall): 0.998 ; Ncorrect / Npredicted (Precision): 1.000 ; F1score: 0.999 ; Mean Error in Count: 0.002
+Average Precision (AP) for class gears: 100.000 % ; Detection Accuracy: 100.000 % ; 
+Ncorrect / Ntotal (Recall): 1.000 ; Ncorrect / Npredicted (Precision): 1.000 ; F1score: 1.000 ; Mean Error in Count: 0.000
+Average Precision (AP) for class emptyBin: 99.765 % ; Detection Accuracy: 97.686 % ; 
+Ncorrect / Ntotal (Recall): 0.998 ; Ncorrect / Npredicted (Precision): 0.913 ; F1score: 0.954 ; Mean Error in Count: 0.097
+Average Precision (AP) for class crankArmW: 87.573 % ; Detection Accuracy: 86.586 % ; 
+Ncorrect / Ntotal (Recall): 0.897 ; Ncorrect / Npredicted (Precision): 0.540 ; F1score: 0.674 ; Mean Error in Count: 0.868
+Average Precision (AP) for class crankShaft: 91.528 % ; Detection Accuracy: 94.543 % ; 
+Ncorrect / Ntotal (Recall): 0.932 ; Ncorrect / Npredicted (Precision): 0.835 ; F1score: 0.881 ; Mean Error in Count: 0.252
+
+Mean Average Precision (mAP) over given dataset: 95.487 %
+
+Testing done. Test Loss: 140.267964, Test Classification Accuracy: 80.543 %, Testing time: 0:12:49.390045
+
+validDir:
+
+Started Testing...
+
+Batch: 23/70,	Batch loss: 220.182556,	Process time for 23 batch: 0:04:09.215601
+Batch: 46/70,	Batch loss: 257.225830,	Process time for 23 batch: 0:04:30.025517
+Batch: 69/70,	Batch loss: 213.961945,	Process time for 23 batch: 0:04:13.084448
+
+Average Precision (AP) for class nuts: 98.668 % ; Detection Accuracy: 86.829 % ; 
+Ncorrect / Ntotal (Recall): 0.994 ; Ncorrect / Npredicted (Precision): 0.617 ; F1score: 0.762 ; Mean Error in Count: 0.623
+Average Precision (AP) for class washers: 98.889 % ; Detection Accuracy: 99.771 % ; 
+Ncorrect / Ntotal (Recall): 0.989 ; Ncorrect / Npredicted (Precision): 1.000 ; F1score: 0.994 ; Mean Error in Count: 0.011
+Average Precision (AP) for class gears: 99.508 % ; Detection Accuracy: 99.871 % ; 
+Ncorrect / Ntotal (Recall): 0.996 ; Ncorrect / Npredicted (Precision): 0.998 ; F1score: 0.997 ; Mean Error in Count: 0.007
+Average Precision (AP) for class emptyBin: 97.556 % ; Detection Accuracy: 99.371 % ; 
+Ncorrect / Ntotal (Recall): 0.976 ; Ncorrect / Npredicted (Precision): 0.994 ; F1score: 0.985 ; Mean Error in Count: 0.030
+Average Precision (AP) for class crankArmW: 90.543 % ; Detection Accuracy: 97.329 % ; 
+Ncorrect / Ntotal (Recall): 0.933 ; Ncorrect / Npredicted (Precision): 0.873 ; F1score: 0.902 ; Mean Error in Count: 0.203
+Average Precision (AP) for class crankShaft: 94.133 % ; Detection Accuracy: 99.057 % ; 
+Ncorrect / Ntotal (Recall): 0.964 ; Ncorrect / Npredicted (Precision): 0.894 ; F1score: 0.928 ; Mean Error in Count: 0.151
+
+Mean Average Precision (mAP) over given dataset: 96.549 %
+
+Testing done. Test Loss: 226.277535, Test Classification Accuracy: 83.071 %, Testing time: 0:12:45.147333

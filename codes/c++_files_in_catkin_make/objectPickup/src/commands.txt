@@ -1,0 +1,8 @@
+# Command to run rviz with proper settings.
+rosrun rviz rviz -d /home/ari/Desktop/virtualbox_shared_folder/PROJECTS/robots_for_factory_tasks/Fetch_project/arindam_config_1.rviz 
+
+# Command to run point_cloud_demo.cpp file:
+rosrun objectPickup extract_object
+
+
+

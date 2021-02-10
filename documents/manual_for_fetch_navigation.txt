@@ -1,0 +1,162 @@
+--------------------------------------------------------------------------------
+Requirements:
+--------------------------------------------------------------------------------
+1. Computer running Ubuntu 16.
+2. The computer and the Fetch robot should be connected to the same wifi.
+
+The Fetch robot already gets connected to the 'IN-MaC Testbed 1_5G' or 
+'IN-MaC Testbed 1' network with the ip address 192.168.1.65
+The computer with Ubuntu has to be connected to the same wifi as well.
+
+--------------------------------------------------------------------------------
+SSH into the Fetch robot:
+--------------------------------------------------------------------------------
+1.  Turn on the Fetch robot.
+2.  Connect your computer to 'IN-MaC Testbed 1' or 'IN-MaC Testbed 1_5G' wifi 
+    network.
+3.  Open the terminal.
+4.  SSH into the Fetch robot using the command 'ssh -X fetch@192.168.1.65'
+5.  Enter the password for the Fetch robot 'robotics' when asked for.
+6.  Open another terminal in the same manner and ssh into the fetch robot in 
+    that as well.
+
+--------------------------------------------------------------------------------
+Creating a map of the workshop floor:
+--------------------------------------------------------------------------------
+This instruction is also given in the link 
+'https://docs.fetchrobotics.com/navigation.html' which is the Fetch robot 
+tutorial page.
+
+1.  Open a terminal on the computer and SSH into the Fetch robot.
+2.  Run the command 'roslaunch fetch_navigation build_map.launch' on this 
+    terminal.
+3.  Now use the joysticks to tele-operate the robot around workshop floor to 
+    build the map, which can be visualized in RVIZ.
+4.  Once you are satisfied with the tele-operations, open another terminal and 
+    SSH into the Fetch robot. 
+5.  Now decide the location folder where you want to save the map and also 
+    decide a map name. We will assume you want to save the map with the map 
+    name 'example_map' in the folder 'example_map_folder' in the home 
+    directory '~/'
+6.  Now, save the map by the command 
+    'rosrun map_server map_saver -f ~/example_map_folder/example_map'.
+7.  This will create two files in the specified example_map_folder namely, 
+    'example_map.pgm' and 'example_map.yaml'. The first is the map in a '.pgm' 
+    image format, and the second is a YAML file that specifies metadata for 
+    the image. 
+
+--------------------------------------------------------------------------------
+Copying the created map in the proper location in the Fetch:
+--------------------------------------------------------------------------------
+1.  Open a terminal on the computer and SSH into the Fetch robot.
+2.  Create a map as mentioned earlier. 
+3.  Suppose the map is saved in the location '~/example_map_folder/' with the 
+    name 'example_map'
+4.  Now copy the map '.yaml' file from this location to the location 
+    '/opt/ros/kinetic/share/fetch_maps/maps' where all the default maps are 
+    saved, using the command 
+    'sudo cp ~/example_map_folder/example_map.yaml /opt/ros/kinetic/share/fetch_maps/maps'
+
+5.  This will ask for the password of the Fetch robot (which is 'robotics').
+6.  Similarly, also copy the '.pgm' file using the command
+    'sudo cp ~/example_map_folder/example_map.pgm /opt/ros/kinetic/share/fetch_maps/maps'
+
+7.  This may ask for the password of the Fetch robot (which is 'robotics').
+
+--------------------------------------------------------------------------------
+Now updating this map so that the Fetch can be navigated in this map:
+--------------------------------------------------------------------------------
+1.  Open a terminal on the computer and SSH into the Fetch robot.
+2.  Run the command 'cd /opt/ros/kinetic/share/fetch_navigation/launch' to get 
+    into the location of the launch file for the Fetch navigation.
+3.  Now open the 'fetch_nav.launch' file using the command 
+    'sudo nano fetch_nav.launch'.
+4.  This will ask for the password of the Fetch robot (which is 'robotics').
+5.  Some of the commands inside the 'fetch_nav.launch' file are the following:
+
+<launch>
+
+  <!-- Navigation requires at least one map.
+       In addition, it is sometimes desirable to have a "keepout" map
+       which is used for costmaps, but not localization -->
+  <arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" />
+  <arg name="map_keepout_file" default="$(find fetch_maps)/maps/3_1_16_keepout.yaml" />
+  <arg name="use_keepout" default="false" />
+
+.....
+
+6.  Now one of the line in this file has to be changed, and for that the 
+    original line should first be commented out.
+6.  Now select the entire line (by right clicking it)
+'<arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" />'
+
+7.  Now paste the same right below this line (by right clicking it)
+8.  Now comment out the previous line by changing it from 
+<arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" />
+to 
+<!-- arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" / -->
+
+9.  Now update the pasted line with the name of the map (which was earlier set 
+    as 'example_map') from 
+<arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" />
+to 
+<arg name="map_file" default="$(find fetch_maps)/maps/example_map.yaml" />
+
+10. Now comment out the line 
+<arg name="map_keepout_file" default="$(find fetch_maps)/maps/3_1_16_keepout.yaml" />
+by changing it to the following
+<!-- arg name="map_keepout_file" default="$(find fetch_maps)/maps/3_1_16_keepout.yaml" / -->
+
+11. So after all the edits are done, the first few lines of the 
+'fetch_nav.launch' file with look like the following:
+
+<launch>
+
+  <!-- Navigation requires at least one map.
+       In addition, it is sometimes desirable to have a "keepout" map
+       which is used for costmaps, but not localization -->
+  <!-- arg name="map_file" default="$(find fetch_maps)/maps/3_1_16_localization.yaml" / -->
+  <arg name="map_file" default="$(find fetch_maps)/maps/example_map.yaml" />
+  <!-- arg name="map_keepout_file" default="$(find fetch_maps)/maps/3_1_16_keepout.yaml" / -->
+  <arg name="use_keepout" default="false" />
+
+.....
+
+10. Now press 'CTRL + x' and then 'y' to save and exit the file editor.
+
+--------------------------------------------------------------------------------
+Run the navigation package on the Fetch:
+--------------------------------------------------------------------------------
+1.  Run the command 'roslaunch fetch_navigation fetch_nav.launch' on one of 
+    the ssh terminals. This will start the navigation package on the Fetch.
+2.  Now run the command 
+    'rviz -d /opt/ros/melodic/share/fetch_navigation/config/navigation.rviz' 
+    on the other ssh terminal. 
+    This will start the visualization which will show the Fetch on the map 
+    that it will navigate.
+3.  Now use the '2D navigation goal' in this visualization window and click 
+    on a position in the map, and the Fetch will move to that location in the 
+    map. The Fetch robot in the real world will also move to the 
+    corresponding location in the real world.
+
+--------------------------------------------------------------------------------
+How to find the pose of the Fetch robot in the map:
+--------------------------------------------------------------------------------
+1.  Now from your laptop, open another terminal and ssh into the Fetch from 
+    that as well as mentioned earlier.
+2.  Move the robot to the required location in the map using the navigation 
+    package as described earlier. You can also use the joysticks and 
+    tele-operate the Fetch to a desired location and pose.
+3.  Now run the following command 'rostopic echo /amcl_pose' into the 
+    terminal. This prints out the position and orientation of the Fetch robot 
+    in the map from the ros topics into the terminal.
+
+--------------------------------------------------------------------------------
+    
+    
+    
+
+    
+    
+    
+    

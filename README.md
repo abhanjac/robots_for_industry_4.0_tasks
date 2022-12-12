@@ -231,7 +231,7 @@ Once all objects has been picked up, the Fetch stays near the table (**step 23**
 # Video of Full Operation:
 
 The videos of the object pickups can also be found on Youtube.
-* [full operation](https://www.youtube.com/watch?v=C31SaTqyW5Y&t=7s).
+* [full operation](https://youtu.be/MY0KLTqqAtc).
 
 And it can also be found in this [link](videos/video_with_comments_compressed.m4v)
 
